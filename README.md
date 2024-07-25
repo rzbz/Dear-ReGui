@@ -1,10 +1,17 @@
-# ImGUI
-ImGUI for Roblox that doesn't need a RenderStep connection. \
-Perfect for beginners and performance.
-
-🔨 Please mention me when integrating this library **- depso.**
+# Roblox ImGUI
+ImGUI for Roblox that **doesn't need a RenderStep connection.** \
+Perfect for beginners and **performance**.
 
 If you would like to customization the UI further, you can find the prefabs [here](https://create.roblox.com/store/asset/18364667141/Depso-ImGui)
+
+### Notices
+**This UI library is in BETA and you WILL experience problems**
+Please report these to the issues.
+
+👍 Any feedback or suggestions would be great \
+🔨 Please mention me when integrating this library **- depso.**
+
+<hr>
 
 ![image](https://github.com/user-attachments/assets/c050f9ba-f090-4738-90b7-b791b94133ec)
 
