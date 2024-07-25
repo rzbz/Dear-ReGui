@@ -87,7 +87,7 @@ local AddionalStyles = {
 		local Outline = GuiObject:FindFirstChildOfClass("UIStroke")
 		if not Outline then return end
 
-		local BorderThickness = Class.BorderThickness
+		local BorderThickness = Class.BorderThickness or 0
 		if BorderThickness then
 			Outline.Thickness = BorderThickness
 		end
@@ -132,7 +132,7 @@ local AddionalStyles = {
 
 		Label.Text = Class.Label
 		function Class:SetLabel(Text)
-			Label.Text = Label
+			Label.Text = Text
 			return Class
 		end
 	end,
@@ -216,7 +216,7 @@ function ImGui:CheckStyles(GuiObject: GuiObject, Class, Colors)
 				if Value then break end
 			end
 		end
-		if not Value then continue end
+		if Value == nil then continue end
 
 		Callback(GuiObject, Value, Class)
 		if Info.Recursive then
@@ -1212,16 +1212,19 @@ function ImGui:CreateWindow(WindowConfig)
 		ImGui:ApplyDraggable(Window)
 	end
 
-	--// Close Window
+	--// Close Window 
 	local CloseButton: TextButton = TitleBar.Close
 	CloseButton.Visible = WindowConfig.NoClose ~= true
-	CloseButton.Activated:Connect(function()
+	
+	function WindowConfig:Close()
 		local Callback = WindowConfig.CloseCallback
 		WindowConfig:SetVisible(false)
 		if Callback then
 			Callback(WindowConfig)
 		end
-	end)
+		return WindowConfig
+	end
+	CloseButton.Activated:Connect(WindowConfig.Close)
 
 	function WindowConfig:GetHeaderSizeY(): number
 		local ToolbarY = ToolBar.Visible and ToolBar.AbsoluteSize.Y or 0
