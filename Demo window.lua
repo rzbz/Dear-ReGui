@@ -3,19 +3,8 @@ local ImGui = require(game.ReplicatedStorage.ImGui)
 --// Demo 
 local Window = ImGui:CreateWindow({
 	Title = "Depso Imgui Demo",
-	Size = UDim2.new(0, 350, 0, 370),
-	Position = UDim2.new(0.5, 0, 0, 70),
-	--Colors = {
-	--	Window = {
-	--		BackgroundColor3 = Color3.fromRGB(86, 36, 37),
-	--	},
-	--	Button = {
-	--		BackgroundColor3 = Color3.fromRGB(0, 255, 64)
-	--	},
-	--	Slider = {
-	--		BackgroundColor3 = Color3.fromRGB(0, 255, 64)
-	--	},
-	--}
+	Size = UDim2.fromOffset(350, 370),
+	Position = UDim2.new(0.5, 0, 0, 70)
 })
 print(Window.Name)
 
