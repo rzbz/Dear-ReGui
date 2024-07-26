@@ -1060,15 +1060,16 @@ function ImGui:Dropdown(Config)
 	local Parent: GuiObject = Config.Parent
 	if not Parent then return end
 	
+	local Selection: TextButton = Prefabs.Selection:Clone()
+	local UIStroke = Selection:FindFirstChildOfClass("UIStroke")
+	
+	local Padding = UIStroke.Thickness*2
 	local Position = Parent.AbsolutePosition
 	local Size = Parent.AbsoluteSize
 	
-	local Selection: TextButton = Prefabs.Selection:Clone()
-	local UIStroke = Selection:FindFirstChildOfClass("UIStroke")
-		
 	Selection.Parent = ImGuiScreenGui
-	Selection.Position = UDim2.fromOffset(Position.X+(UIStroke.Thickness*2), Position.Y+Size.Y)
-	Selection.Size = UDim2.fromOffset(Size.X, Size.Y)
+	Selection.Position = UDim2.fromOffset(Position.X+Padding, Position.Y+Size.Y)
+	Selection.Size = UDim2.fromOffset(Size.X-Padding, Size.Y)
 	
 	local Hover = self:ConnectHover({
 		Parent = Selection,
