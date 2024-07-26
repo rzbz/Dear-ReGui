@@ -1,4 +1,6 @@
 --// Written by depso
+--// MIT License
+--// Copyright (c) 2024 Depso
 
 local ImGui = {
 	Animations = {
@@ -87,7 +89,7 @@ local AddionalStyles = {
 		local Outline = GuiObject:FindFirstChildOfClass("UIStroke")
 		if not Outline then return end
 
-		local BorderThickness = Class.BorderThickness or 0
+		local BorderThickness = Class.BorderThickness
 		if BorderThickness then
 			Outline.Thickness = BorderThickness
 		end
@@ -304,36 +306,38 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 	function ContainerClass:Button(Config)
 		Config = Config or {}
 		local Button = Prefabs.Button:Clone()
+		local ObjectClass = self:NewInstance(Button, Config)
 
 		local function Callback(...)
 			local func = Config.Callback or NullFunction
-			return func(Button, ...)
+			return func(ObjectClass, ...)
 		end
 		Button.Activated:Connect(Callback)
 
 		--// Apply animations
 		ImGui:ApplyAnimations(Button, "Buttons")
-		return self:NewInstance(Button, Config)
+		return ObjectClass
 	end
 
 	function ContainerClass:Image(Config)
 		Config = Config or {}
 		local Image = Prefabs.Image:Clone()
-
-		local function Callback(...)
-			local func = Config.Callback or NullFunction
-			return func(Image, ...)
-		end
-		Image.Activated:Connect(Callback)
-
+		
 		if tonumber(Config.Image) then
 			Image.Image = "rbxassetid://"..Config.Image
 			Config.Image = nil --// Prevent overwriting
 		end
+		
+		local ObjectClass = self:NewInstance(Image, Config)
+		local function Callback(...)
+			local func = Config.Callback or NullFunction
+			return func(ObjectClass, ...)
+		end
+		Image.Activated:Connect(Callback)
 
 		--// Apply animations
 		ImGui:ApplyAnimations(Image, "Buttons")
-		return self:NewInstance(Image, Config)
+		return ObjectClass
 	end
 
 	function ContainerClass:ScrollingBox(Config)
@@ -357,6 +361,7 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 		local Tickbox: ImageButton = CheckBox.Tickbox
 		local Tick: ImageLabel = Tickbox.Tick
 		local Label = CheckBox.Label
+		local ObjectClass = self:NewInstance(CheckBox, Config)
 
 		--// Stylise to correct type
 		if IsRadio then
@@ -375,7 +380,7 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 		--// Callback
 		local function Callback(...)
 			local func = Config.Callback or NullFunction
-			return func(CheckBox, ...)
+			return func(ObjectClass, ...)
 		end
 
 		function Config:SetTicked(NewValue: boolean)
@@ -409,8 +414,8 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 		end
 		CheckBox.Activated:Connect(Clicked)
 		Tickbox.Activated:Connect(Clicked)
-
-		return self:NewInstance(CheckBox, Config)
+		
+		return ObjectClass
 	end
 
 	function ContainerClass:RadioButton(Config)
@@ -468,6 +473,7 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 		Config = Config or {}
 		local TextInput = Prefabs.TextInput:Clone()
 		local TextBox: TextBox = TextInput.Input
+		local ObjectClass = self:NewInstance(TextInput, Config)
 
 		TextBox.Text = Config.Value or ""
 		TextBox.PlaceholderText = Config.PlaceHolder
@@ -478,7 +484,7 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 
 		local function Callback(...)
 			local func = Config.Callback or NullFunction
-			return func(TextBox, ...)
+			return func(ObjectClass, ...)
 		end
 		TextBox:GetPropertyChangedSignal("Text"):Connect(function()
 			local Value = TextBox.Text
@@ -497,7 +503,7 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 			return Config
 		end
 
-		return self:NewInstance(TextInput, Config)
+		return ObjectClass
 	end
 
 	function ContainerClass:InputTextMultiline(Config)
@@ -620,9 +626,10 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 			local RowChildCount = #Row:GetChildren() --// Performance
 			Row.Name = RowName
 			Row.Visible = true
-
+			
+			--// Background colors
 			if Config.RowBackground then
-				Row.BackgroundTransparency = RowsCount % 2 == 1 and 0.94 or 1
+				Row.BackgroundTransparency = RowsCount % 2 == 1 and 0.92 or 1
 			end
 
 			function RowClass:CreateColumn(CConfig)
@@ -718,7 +725,7 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 		Config.Open = false
 		function Config:SetOpen(Open)
 			local Animate = Config.NoAnimation ~= true
-			ImGui:HeaderAnimate(Header, Animate, Config.Open, Titlebar)
+			ImGui:HeaderAnimate(Header, Animate, Open, Titlebar)
 			return self
 		end
 
@@ -807,10 +814,11 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 		local UIPadding = Slider:FindFirstChildOfClass("UIPadding")
 		local Grab: Frame = Slider.Grab
 		local ValueText = Slider.ValueText
+		local ObjectClass = self:NewInstance(Slider, Config)
 
 		local function Callback(...)
 			local func = Config.Callback or NullFunction
-			return func(Slider, ...)
+			return func(ObjectClass, ...)
 		end
 
 		--// Apply Progress styles
@@ -866,7 +874,6 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 
 		local Dragging = false
 		local MouseMoveConnection = nil
-		local Hovering = false
 
 		local function MouseMove()
 			if Config.ReadOnly then return end
@@ -880,23 +887,21 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 		end
 
 		--// Connect mouse events
-		Slider.MouseEnter:Connect(function()
-			Hovering = true
-		end)
-		Slider.MouseLeave:Connect(function()
-			Hovering = false
-		end)
+		local SliderHovered = ImGui:ConnectHover({
+			Parent = Slider,
+			OnInput = function(MouseHovering, Input)
+				if not MouseHovering then return end
+				if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+					Dragging = true
+
+					--// Save heavy performance
+					MouseMoveConnection = Mouse.Move:Connect(MouseMove)
+				end
+			end
+		})
+		
 		Slider.Activated:Connect(MouseMove)
 
-		UserInputService.InputBegan:Connect(function(inputObject)
-			if not Hovering then return end
-			if inputObject.UserInputType == Enum.UserInputType.MouseButton1 then
-				Dragging = true
-
-				--// Save heavy performance
-				MouseMoveConnection = Mouse.Move:Connect(MouseMove)
-			end
-		end)
 		UserInputService.InputEnded:Connect(function(inputObject)
 			if not Dragging then return end
 			if inputObject.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -904,8 +909,8 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 				MouseMoveConnection:Disconnect()
 			end
 		end)
-
-		return self:NewInstance(Slider, Config)
+		
+		return ObjectClass
 	end
 
 	function ContainerClass:ProgressSlider(Config)
@@ -931,13 +936,15 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 	end
 
 	function ContainerClass:Keybind(Config)
+		Config = Config or {}
 		local Keybind: TextButton = Prefabs.Keybind:Clone()
 		local ValueText: TextButton = Keybind.ValueText
 		local Key = Config.Value 
+		local ObjectClass = nil
 
 		local function Callback(...)
 			local func = Config.Callback or NullFunction
-			return func(Keybind, ...)
+			return func(ObjectClass, ...)
 		end
 
 		function Config:SetValue(NewKey: Enum.KeyCode)
@@ -972,11 +979,140 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 				return Callback(Input.KeyCode)
 			end
 		end)
+		
+		ObjectClass = self:NewInstance(Keybind, Config)
+		return ObjectClass
+	end
+	
+	function ContainerClass:Combo(Config)
+		Config = Config or {}
+		Config.Open = false
+		
+		local Combo: TextButton = Prefabs.Combo:Clone()
+		local Toggle: ImageButton = Combo.Toggle.ToggleButton
+		local ValueText = Combo.ValueText
+		
+		local Dropdown = nil
+		local ObjectClass = self:NewInstance(Combo, Config)
+		
+		local ComboHovering = ImGui:ConnectHover({
+			Parent = Combo
+		})
+		
+		local function Callback(Value, ...)
+			local func = Config.Callback or NullFunction
+			Config:SetOpen(false)
+			return func(ObjectClass, Value, ...)
+		end
+		
+		function Config:SetValue(Value, ...)
+			local Items = Config.Items or {}
+			local DictValue = Items[Value]
+			ValueText.Text = Value
+			
+			return Callback(DictValue or Value) 
+		end
+		
+		function Config:SetOpen(Open: true)
+			local Animate = Config.NoAnimation ~= true
+			ImGui:HeaderAnimate(Combo, Animate, Open, Combo, Toggle)
+			Config.Open = Open
+			
+			if Open then
+				Dropdown = ImGui:Dropdown({
+					Parent = Combo,
+					Items = Config.Items or {},
+					Selected = Config.SetValue,
+					Closed = function()
+						if not ComboHovering.Hovering then 
+							Config:SetOpen(false)
+						end
+					end,
+				})
+			end
+			
+			return self
+		end
 
-		return self:NewInstance(Keybind, Config)
+		local function ToggleOpen()
+			if Dropdown then
+				Dropdown:Close()
+			end
+			Config:SetOpen(not Config.Open)
+		end
+		
+		--// Connect events
+		Combo.Activated:Connect(ToggleOpen)
+		Toggle.Activated:Connect(ToggleOpen)
+		ImGui:ApplyAnimations(Combo, "Buttons")
+		
+		if Config.Selected then
+			Config:SetValue(Config.Selected)
+		end
+		
+		return ObjectClass 
 	end
 
 	return ContainerClass
+end
+
+function ImGui:Dropdown(Config)
+	local Parent: GuiObject = Config.Parent
+	if not Parent then return end
+	
+	local Position = Parent.AbsolutePosition
+	local Size = Parent.AbsoluteSize
+	
+	local Selection: TextButton = Prefabs.Selection:Clone()
+	local UIStroke = Selection:FindFirstChildOfClass("UIStroke")
+		
+	Selection.Parent = ImGuiScreenGui
+	Selection.Position = UDim2.fromOffset(Position.X+(UIStroke.Thickness*2), Position.Y+Size.Y)
+	Selection.Size = UDim2.fromOffset(Size.X, Size.Y)
+	
+	local Hover = self:ConnectHover({
+		Parent = Selection,
+		OnInput = function(MouseHovering, Input)
+			if not Input.UserInputType.Name:find("Mouse") then return end
+
+			if not MouseHovering then
+				Config:Close()
+			end
+		end,
+	})
+	
+	function Config:Close()
+		local CloseCallback = Config.Closed
+		if CloseCallback then
+			CloseCallback()
+		end
+		Hover:Disconnect()
+		return Selection:Remove()
+	end
+
+	local function Selected(self)
+		local Value = self.Text
+		Config:Close()
+		return Config:Selected(Value)
+	end
+	
+	--// Append items
+	local ItemTemplate: TextButton = Selection.Template
+	ItemTemplate.Visible = false
+	
+	for Index, Index2 in next, Config.Items do
+		local NewItem: TextButton = ItemTemplate:Clone()
+		NewItem.Text = typeof(Index) ~= "number" and Index or Index2
+		NewItem.Parent = Selection
+		NewItem.Visible = true
+		
+		self:ApplyAnimations(NewItem, "Tabs")
+		NewItem.Activated:Connect(function()
+			return Selected(NewItem)
+		end)
+	end
+	
+	return Config
 end
 
 function ImGui:GetAnimation(Animation: boolean?)
@@ -1102,27 +1238,28 @@ function ImGui:ApplyDraggable(Frame: Frame, Header: Frame)
 	end)
 end
 
+
 function ImGui:ApplyResizable(MinSize, Frame: Frame, Dragger: TextButton, Config)
 	MinSize = MinSize or Vector2.new(160, 90)
 
-	local startDrag
-	local startSize
+	local DragStart
+	local OrignialSize
 
 	Dragger.MouseButton1Down:Connect(function()
-		if startDrag then return end
-		startSize = Frame.AbsoluteSize			
-		startDrag = Vector2.new(Mouse.X, Mouse.Y)
+		if DragStart then return end
+		OrignialSize = Frame.AbsoluteSize			
+		DragStart = Vector2.new(Mouse.X, Mouse.Y)
 	end)	
 
 	UserInputService.InputChanged:Connect(function(Input)
-		if not startDrag or Input.UserInputType ~= Enum.UserInputType.MouseMovement then 
+		if not DragStart or Input.UserInputType ~= Enum.UserInputType.MouseMovement then 
 			return
 		end
 
 		local MousePos = Vector2.new(Mouse.X, Mouse.Y)
-		local mouseMoved = MousePos - startDrag
+		local mouseMoved = MousePos - DragStart
 
-		local NewSize = startSize + mouseMoved
+		local NewSize = OrignialSize + mouseMoved
 		NewSize = UDim2.fromOffset(
 			math.max(MinSize.X, NewSize.X), 
 			math.max(MinSize.Y, NewSize.Y)
@@ -1136,16 +1273,42 @@ function ImGui:ApplyResizable(MinSize, Frame: Frame, Dragger: TextButton, Config
 
 	UserInputService.InputEnded:Connect(function(Input)
 		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-			startDrag = nil
+			DragStart = nil
 		end
 	end)	
 end
 
+function ImGui:ConnectHover(Config)
+	local Parent = Config.Parent
+	local Connections = {}
+	Config.Hovering = false
+	
+	--// Connect Events
+	table.insert(Connections, Parent.MouseEnter:Connect(function()
+		Config.Hovering = true
+	end))
+	table.insert(Connections, Parent.MouseLeave:Connect(function()
+		Config.Hovering = false
+	end))
+	
+	if Config.OnInput then
+		table.insert(Connections, UserInputService.InputBegan:Connect(function(Input)
+			return Config.OnInput(Config.Hovering, Input)
+		end))
+	end
+	
+	function Config:Disconnect()
+		for _, Connection in next, Connections do
+			Connection:Disconnect()
+		end
+	end
+
+	return Config
+end
 
 function ImGui:ApplyWindowSelectEffect(Window: GuiObject, TitleBar)
 	local UIStroke = Window:FindFirstChildOfClass("UIStroke")
 
-	local MouseHovering = false
 	local Colors = {
 		Selected = {
 			BackgroundColor3 = TitleBar.BackgroundColor3
@@ -1163,19 +1326,15 @@ function ImGui:ApplyWindowSelectEffect(Window: GuiObject, TitleBar)
 		ImGui:Tween(TitleBar, Colors[Type])
 		ImGui:Tween(UIStroke, Animations.WindowBorder[Type])
 	end
-
-	--// Connect Events
-	Window.MouseEnter:Connect(function()
-		MouseHovering = true
-	end)
-	Window.MouseLeave:Connect(function()
-		MouseHovering = false
-	end)
-	UserInputService.InputBegan:Connect(function(Input)
-		if Input.UserInputType.Name:find("Mouse") then
-			SetSelected(MouseHovering)
-		end
-	end)
+	
+	self:ConnectHover({
+		Parent = Window,
+		OnInput = function(MouseHovering, Input)
+			if Input.UserInputType.Name:find("Mouse") then
+				SetSelected(MouseHovering)
+			end
+		end,
+	})
 end
 
 function ImGui:CreateWindow(WindowConfig)
@@ -1188,7 +1347,7 @@ function ImGui:CreateWindow(WindowConfig)
 	local Body = Content.Body
 
 	--// Resize
-	local Resize = Window.ResizeGrip
+	local Resize = Window.ResizeGrab
 	Resize.Visible = WindowConfig.NoResize ~= true
 	ImGui:ApplyResizable(
 		Vector2.new(160, 90), 
