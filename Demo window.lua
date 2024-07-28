@@ -4,18 +4,7 @@ local ImGui = require(game.ReplicatedStorage.ImGui)
 local Window = ImGui:CreateWindow({
 	Title = "Depso Imgui Demo",
 	Size = UDim2.new(0, 350, 0, 370),
-	Position = UDim2.new(0.5, 0, 0, 70),
-	--Colors = {
-	--	Window = {
-	--		BackgroundColor3 = Color3.fromRGB(86, 36, 37),
-	--	},
-	--	Button = {
-	--		BackgroundColor3 = Color3.fromRGB(0, 255, 64)
-	--	},
-	--	Slider = {
-	--		BackgroundColor3 = Color3.fromRGB(0, 255, 64)
-	--	},
-	--}
+	Position = UDim2.new(0.5, 0, 0, 70)
 })
 print(Window.Name)
 
@@ -151,6 +140,7 @@ local Combos = DemosTab:CollapsingHeader({
 
 Combos:Combo({
 	Selected = "Car",
+	Label = "Vehicle",
 	Items = {
 		"Car",
 		"Bus",
@@ -163,6 +153,7 @@ Combos:Combo({
 
 Combos:Combo({
 	Placeholder = "Select object",
+	Label = "Food",
 	Items = {
 		["Apple"] = "Good",
 		["Banana"] = "Bad",
@@ -214,7 +205,7 @@ Inputs:Checkbox({
 	end,
 })
 Inputs:RadioButton({
-	Label = "Radio box",
+	Label = "Radio button",
 	Value = true,
 	Callback = function(self, Value)
 		print(self.Name, Value)
@@ -455,13 +446,11 @@ local Rig: Model = ImGui.Prefabs["R15 Rig"] --// "R6 Rig"
 local Viewport = Window:Viewport({
 	Size = UDim2.new(1, 0, 0, 200),
 	Clone = true, --// Otherwise will parent
-	Model = Rig,
 	Border = false
 })
 
 --// Spin rig
-local NewRig = Viewport.Model
-NewRig:PivotTo(CFrame.new(0, -2.5, -5))
+local NewRig = Viewport:SetModel(Rig, CFrame.new(0, -2.5, -5))
 game:GetService("RunService").RenderStepped:Connect(function(deltaTime)
 	local YRotation = 30 * deltaTime
 	local cFrame = NewRig:GetPivot() * CFrame.Angles(0,math.rad(YRotation),0)
