@@ -991,6 +991,7 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 		local Combo: TextButton = Prefabs.Combo:Clone()
 		local Toggle: ImageButton = Combo.Toggle.ToggleButton
 		local ValueText = Combo.ValueText
+		ValueText.Text = Config.Placeholder or ""
 		
 		local Dropdown = nil
 		local ObjectClass = self:NewInstance(Combo, Config)
