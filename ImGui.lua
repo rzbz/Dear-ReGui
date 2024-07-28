@@ -323,9 +323,9 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 		Config = Config or {}
 		local Image = Prefabs.Image:Clone()
 		
+		--// Check for rbxassetid
 		if tonumber(Config.Image) then
-			Image.Image = "rbxassetid://"..Config.Image
-			Config.Image = nil --// Prevent overwriting
+			Config.Image = `rbxassetid://{Config.Image}`
 		end
 		
 		local ObjectClass = self:NewInstance(Image, Config)
@@ -457,7 +457,7 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 
 			Model.Parent = WorldModel
 			Config.Model = Model
-			return Config
+			return Model
 		end
 
 		--// Set model
