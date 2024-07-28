@@ -115,6 +115,7 @@ local DemosTab = Window:CreateTab({
 
 local Tables = DemosTab:CollapsingHeader({
 	Title = "Tables",
+	Open = true
 })
 
 local Table = Tables:Table({
