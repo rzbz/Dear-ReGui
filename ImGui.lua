@@ -45,10 +45,6 @@ local ImGui = {
 	UIAssetId = "rbxassetid://18364667141"
 }
 
-function ImGui:GetName(Name: string)
-	local Format = "%s_"
-	return Format:format(Name)
-end
 
 --// Universal functions
 local CloneRef = cloneref or function(_)return _ end
@@ -170,6 +166,11 @@ local AddionalStyles = {
 		end
 	end,
 }
+
+function ImGui:GetName(Name: string)
+	local Format = "%s_"
+	return Format:format(Name)
+end
 
 function ImGui:ApplyColors(ColorOverwrites, GuiObject: GuiObject, ElementType: string)
 	for Info, Value in next, ColorOverwrites do
@@ -722,9 +723,9 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 		end
 
 		--// Open Animations
-		Config.Open = false
 		function Config:SetOpen(Open)
 			local Animate = Config.NoAnimation ~= true
+			Config.Open = Open
 			ImGui:HeaderAnimate(Header, Animate, Open, Titlebar)
 			return self
 		end
@@ -732,8 +733,7 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 		--// Toggle
 		local ToggleButton = Titlebar.Toggle.ToggleButton
 		local function Toggle()
-			Config.Open = not Config.Open
-			Config:SetOpen(Config.Open)
+			Config:SetOpen(not Config.Open)
 		end
 		Titlebar.Activated:Connect(Toggle)
 		ToggleButton.Activated:Connect(Toggle)
@@ -742,6 +742,9 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 		if Config.Image then
 			ToggleButton.Image = Config.Image 
 		end
+		
+		--// Open
+		Config:SetOpen(Config.Open or false)
 
 		local ContainClass = ImGui:ContainerClass(Container, Config, Window) 
 		return self:NewInstance(Header, ContainClass)
