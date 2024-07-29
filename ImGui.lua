@@ -34,8 +34,8 @@ local ImGui = {
 				Thickness = 1
 			},
 			Deselected = {
-				Transparency = 0.2,
-				Thickness = 0.5
+				Transparency = 0.7,
+				Thickness = 1
 			}
 		},
 	},
@@ -68,12 +68,22 @@ local NullFunction = function() end
 local IsStudio = RunService:IsStudio()
 
 local GuiParent = IsStudio and PlayerGui or CoreGui
-local ImGuiScreenGui = Instance.new("ScreenGui", GuiParent)
-ImGui.ScreenGui = ImGuiScreenGui
+ImGui.ScreenGui = Instance.new("ScreenGui", GuiParent)
 
 --// Prefabs
-local UI = IsStudio and PlayerGui.DepsoImGui or game:GetObjects(ImGui.UIAssetId)[1]
+function ImGui:FetchUI()
+	--// Universal
+	if not IsStudio then
+		local UIAssetId = ImGui.UIAssetId
+		return game:GetObjects(UIAssetId)[1]
+	end
+	
+	--// Studio 
+	local UIName = "DepsoImGui"
+	return PlayerGui:FindFirstChild(UIName) or script.DepsoImGui
+end
 
+local UI = ImGui:FetchUI()
 local Prefabs = UI.Prefabs
 ImGui.Prefabs = Prefabs
 Prefabs.Visible = false
@@ -1071,7 +1081,7 @@ function ImGui:Dropdown(Config)
 	local Position = Parent.AbsolutePosition
 	local Size = Parent.AbsoluteSize
 	
-	Selection.Parent = ImGuiScreenGui
+	Selection.Parent = self.ScreenGui
 	Selection.Position = UDim2.fromOffset(Position.X+Padding, Position.Y+Size.Y)
 	Selection.Size = UDim2.fromOffset(Size.X-Padding, Size.Y)
 	
@@ -1205,31 +1215,38 @@ function ImGui:ApplyDraggable(Frame: Frame, Header: Frame)
 	local Header = Header or Frame
 
 	local Dragging = false
-	local Input = nil
 	local KeyBeganPos = nil
 	local BeganPos = Frame.Position
+	
+	--// Whitelist
+	local UserInputTypes = {
+		Enum.UserInputType.MouseButton1,
+		Enum.UserInputType.Touch
+	}
+	
+	local function UserInputTypeAllowed(InputType: Enum.UserInputType)
+		return table.find(UserInputTypes, InputType)
+	end
 
 	--// Debounce 
 	Header.InputBegan:Connect(function(Key)
-		if Key.UserInputType == Enum.UserInputType.MouseButton1 then
+		if UserInputTypeAllowed(Key.UserInputType) then
 			Dragging = true
-			Input = Key
 			KeyBeganPos = Key.Position
 			BeganPos = Frame.Position
 		end
 	end)
-	Header.InputEnded:Connect(function(Key)
-		if Key.UserInputType == Enum.UserInputType.MouseButton1 then
+	
+	UserInputService.InputEnded:Connect(function(Key)
+		if UserInputTypeAllowed(Key.UserInputType) then
 			Dragging = false
 		end
 	end)
 
 	--// Dragging
-	UserInputService.InputChanged:Connect(function(Input)
-		if not Dragging or Input.UserInputType ~= Enum.UserInputType.MouseMovement then 
-			return
-		end
-
+	local function Movement(Input)
+		if not Dragging then return end
+		
 		local Delta = Input.Position - KeyBeganPos
 		local Position = UDim2.new(
 			BeganPos.X.Scale, 
@@ -1237,18 +1254,27 @@ function ImGui:ApplyDraggable(Frame: Frame, Header: Frame)
 			BeganPos.Y.Scale, 
 			BeganPos.Y.Offset + Delta.Y
 		)
+		
 		ImGui:Tween(Frame, {
 			Position = Position
 		}):Play()
+	end
+	
+	--// Connect movement events
+	UserInputService.TouchMoved:Connect(Movement)
+	UserInputService.InputChanged:Connect(function(Input)
+		if Input.UserInputType == Enum.UserInputType.MouseMovement then 
+			return Movement(Input)
+		end
 	end)
 end
 
 
 function ImGui:ApplyResizable(MinSize, Frame: Frame, Dragger: TextButton, Config)
-	MinSize = MinSize or Vector2.new(160, 90)
-
 	local DragStart
 	local OrignialSize
+	
+	MinSize = MinSize or Vector2.new(160, 90)
 
 	Dragger.MouseButton1Down:Connect(function()
 		if DragStart then return end
@@ -1345,17 +1371,19 @@ end
 function ImGui:CreateWindow(WindowConfig)
 	--// UI Elements
 	local Window: Frame = Prefabs.Window:Clone()
-	Window.Visible = true
 	Window.Parent = ImGui.ScreenGui
+	Window.Visible = true
 
 	local Content = Window.Content
 	local Body = Content.Body
 
-	--// Resize
+	--// Window Resize
 	local Resize = Window.ResizeGrab
 	Resize.Visible = WindowConfig.NoResize ~= true
+	
+	local MinSize = WindowConfig.MinSize or Vector2.new(160, 90)
 	ImGui:ApplyResizable(
-		Vector2.new(160, 90), 
+		MinSize, 
 		Window, 
 		Resize,
 		WindowConfig
@@ -1405,18 +1433,17 @@ function ImGui:CreateWindow(WindowConfig)
 	--// Open/Close
 	WindowConfig.Open = true
 	function WindowConfig:SetOpen(Open: true, Animation: boolean)
-		WindowConfig.Open = Open
-
+		local WindowAbSize = Window.AbsoluteSize 
+		local TitleBarSize = TitleBar.AbsoluteSize 
+		
+		self.Open = Open
+		
+		--// Call animations
 		ImGui:HeaderAnimate(TitleBar, true, Open, TitleBar, Toggle.ToggleButton)
-
 		ImGui:Tween(Resize, {
 			TextTransparency = Open and 0.6 or 1,
 			Interactable = Open
 		})
-
-		local WindowAbSize = Window.AbsoluteSize 
-		local TitleBarSize = TitleBar.AbsoluteSize 
-
 		ImGui:Tween(Window, {
 			Size = Open and self.Size or UDim2.fromOffset(WindowAbSize.X, TitleBarSize.Y)
 		}):Play()
@@ -1450,46 +1477,43 @@ function ImGui:CreateWindow(WindowConfig)
 		TabButton.Text = Name
 		TabButton.Visible = true
 		TabButton.Parent = ToolBar
-
-		--// Apply animations
-		ImGui:ApplyAnimations(TabButton, "Tabs")
-
+		Config.Button = TabButton
+		
 		local AutoSizeAxis = WindowConfig.AutoSize or "Y"
-		local Tab: Frame = Body.Template:Clone()
-		Tab.AutomaticSize = Enum.AutomaticSize[AutoSizeAxis]
-		Tab.Visible = Config.Visible or false
-		Tab.Name = Name
-		Tab.Parent = Body
+		local Content: Frame = Body.Template:Clone()
+		Content.AutomaticSize = Enum.AutomaticSize[AutoSizeAxis]
+		Content.Visible = Config.Visible or false
+		Content.Name = Name
+		Content.Parent = Body
+		Config.Content = Content
 
 		if AutoSizeAxis == "Y" then
-			Tab.Size = UDim2.fromScale(1, 0)
+			Content.Size = UDim2.fromScale(1, 0)
 		elseif AutoSizeAxis == "X" then
-			Tab.Size = UDim2.fromScale(0, 1)
+			Content.Size = UDim2.fromScale(0, 1)
 		end
 
-		local Class = {
-			Content = Tab,
-			Button = TabButton
-		}
-
 		TabButton.Activated:Connect(function()
-			WindowConfig:ShowTab(Class)
+			WindowConfig:ShowTab(Config)
 		end)
 
-		function Class:GetContentSize()
-			return Tab.AbsoluteSize
+		function Config:GetContentSize()
+			return Content.AbsoluteSize
 		end
 
 		--// Automatic sizes
 		self:UpdateBody()
 		if WindowConfig.AutoSize then
-			Tab:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+			Content:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
 				wait()
-				self:SetSize(Class:GetContentSize())
+				self:SetSize(Config:GetContentSize())
 			end)
 		end
+		
+		--// Apply animations
+		ImGui:ApplyAnimations(TabButton, "Tabs")
 
-		return ImGui:ContainerClass(Tab, Class, Window)
+		return ImGui:ContainerClass(Content, Config, Window)
 	end
 
 	function WindowConfig:SetPosition(Position)
