@@ -1,19 +1,26 @@
-# Roblox ImGUI
-ImGUI for Roblox that **doesn't need a RenderStep connection.** \
-Perfect for beginners and **performance**.
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/b220b562-519f-4914-afbf-f32ebf56dc5c"/>
 
+  <b>An ImGui library for Roblox that doesn't require a RenderStep connection.</b>
+  <br/>
+  Perfect for beginners and performance.
+</div>
+
+### Source 📜
 If you would like to customization or would like to edit the UI's elements further, you do so by finding the prefabs [here](https://create.roblox.com/store/asset/18364667141/Depso-ImGui) \
-The demonstration window can be found [here](/Demo%20window.lua)
+The **demonstration window** can be found [here](/Demo%20window.lua)
 
-## Notices 📢
-**This UI library is in BETA and you WILL experience problems**. \
-Please report these by opening an issue and using the correct tags. 
+### Notices 📢
+- ❗ **This UI library is in BETA and you WILL experience problems** \
+Please report these by opening an issue and using the correct tags.
+- 👍 Any feedback or suggestions would be great
+- 🔨 Please mention me when integrating this library **- depso.**
 
-👍 Any feedback or suggestions would be great \
-🔨 Please mention me when integrating this library **- depso.**
+### Authors 🖋
+- **[Depso](https://github.com/depthso)** - UI designer & Developer
 
 <details>
-<summary>Gallery of projects using this 📜</summary>
+<summary><h4>Gallery of projects using this 📜</h4></summary>
 If you would like your content removed, please open an issue. 
 
 <table>
@@ -31,6 +38,35 @@ If you would like your content removed, please open an issue.
 
 ## Usage/documentation 🔧
 For **documentation** and usage examples, please read the [**Wiki**](/Wiki)
+
+### Studio
+If you would like to use this in Studio, create a module script and paste the source of the library into it. \
+[Library source code](/ImGui.lua)
+
+```lua
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ImGui = require(ReplicatedStorage.ImGui)
+```
+
+### Exploits
+Using this on executors only requires a loadstring. 
+Reference detections have been mitigated using cloneref which compatibility is checked, \
+if support is not found, for example using this in studio, you are still able to use it. 
+
+```lua
+local function LoadURL(Url) --// Let's change the world
+  local Payload = request({
+    Url = Url,
+    Method = 'GET',
+    Headers = {
+      ['Content-Type'] = 'text/plain',
+    }
+  })
+  return loadstring(Payload.Body)()
+end
+
+local ImGui = LoadURL("https://raw.githubusercontent.com/depthso/Roblox-ImGUI/main/ImGui.lua")
+```
 
 <hr>
 
