@@ -6,13 +6,15 @@
   Perfect for beginners and performance.
 </div>
 
+> [!WARNING]
+> This UI library is in **BETA** and you **WILL** experience problems\
+> If you experience any, please open an issue.
+
 ### Source 📜
 If you would like to customization or would like to edit the UI's elements further, you do so by finding the prefabs [here](https://create.roblox.com/store/asset/18364667141/Depso-ImGui) \
 The **demonstration window** can be found [here](/Demo%20window.lua)
 
 ### Notices 📢
-- ❗ **This UI library is in BETA and you WILL experience problems** \
-Please report these by opening an issue and using the correct tags.
 - 👍 Any feedback or suggestions would be great
 - 🔨 Please mention me when integrating this library **- depso.**
 
