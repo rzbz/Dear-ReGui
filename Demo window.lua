@@ -135,6 +135,66 @@ for i = 1,3 do
 	end
 end
 
+local Modals = DemosTab:CollapsingHeader({
+	Title = "Modals",
+})
+
+Modals:Button({
+	Text = "Show Modal example",
+	Callback = function()
+		local ModalWindow = ImGui:CreateModal({
+			Title = "Modal Example",
+			AutoSize = "Y"
+		})
+
+		ModalWindow:Label({
+			Text = [[Hello, this is a modal. 
+Thank you for using Depso's ImGui 😁]],
+			TextWrapped = true
+		})
+		ModalWindow:Separator()
+
+		ModalWindow:Button({
+			Text = "Okay",
+			Callback = function()
+				ModalWindow:Close()
+			end,
+		})
+	end,
+})
+
+Modals:Button({
+	Text = "Delete Modal example",
+	Callback = function()
+		local ModalWindow = ImGui:CreateModal({
+			Title = "Delete?",
+			AutoSize = "Y"
+		})
+
+		ModalWindow:Label({
+			Text = [[All those beautiful files will be deleted.
+This operation cannot be undone!]],
+			TextWrapped = true
+		})
+		ModalWindow:Separator()
+		
+		ModalWindow:Checkbox({
+			Text = "Don't ask me next time"
+		})
+		
+		local Row = ModalWindow:Row()
+		Row:Button({
+			Text = "Okay",
+			Callback = ModalWindow.Close,
+		})
+		Row:Button({
+			Text = "Cancel",
+			Callback = ModalWindow.Close,
+		})
+	end,
+})
+
+
 local Combos = DemosTab:CollapsingHeader({
 	Title = "Combos",
 })
@@ -466,7 +526,7 @@ local KeySystem = ImGui:CreateWindow({
 	NoCollapse = true,
 	NoResize = true,
 	NoClose = true
-}):Center()
+})
 	
 local Content = KeySystem:CreateTab({
 	Visible = true
