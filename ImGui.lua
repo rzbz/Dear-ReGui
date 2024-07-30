@@ -52,6 +52,11 @@ local function GetService(...): ServiceProvider
 	return CloneRef(game:GetService(...))
 end
 
+function ImGui:Warn(...)
+	if self.NoWarnings then return end
+	return warn("[IMGUI]", ...)
+end
+
 --// Services 
 local TweenService: TweenService = GetService("TweenService")
 local UserInputService: UserInputService = GetService("UserInputService")
@@ -66,21 +71,32 @@ local Mouse = LocalPlayer:GetMouse()
 
 local NullFunction = function() end
 local IsStudio = RunService:IsStudio()
+ImGui.NoWarnings = not IsStudio
 
 local GuiParent = IsStudio and PlayerGui or CoreGui
 ImGui.ScreenGui = Instance.new("ScreenGui", GuiParent)
 
 --// Prefabs
 function ImGui:FetchUI()
+	local CacheName = "DepsoImGui"
+	if _G[CacheName] then
+		self:Warn("Prefabs loaded from Cache")
+		return _G[CacheName]
+	end
+	
+	local UI = nil
+	
 	--// Universal
 	if not IsStudio then
 		local UIAssetId = ImGui.UIAssetId
-		return game:GetObjects(UIAssetId)[1]
+		UI = game:GetObjects(UIAssetId)[1]
+	else --// Studio
+		local UIName = "DepsoImGui"
+		UI = PlayerGui:FindFirstChild(UIName) or script.DepsoImGui
 	end
 	
-	--// Studio 
-	local UIName = "DepsoImGui"
-	return PlayerGui:FindFirstChild(UIName) or script.DepsoImGui
+	_G[CacheName] = UI
+	return UI
 end
 
 local UI = ImGui:FetchUI()
@@ -88,6 +104,8 @@ local Prefabs = UI.Prefabs
 ImGui.Prefabs = Prefabs
 Prefabs.Visible = false
 
+
+--// Styles
 local AddionalStyles = {
 	[{
 		Name="Border"
@@ -230,7 +248,8 @@ function ImGui:CheckStyles(GuiObject: GuiObject, Class, Colors)
 			end
 		end
 		if Value == nil then continue end
-
+		
+		--// Stylise children
 		Callback(GuiObject, Value, Class)
 		if Info.Recursive then
 			for _, Child in next, GuiObject:GetChildren() do
@@ -284,14 +303,6 @@ function ImGui:MergeMetatables(Class, Instance: GuiObject)
 	end
 
 	return setmetatable({}, Metadata)
-end
-
-function ImGui:Concat(Table, Separator: "")
-	local NewString = ""
-	for _, Value in next, Table do
-		NewString ..= tostring(Value) .. Separator
-	end
-	return NewString
 end
 
 function ImGui:ContainerClass(Frame: Frame, Class, Window)
@@ -602,10 +613,7 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 
 		function Config:AppendText(...)
 			if not Config.Enabled then return end
-			
-			--// Concat
-			local NewString = "\n" .. ImGui:Concat({...}, " ") --.. table.concat({...}, " ")
-			
+			local NewString = "\n" .. table.concat({...}, " ")
 			Source.Text ..= NewString
 			Config:UpdateLineNumbers()
 
@@ -1211,10 +1219,13 @@ function ImGui:HeaderAnimate(Header: Instance, Animation, Open, TitleBar: Instan
 	if not Open then
 		Container.Size = UDim2.new(1, -10, 0, ContentSize.Y)
 	end
-
-	ImGui:Tween(Container, {
-		Size = UDim2.new(1, -10, 0, Open and ContentSize.Y or 0)
-	}).Completed:Connect(function()
+	
+	--// Animate
+	local Tween = ImGui:Tween(Container, {
+		Size = UDim2.new(1, -10, 0, Open and ContentSize.Y or 0),
+		Visible = Open
+	})
+	Tween.Completed:Connect(function()
 		if not Open then return end
 		Container.AutomaticSize = Enum.AutomaticSize.Y
 		Container.Size = UDim2.new(1, -10, 0, 0)
