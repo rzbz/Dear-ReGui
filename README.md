@@ -10,19 +10,21 @@
 > This UI library is in **BETA** and you **WILL** experience problems\
 > If you experience any, please open an issue.
 
-### Source 📜
-If you would like to customization or would like to edit the UI's elements further, you do so by finding the prefabs [here](https://create.roblox.com/store/asset/18364667141/Depso-ImGui) \
-The **demonstration window** can be found [here](/Demo%20window.lua)
-
-### Notices 📢
 - 👍 Any feedback or suggestions would be great
 - 🔨 Please mention me when integrating this library **- depso.**
 
-### Authors 🖋
-- **[Depso](https://github.com/depthso)** - UI designer & Developer
+### Sources 📜
+If you would like to customization or would like to edit the UI's elements further, edit the sources linked below:
+- Prefabs: [Prefabs](https://create.roblox.com/store/asset/18364667141/Depso-ImGui)
+- - Make sure you change UIAssetId under the `ImGui` configuration inside of the source code
+- Library: [Source code](/ImGui.lua) 
+
+### Demos
+- The **demonstration window** can be found [here](/Demo%20window.lua) \
+- More usage examples can be found on the [Wiki](Wiki).
 
 <details>
-<summary><h4>Gallery of projects using this 📜</h4></summary>
+<summary><h3>Gallery of projects using this 📜</h3></summary>
 If you would like your content removed, please open an issue. 
 
 <table>
@@ -39,11 +41,12 @@ If you would like your content removed, please open an issue.
 </details>
 
 ## Usage/documentation 🔧
-For **documentation** and usage examples, please read the [**Wiki**](/Wiki)
+For **documentation** and usage examples, please read the [**Wiki**](Wiki)
 
-### Studio
-If you would like to use this in Studio, create a module script and paste the source of the library into it. \
-[Library source code](/ImGui.lua)
+### Roblox Studio
+If you would like to use this in Studio:
+- Create a module script and paste the [library source code](/ImGui.lua)
+- Download the [Prefabs UI](https://create.roblox.com/store/asset/18364667141/Depso-ImGui) and paste it under the module script
 
 ```lua
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -51,9 +54,8 @@ local ImGui = require(ReplicatedStorage.ImGui)
 ```
 
 ### Exploits
-Using this on executors only requires a loadstring. 
-Reference detections have been mitigated using cloneref which compatibility is checked, \
-if support is not found, for example using this in studio, you are still able to use it. 
+Reference detections have been mitigated using **cloneref** which compatibility is checked, \
+if support is not found, for example using this in _studio_, you are still able to use it. 
 
 ```lua
 local ImGui = loadstring(game:HttpGet('https://github.com/depthso/Roblox-ImGUI/raw/main/ImGui.lua'))()
