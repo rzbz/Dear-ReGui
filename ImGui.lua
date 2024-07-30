@@ -47,6 +47,7 @@ local ImGui = {
 
 
 --// Universal functions
+local NullFunction = function() end
 local CloneRef = cloneref or function(_)return _ end
 local function GetService(...): ServiceProvider
 	return CloneRef(game:GetService(...))
@@ -69,7 +70,7 @@ local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer.PlayerGui
 local Mouse = LocalPlayer:GetMouse()
 
-local NullFunction = function() end
+--// ImGui Config
 local IsStudio = RunService:IsStudio()
 ImGui.NoWarnings = not IsStudio
 
@@ -78,6 +79,7 @@ ImGui.ScreenGui = Instance.new("ScreenGui", GuiParent)
 
 --// Prefabs
 function ImGui:FetchUI()
+	--// Cache check 
 	local CacheName = "DepsoImGui"
 	if _G[CacheName] then
 		self:Warn("Prefabs loaded from Cache")
@@ -1469,6 +1471,9 @@ function ImGui:CreateWindow(WindowConfig)
 		ImGui:Tween(Window, {
 			Size = Open and self.Size or UDim2.fromOffset(WindowAbSize.X, TitleBarSize.Y)
 		}):Play()
+		ImGui:Tween(Body, {
+			Visible = Open
+		}):Play()
 		return self
 	end
 
@@ -1522,31 +1527,33 @@ function ImGui:CreateWindow(WindowConfig)
 		function Config:GetContentSize()
 			return Content.AbsoluteSize
 		end
-
+		
+		--// Apply animations
+		Config = ImGui:ContainerClass(Content, Config, Window)
+		ImGui:ApplyAnimations(TabButton, "Tabs")
+		
 		--// Automatic sizes
 		self:UpdateBody()
-		if WindowConfig.AutoSize then
+		if WindowConfig.AutoSize then --// TODO: 
 			Content:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
-				wait()
-				self:SetSize(Config:GetContentSize())
+				local Size = Config:GetContentSize()
+				self:SetSize(Size)
 			end)
 		end
 		
-		--// Apply animations
-		ImGui:ApplyAnimations(TabButton, "Tabs")
-
-		return ImGui:ContainerClass(Content, Config, Window)
+		return Config
 	end
 
 	function WindowConfig:SetPosition(Position)
 		Window.Position = Position
 		return self
 	end
+	
 	function WindowConfig:SetSize(Size)
 		local HeaderSizeY = self:GetHeaderSizeY()
 
 		if typeof(Size) == "Vector2" then
-			Size = UDim2.new(0, Size.X, 0, Size.Y)
+			Size = UDim2.fromOffset(Size.X, Size.Y)
 		end
 
 		--// Apply new size
@@ -1558,9 +1565,10 @@ function ImGui:CreateWindow(WindowConfig)
 		)
 		self.Size = NewSize
 		Window.Size = NewSize
+		
 		return self
 	end
-
+	
 	--// Tab change system 
 	function WindowConfig:ShowTab(TabClass: SharedTable)
 		local TargetPage: Frame = TabClass.Content
@@ -1591,7 +1599,10 @@ function ImGui:CreateWindow(WindowConfig)
 
 	--// Load Style Configs
 	WindowConfig:SetTitle(WindowConfig.Title or "Depso UI")
-	WindowConfig:SetOpen(WindowConfig.Open or true)
+	
+	if not WindowConfig.Open then
+		WindowConfig:SetOpen(WindowConfig.Open or true, false)
+	end
 
 	ImGui.Windows[Window] = WindowConfig
 	ImGui:CheckStyles(Window, WindowConfig, WindowConfig.Colors)
@@ -1600,7 +1611,7 @@ function ImGui:CreateWindow(WindowConfig)
 	if not WindowConfig.NoSelectEffect then
 		ImGui:ApplyWindowSelectEffect(Window, TitleBar)
 	end
-
+	
 	return ImGui:MergeMetatables(WindowConfig, Window)
 end
 
