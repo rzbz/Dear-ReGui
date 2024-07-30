@@ -54,18 +54,7 @@ Reference detections have been mitigated using cloneref which compatibility is c
 if support is not found, for example using this in studio, you are still able to use it. 
 
 ```lua
-local function LoadURL(Url) --// Let's change the world
-  local Payload = request({
-    Url = Url,
-    Method = 'GET',
-    Headers = {
-      ['Content-Type'] = 'text/plain',
-    }
-  })
-  return loadstring(Payload.Body)()
-end
-
-local ImGui = LoadURL("https://raw.githubusercontent.com/depthso/Roblox-ImGUI/main/ImGui.lua")
+local ImGui = loadstring(game:HttpGet('https://github.com/depthso/Roblox-ImGUI/raw/main/ImGui.lua'))()
 ```
 
 <hr>
