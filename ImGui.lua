@@ -420,7 +420,7 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 			return func(ObjectClass, ...)
 		end
 
-		function Config:SetTicked(NewValue: boolean)
+		function Config:SetTicked(NewValue: boolean, Animation)
 			Value = NewValue
 			Config.Value = Value
 
@@ -431,13 +431,13 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 			local Size = Value and UDim2.fromScale(1,1) or UDim2.fromScale(0,0)
 			ImGui:Tween(Tick, {
 				Size = Size
-			})
+			}, nil, not Animation)
 			ImGui:Tween(Label, {
 				TextTransparency = Value and 0 or 0.3
-			})
+			}, nil, not Animation)
 			return Config
 		end
-		Config:SetTicked(Value)
+		Config:SetTicked(Value, false)
 
 		function Config:Toggle()
 			Config:SetTicked(not Value)
@@ -1163,8 +1163,8 @@ function ImGui:GetAnimation(Animation: boolean?)
 	return Animation and self.Animation or TweenInfo.new(0)
 end
 
-function ImGui:Tween(Instance: GuiObject, Props: SharedTable, tweenInfo)
-	local tweenInfo = tweenInfo or ImGui:GetAnimation(true)
+function ImGui:Tween(Instance: GuiObject, Props: SharedTable, tweenInfo, NoAnimation)
+	local tweenInfo = tweenInfo or ImGui:GetAnimation(not NoAnimation)
 	local Tween = TweenService:Create(Instance, 
 		tweenInfo,
 		Props
@@ -1464,7 +1464,7 @@ function ImGui:CreateWindow(WindowConfig)
 
 	--// Open/Close
 	WindowConfig.Open = true
-	function WindowConfig:SetOpen(Open: true, Animation: boolean)
+	function WindowConfig:SetOpen(Open: true, Animation: true)
 		local WindowAbSize = Window.AbsoluteSize 
 		local TitleBarSize = TitleBar.AbsoluteSize 
 
@@ -1475,13 +1475,13 @@ function ImGui:CreateWindow(WindowConfig)
 		ImGui:Tween(Resize, {
 			TextTransparency = Open and 0.6 or 1,
 			Interactable = Open
-		})
+		}, nil, Animation)
 		ImGui:Tween(Window, {
 			Size = Open and self.Size or UDim2.fromOffset(WindowAbSize.X, TitleBarSize.Y)
-		}):Play()
+		}, nil, Animation)
 		ImGui:Tween(Body, {
 			Visible = Open
-		}):Play()
+		}, nil, Animation)
 		return self
 	end
 
