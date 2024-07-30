@@ -286,6 +286,14 @@ function ImGui:MergeMetatables(Class, Instance: GuiObject)
 	return setmetatable({}, Metadata)
 end
 
+function ImGui:Concat(Table, Separator: "")
+	local NewString = ""
+	for _, Value in next, Table do
+		NewString ..= tostring(Value) .. Separator
+	end
+	return NewString
+end
+
 function ImGui:ContainerClass(Frame: Frame, Class, Window)
 	local ContainerClass = Class or {}
 	local WindowConfig = ImGui.Windows[Window]
@@ -594,7 +602,10 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 
 		function Config:AppendText(...)
 			if not Config.Enabled then return end
-			local NewString = "\n" .. table.concat({...}, " ")
+			
+			--// Concat
+			local NewString = "\n" .. ImGui:Concat({...}, " ") --.. table.concat({...}, " ")
+			
 			Source.Text ..= NewString
 			Config:UpdateLineNumbers()
 
