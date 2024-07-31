@@ -322,7 +322,7 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 		--// Set Parent
 		Instance.Parent = Parent or Frame
 		Instance.Visible = true
-		
+
 		--// TODO
 		if WindowConfig.NoGradientAll then
 			Class.NoGradient = true
@@ -420,7 +420,7 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 			return func(ObjectClass, ...)
 		end
 
-		function Config:SetTicked(NewValue: boolean, Animation)
+		function Config:SetTicked(NewValue: boolean, NoAnimation: false)
 			Value = NewValue
 			Config.Value = Value
 
@@ -431,13 +431,13 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 			local Size = Value and UDim2.fromScale(1,1) or UDim2.fromScale(0,0)
 			ImGui:Tween(Tick, {
 				Size = Size
-			}, nil, not Animation)
+			}, nil, NoAnimation)
 			ImGui:Tween(Label, {
 				TextTransparency = Value and 0 or 0.3
-			}, nil, not Animation)
+			}, nil, NoAnimation)
 			return Config
 		end
-		Config:SetTicked(Value, false)
+		Config:SetTicked(Value, true)
 
 		function Config:Toggle()
 			Config:SetTicked(not Value)
@@ -822,7 +822,7 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 			--// Change layout
 			local Padding = UIListLayout.Padding.Offset * 2
 			UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-			
+
 			--// Apply correct margins
 			UIPadding.PaddingLeft = UIListLayout.Padding
 			UIPadding.PaddingRight = UIListLayout.Padding
@@ -842,7 +842,7 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 		local ContainClass = ImGui:ContainerClass(Row, Config, Window) 
 		return self:NewInstance(Row, ContainClass)
 	end
-	
+
 	--TODO
 	-- Vertical 
 	-- :SetPercentage
@@ -1163,7 +1163,7 @@ function ImGui:GetAnimation(Animation: boolean?)
 	return Animation and self.Animation or TweenInfo.new(0)
 end
 
-function ImGui:Tween(Instance: GuiObject, Props: SharedTable, tweenInfo, NoAnimation)
+function ImGui:Tween(Instance: GuiObject, Props: SharedTable, tweenInfo, NoAnimation: false)
 	local tweenInfo = tweenInfo or ImGui:GetAnimation(not NoAnimation)
 	local Tween = TweenService:Create(Instance, 
 		tweenInfo,
@@ -1400,11 +1400,45 @@ function ImGui:ApplyWindowSelectEffect(Window: GuiObject, TitleBar)
 	})
 end
 
+function ImGui:SetWindowProps(Properties, IgnoreWindows)
+	local Module = {
+		OldProperties = {}
+	}
+	
+	--// Collect windows & set properties
+	for Window in next, ImGui.Windows do
+		if table.find(IgnoreWindows, Window) then continue end
+		
+		local OldValues = {}
+		Module.OldProperties[Window] = OldValues
+		
+		for Key, Value in next, Properties do
+			OldValues[Key] = Window[Key]
+			Window[Key] = Value
+		end
+	end
+	
+	--// Revert to previous values
+	function Module:Revert()
+		for Window in next, ImGui.Windows do
+			local OldValues = Module.OldProperties[Window]
+			if not OldValues then continue end
+
+			for Key, Value in next, OldValues do
+				Window[Key] = Value
+			end
+		end
+	end
+	
+	return Module
+end
+
 function ImGui:CreateWindow(WindowConfig)
-	--// UI Elements
+	--// Create Window frame
 	local Window: Frame = Prefabs.Window:Clone()
 	Window.Parent = ImGui.ScreenGui
 	Window.Visible = true
+	WindowConfig.Window = Window
 
 	local Content = Window.Content
 	local Body = Content.Body
@@ -1464,7 +1498,7 @@ function ImGui:CreateWindow(WindowConfig)
 
 	--// Open/Close
 	WindowConfig.Open = true
-	function WindowConfig:SetOpen(Open: true, Animation: true)
+	function WindowConfig:SetOpen(Open: true, NoAnimation: false)
 		local WindowAbSize = Window.AbsoluteSize 
 		local TitleBarSize = TitleBar.AbsoluteSize 
 
@@ -1475,13 +1509,13 @@ function ImGui:CreateWindow(WindowConfig)
 		ImGui:Tween(Resize, {
 			TextTransparency = Open and 0.6 or 1,
 			Interactable = Open
-		}, nil, Animation)
+		}, nil, NoAnimation)
 		ImGui:Tween(Window, {
 			Size = Open and self.Size or UDim2.fromOffset(WindowAbSize.X, TitleBarSize.Y)
-		}, nil, Animation)
+		}, nil, NoAnimation)
 		ImGui:Tween(Body, {
 			Visible = Open
-		}, nil, Animation)
+		}, nil, NoAnimation)
 		return self
 	end
 
@@ -1502,7 +1536,7 @@ function ImGui:CreateWindow(WindowConfig)
 	Toggle.ToggleButton.Activated:Connect(function()
 		local Open = not WindowConfig.Open
 		WindowConfig.Open = Open
-		return WindowConfig:SetOpen(Open, true)
+		return WindowConfig:SetOpen(Open)
 	end)	
 
 	function WindowConfig:CreateTab(Config)
@@ -1609,7 +1643,7 @@ function ImGui:CreateWindow(WindowConfig)
 	WindowConfig:SetTitle(WindowConfig.Title or "Depso UI")
 
 	if not WindowConfig.Open then
-		WindowConfig:SetOpen(WindowConfig.Open or true, false)
+		WindowConfig:SetOpen(WindowConfig.Open or true, true)
 	end
 
 	ImGui.Windows[Window] = WindowConfig
@@ -1628,11 +1662,11 @@ function ImGui:CreateModal(Config)
 	ModalEffect.BackgroundTransparency = 1
 	ModalEffect.Parent = ImGui.FullScreenGui
 	ModalEffect.Visible = true
-	
+
 	ImGui:Tween(ModalEffect, {
 		BackgroundTransparency = 0.6
 	})
-	
+
 	--// Config
 	Config = Config or {}
 	Config.TabsBar = Config.TabsBar ~= nil and Config.TabsBar or false
@@ -1641,17 +1675,22 @@ function ImGui:CreateModal(Config)
 	Config.NoClose = true
 	Config.NoSelectEffect = true
 	Config.Parent = ModalEffect
-	
+
 	--// Center
 	Config.AnchorPoint = Vector2.new(0.5, 0.5)
 	Config.Position = UDim2.fromScale(0.5, 0.5)
-	
+
 	--// Create Window
 	local Window = self:CreateWindow(Config)
 	Config = Window:CreateTab({
 		Visible = true
 	})
 	
+	--// Disable other windows
+	local WindowManger = ImGui:SetWindowProps({
+		Interactable = false
+	}, {Window.Window})
+
 	--// Close functions
 	local WindowClose = Window.Close
 	function Config:Close()
@@ -1662,9 +1701,10 @@ function ImGui:CreateModal(Config)
 			ModalEffect:Remove()
 		end)
 		
+		WindowManger:Revert()
 		WindowClose()
 	end
-	
+
 	return Config
 end
 
