@@ -21,7 +21,7 @@ If you would like to customization or would like to edit the UI's elements furth
 
 ### Demos
 - The **demonstration window** can be found [here](/Demo%20window.lua) \
-- More usage examples can be found on the [Wiki](Wiki).
+- More usage examples can be found on the [Wiki](https://github.com/depthso/Roblox-ImGUI/wiki).
 
 <details>
 <summary><h3>Gallery of projects using this 📜</h3></summary>
@@ -41,7 +41,7 @@ If you would like your content removed, please open an issue.
 </details>
 
 ## Usage/documentation 🔧
-For **documentation** and usage examples, please read the [**Wiki**](Wiki)
+For **documentation** and usage examples, please read the [**Wiki**](https://github.com/depthso/Roblox-ImGUI/wiki)
 
 ### Roblox Studio
 If you would like to use this in Studio:
