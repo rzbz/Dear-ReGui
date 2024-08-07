@@ -1154,7 +1154,7 @@ function ImGui:Dropdown(Config)
 
 	for Index, Index2 in next, Config.Items do
 		local NewItem: TextButton = ItemTemplate:Clone()
-		NewItem.Text = typeof(Index) ~= "number" and Index or Index2
+		NewItem.Text = typeof(Index) ~= "number" and tostring(Index) or tostring(Index2)
 		NewItem.Parent = Selection
 		NewItem.Visible = true
 
