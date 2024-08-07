@@ -1060,6 +1060,7 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 			local Items = Config.Items or {}
 			local DictValue = Items[Value]
 			ValueText.Text = Value
+			Config.Selected = Value
 
 			return Callback(DictValue or Value) 
 		end
