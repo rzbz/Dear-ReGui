@@ -1112,7 +1112,7 @@ function ImGui:Dropdown(Config)
 	local Parent: GuiObject = Config.Parent
 	if not Parent then return end
 
-	local Selection: TextButton = Prefabs.Selection:Clone()
+	local Selection: ScrollingFrame = Prefabs.Selection:Clone()
 	local UIStroke = Selection:FindFirstChildOfClass("UIStroke")
 
 	local Padding = UIStroke.Thickness*2
@@ -1121,7 +1121,6 @@ function ImGui:Dropdown(Config)
 
 	Selection.Parent = self.ScreenGui
 	Selection.Position = UDim2.fromOffset(Position.X+Padding, Position.Y+Size.Y)
-	Selection.Size = UDim2.fromOffset(Size.X-Padding, Size.Y)
 
 	local Hover = self:ConnectHover({
 		Parent = Selection,
@@ -1164,7 +1163,14 @@ function ImGui:Dropdown(Config)
 			return Selected(NewItem)
 		end)
 	end
-
+	
+	--// Configure size of the frame
+		-- Roblox does not support UISizeConstraint on a scrolling frame grr
+	
+	local MaxSizeY = Config.MaxSizeY or 200
+	local YSize = math.clamp(Selection.AbsoluteCanvasSize.Y, Size.Y, 200)
+	Selection.Size = UDim2.fromOffset(Size.X-Padding, YSize)
+	
 	return Config
 end
 
