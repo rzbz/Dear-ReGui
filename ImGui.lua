@@ -619,6 +619,10 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 			Config:UpdateLineNumbers()
 			return Config
 		end
+		
+		function Config:GetValue()
+			return Source.Text
+		end
 
 		function Config:Clear(Text)
 			Source.Text = ""
@@ -1168,7 +1172,7 @@ function ImGui:Dropdown(Config)
 		-- Roblox does not support UISizeConstraint on a scrolling frame grr
 	
 	local MaxSizeY = Config.MaxSizeY or 200
-	local YSize = math.clamp(Selection.AbsoluteCanvasSize.Y, Size.Y, 200)
+	local YSize = math.clamp(Selection.AbsoluteCanvasSize.Y, Size.Y, MaxSizeY)
 	Selection.Size = UDim2.fromOffset(Size.X-Padding, YSize)
 	
 	return Config
