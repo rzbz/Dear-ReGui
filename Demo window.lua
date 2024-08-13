@@ -1,14 +1,26 @@
-local ImGui = require(game.ReplicatedStorage.ImGui)
+--// Services 
+local RunService: RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local IsStudio = RunService:IsStudio()
 
---// Demo 
+--// Fetch library
+local ImGui
+if IsStudio then
+	ImGui = require(ReplicatedStorage.ImGui)
+else
+	local SourceURL = 'https://github.com/depthso/Roblox-ImGUI/raw/main/ImGui.lua'
+	ImGui = loadstring(game:HttpGet(SourceURL))()
+end
+
+--// Window 
 local Window = ImGui:CreateWindow({
 	Title = "Depso Imgui Demo",
 	Size = UDim2.new(0, 350, 0, 370),
 	Position = UDim2.new(0.5, 0, 0, 70)
 })
+Window:Center()
 print(Window.Name)
 
-Window:Center()
 
 local TablesTab = Window:CreateTab({
 	Name = "Tables"
@@ -486,7 +498,7 @@ StatsRow:Label({
 local FPSLabel = StatsRow:Label()
 local TimeLabel = Watermark:Label()
 
-game:GetService("RunService").RenderStepped:Connect(function(v)
+RunService.RenderStepped:Connect(function(v)
 	FPSLabel.Text = `FPS: {math.round(1/v)} `
 	TimeLabel.Text = `The time is {DateTime.now():FormatLocalTime("dddd h:mm:ss A", "en-us")} `
 end)
@@ -512,8 +524,9 @@ local Viewport = Window:Viewport({
 
 --// Spin rig
 local NewRig = Viewport:SetModel(Rig, CFrame.new(0, -2.5, -5))
-game:GetService("RunService").RenderStepped:Connect(function(deltaTime)
-	local YRotation = 30 * deltaTime
+
+RunService.RenderStepped:Connect(function(DeltaTime)
+	local YRotation = 30 * DeltaTime
 	local cFrame = NewRig:GetPivot() * CFrame.Angles(0,math.rad(YRotation),0)
 	NewRig:PivotTo(cFrame)
 end)
