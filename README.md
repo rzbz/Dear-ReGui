@@ -6,25 +6,14 @@
   Perfect for beginners and performance.
 </div>
 
-> [!WARNING]
-> This UI library is in **BETA** and you **WILL** experience problems\
-> If you experience any, please open an issue.
-
-- 👍 Any feedback or suggestions would be great
-- 🔨 Please mention me when integrating this library **- depso.**
-
-### Sources 📜
-If you would like to customization or would like to edit the UI's elements further, edit the sources linked below:
-- Prefabs: [Prefabs](https://create.roblox.com/store/asset/18364667141/Depso-ImGui)
-- - Make sure you change UIAssetId under the `ImGui` configuration inside of the source code
-- Library: [Source code](/ImGui.lua) 
-
-### Demos
-- The **demonstration window** can be found [here](/Demo%20window.lua) \
-- More usage examples can be found on the [Wiki](https://github.com/depthso/Roblox-ImGUI/wiki).
+<details>
+<summary><h3>Preview of the Demo window 🖼️</h3></summary>
+	
+![image](https://github.com/user-attachments/assets/c050f9ba-f090-4738-90b7-b791b94133ec)
+</details>
 
 <details>
-<summary><h3>Gallery of projects using this 📜</h3></summary>
+<summary>Gallery of projects using this 📜</summary>
 If you would like your content removed, please open an issue. 
 
 <table>
@@ -39,6 +28,22 @@ If you would like your content removed, please open an issue.
 	</tr>
 </table>
 </details>
+
+
+### Notices 📣
+- ❗ This UI library is in beta, please report any bugs by opening an issue
+- 👍 Any feedback or suggestions would be great
+- 🔨 Please mention me when integrating this library **- depso.**
+
+### Forking this 📜
+If you would like to create your own version for whatever reason, \
+- Prefabs: [Prefabs](https://create.roblox.com/store/asset/18364667141/Depso-ImGui)
+- - Make sure you change UIAssetId under the `ImGui` configuration inside of the source code
+- Library: [Source code](/ImGui.lua) 
+
+## Demos
+- The **demonstration window** can be found [here](/Demo%20window.lua) \
+- More usage examples can be found on the [Wiki](https://github.com/depthso/Roblox-ImGUI/wiki).
 
 ## Usage/documentation 🔧
 For **documentation** and usage examples, please read the [**Wiki**](https://github.com/depthso/Roblox-ImGUI/wiki)
@@ -62,5 +67,3 @@ local ImGui = loadstring(game:HttpGet('https://github.com/depthso/Roblox-ImGUI/r
 ```
 
 <hr>
-
-![image](https://github.com/user-attachments/assets/c050f9ba-f090-4738-90b7-b791b94133ec)
