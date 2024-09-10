@@ -352,6 +352,7 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 		Config = Config or {}
 		local Button = Prefabs.Button:Clone()
 		local ObjectClass = self:NewInstance(Button, Config)
+		Config.Text = nil 
 
 		local function Callback(...)
 			local func = Config.Callback or NullFunction
