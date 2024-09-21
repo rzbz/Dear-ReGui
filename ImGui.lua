@@ -352,7 +352,6 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 		Config = Config or {}
 		local Button = Prefabs.Button:Clone()
 		local ObjectClass = self:NewInstance(Button, Config)
-		Config.Text = nil 
 
 		local function Callback(...)
 			local func = Config.Callback or NullFunction
@@ -576,7 +575,6 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 
 	function ContainerClass:Console(Config)
 		Config = Config or {}
-		local MaxLines = Config.MaxLines or 100
 		local Console: ScrollingFrame = Prefabs.Console:Clone()
 		local Source: TextBox = Console.Source
 		local Lines = Console.Lines
@@ -633,7 +631,10 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 
 		function Config:AppendText(...)
 			if not Config.Enabled then return end
+			
+			local MaxLines = Config.MaxLines or 100
 			local NewString = "\n" .. ImGui:Concat({...}, " ") 
+			
 			Source.Text ..= NewString
 			Config:UpdateLineNumbers()
 
