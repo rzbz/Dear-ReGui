@@ -433,7 +433,7 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 			Config.Value = Value
 
 			--// Fire callback
-			Callback(Value)
+			pcall(Callback, Value)
 
 			--// Animations
 			local Size = Value and UDim2.fromScale(1,1) or UDim2.fromScale(0,0)
