@@ -432,9 +432,6 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 			Value = NewValue
 			Config.Value = Value
 
-			--// Fire callback
-			pcall(Callback, Value)
-
 			--// Animations
 			local Size = Value and UDim2.fromScale(1,1) or UDim2.fromScale(0,0)
 			ImGui:Tween(Tick, {
@@ -443,6 +440,10 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 			ImGui:Tween(Label, {
 				TextTransparency = Value and 0 or 0.3
 			}, nil, NoAnimation)
+
+			--// Fire callback
+			Callback(Value)
+			
 			return Config
 		end
 		Config:SetTicked(Value, true)
