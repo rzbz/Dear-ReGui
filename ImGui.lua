@@ -1066,7 +1066,7 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 		function Config:SetValue(Value, ...)
 			local Items = Config.Items or {}
 			local DictValue = Items[Value]
-			ValueText.Text = Value
+			ValueText.Text = tostring(Value)
 			Config.Selected = Value
 
 			return Callback(DictValue or Value) 
@@ -1081,7 +1081,7 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 				Dropdown = ImGui:Dropdown({
 					Parent = Combo,
 					Items = Config.Items or {},
-					Selected = Config.SetValue,
+					SetValue = Config.SetValue,
 					Closed = function()
 						if not ComboHovering.Hovering then 
 							Config:SetOpen(false)
@@ -1149,10 +1149,10 @@ function ImGui:Dropdown(Config)
 		return Selection:Remove()
 	end
 
-	local function Selected(self)
+	local function SetValue(self)
 		local Value = self.Text
 		Config:Close()
-		return Config:Selected(Value)
+		return Config:SetValue(Value)
 	end
 
 	--// Append items
@@ -1167,7 +1167,7 @@ function ImGui:Dropdown(Config)
 
 		self:ApplyAnimations(NewItem, "Tabs")
 		NewItem.Activated:Connect(function()
-			return Selected(NewItem)
+			return SetValue(NewItem)
 		end)
 	end
 	
