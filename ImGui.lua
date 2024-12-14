@@ -1044,6 +1044,7 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 	function ContainerClass:Combo(Config)
 		Config = Config or {}
 		Config.Open = false
+		Config.Value = ""
 
 		local Combo: TextButton = Prefabs.Combo:Clone()
 		local Toggle: ImageButton = Combo.Toggle.ToggleButton
@@ -1067,7 +1068,7 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 			local Items = Config.Items or {}
 			local DictValue = Items[Value]
 			ValueText.Text = tostring(Value)
-			Config.Selected = Value
+			Config.Value = Value
 
 			return Callback(DictValue or Value) 
 		end
