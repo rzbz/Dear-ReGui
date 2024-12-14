@@ -1146,14 +1146,14 @@ function ImGui:Dropdown(Config)
 		if CloseCallback then
 			CloseCallback()
 		end
+		
 		Hover:Disconnect()
-		return Selection:Remove()
+		Selection:Remove()
 	end
 
-	local function SetValue(self)
-		local Value = self.Text
+	local function SetValue(Value)
 		Config:Close()
-		return Config:SetValue(Value)
+		Config:SetValue(Value)
 	end
 
 	--// Append items
@@ -1161,15 +1161,17 @@ function ImGui:Dropdown(Config)
 	ItemTemplate.Visible = false
 
 	for Index, Index2 in next, Config.Items do
+		local Value = typeof(Index) ~= "number" and Index or Index2
+
 		local NewItem: TextButton = ItemTemplate:Clone()
-		NewItem.Text = typeof(Index) ~= "number" and tostring(Index) or tostring(Index2)
+		NewItem.Text = tostring(Value)
 		NewItem.Parent = Selection
 		NewItem.Visible = true
+		NewItem.Activated:Connect(function()
+			return SetValue(Value)
+		end)
 
 		self:ApplyAnimations(NewItem, "Tabs")
-		NewItem.Activated:Connect(function()
-			return SetValue(NewItem)
-		end)
 	end
 	
 	--// Configure size of the frame
