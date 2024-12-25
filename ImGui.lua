@@ -994,11 +994,14 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 
 	function ContainerClass:Keybind(Config)
 		Config = Config or {}
+		
+		local Key = Config.Value
+		local TobeNullKey = Config.NullKey or Enum.KeyCode.Backspace
+		
 		local Keybind: TextButton = Prefabs.Keybind:Clone()
 		local ValueText: TextButton = Keybind.ValueText
-		local Key = Config.Value 
-		local ObjectClass = nil
 
+		local ObjectClass = nil
 		local function Callback(...)
 			local func = Config.Callback or NullFunction
 			return func(ObjectClass, ...)
@@ -1006,23 +1009,26 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 
 		function Config:SetValue(NewKey: Enum.KeyCode)
 			if not NewKey then return end
-			ValueText.Text = NewKey.Name
-			Config.Value = NewKey
-
-			if NewKey == Enum.KeyCode.Backspace then
+			
+			if NewKey == TobeNullKey then
 				ValueText.Text = "Not set"
-				return
+				Config.Value = nil
+			else
+				ValueText.Text = NewKey.Name
+				Config.Value = NewKey
 			end
 		end
-		Config:SetValue(Key)
 
 		Keybind.Activated:Connect(function()
 			ValueText.Text = "..."
-			local NewKey = UserInputService.InputBegan:wait()
+			
+			local NewKey = UserInputService.InputBegan:Wait()
 			if not UserInputService.WindowFocused then return end 
 
+			--// Reset back to previous if unknown
+			local Previous = Config.Value
 			if NewKey.KeyCode.Name == "Unknown" then
-				return Config:SetValue(Key)
+				return Config:SetValue(Previous)
 			end
 
 			wait(.1) --// 👍
@@ -1031,11 +1037,17 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 
 		Config.Connection = UserInputService.InputBegan:Connect(function(Input, GameProcessed)
 			if not Config.IgnoreGameProcessed and GameProcessed then return end
-
-			if Input.KeyCode == Config.Value then
-				return Callback(Input.KeyCode)
-			end
+			local KeyCode = Input.KeyCode
+			local Match = Config.Value
+			
+			if KeyCode == TobeNullKey then return end
+			if KeyCode ~= Match then return end 
+				
+			return Callback(Input.KeyCode)
 		end)
+
+		--// Update UI
+		Config:SetValue(Key)
 
 		ObjectClass = self:NewInstance(Keybind, Config)
 		return ObjectClass
