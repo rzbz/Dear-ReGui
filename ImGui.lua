@@ -443,7 +443,7 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 
 			--// Fire callback
 			Callback(Value)
-			
+
 			return Config
 		end
 		Config:SetTicked(Value, true)
@@ -619,7 +619,7 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 			Config:UpdateLineNumbers()
 			return Config
 		end
-		
+
 		function Config:GetValue()
 			return Source.Text
 		end
@@ -632,10 +632,10 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 
 		function Config:AppendText(...)
 			if not Config.Enabled then return end
-			
+
 			local MaxLines = Config.MaxLines or 100
 			local NewString = "\n" .. ImGui:Concat({...}, " ") 
-			
+
 			Source.Text ..= NewString
 			Config:UpdateLineNumbers()
 
@@ -861,16 +861,28 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 	--TODO
 	-- Vertical 
 	-- :SetPercentage
+	-- This will use UIDragdetectors in the upcoming release, please do not report this!
 	function ContainerClass:Slider(Config)
 		Config = Config or {}
+		
+		--// Unpack config
 		local Value = Config.Value or 0
 		local ValueFormat = Config.Format or "%.d"
+		local IsProgress = Config.Progress
 		Config.Name = Config.Label or ""
-
+		
+		--// Slider element
 		local Slider: TextButton = Prefabs.Slider:Clone()
 		local UIPadding = Slider:FindFirstChildOfClass("UIPadding")
 		local Grab: Frame = Slider.Grab
 		local ValueText = Slider.ValueText
+		local Label = Slider.Label
+		
+		--// Input data
+		local Dragging = false
+		local MouseMoveConnection = nil
+		local InputType = Enum.UserInputType.MouseButton1
+		
 		local ObjectClass = self:NewInstance(Slider, Config)
 
 		local function Callback(...)
@@ -879,9 +891,8 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 		end
 
 		--// Apply Progress styles
-		if Config.Progress then
+		if IsProgress then
 			local UIGradient = Grab:FindFirstChildOfClass("UIGradient")
-			local Label = Slider.Label
 
 			local PaddingSides = UDim.new(0,2)
 			local Diff = UIPadding.PaddingLeft - PaddingSides
@@ -898,14 +909,14 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 		function Config:SetValue(Value: number, Slider: false)
 			local MinValue = Config.MinValue
 			local MaxValue = Config.MaxValue
-			local Differnce = MaxValue - MinValue
-			local Percentage = Value/MaxValue
+			local Difference = MaxValue - MinValue
+			local Percentage = (Value - MinValue) / Difference
 
-			if Slider then
-				Percentage = Value
-				Value = MinValue + (Differnce * Percentage)
-			else
+			if not Slider then
 				Value = tonumber(Value)
+			else
+				Percentage = Value
+				Value = MinValue + (Difference * Percentage)
 			end
 
 			--// Animate grab
@@ -913,28 +924,30 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 				Position = UDim2.fromScale(Percentage, 0.5)
 			}
 
-			if Config.Progress then
+			if IsProgress then
 				Props = {
 					Size = UDim2.fromScale(Percentage, 1)
 				}
 			end
 
+			--// Animate
 			ImGui:Tween(Grab, Props)
 
+			--// Update UI
 			Config.Value = Value
 			ValueText.Text = ValueFormat:format(Value, MaxValue) 
 
+			--// Fire callback
 			Callback(Value)
+
 			return Config
 		end
-		Config:SetValue(Value)
 
-		local Dragging = false
-		local MouseMoveConnection = nil
-
+		------// Move events
 		local function MouseMove()
 			if Config.ReadOnly then return end
 			if not Dragging then return end
+			
 			local MouseX = UserInputService:GetMouseLocation().X
 			local LeftPos = Slider.AbsolutePosition.X
 
@@ -943,29 +956,32 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 			Config:SetValue(Percentage, true)
 		end
 
+		local function InputEnded(inputObject)
+			if not Dragging then return end
+			if inputObject.UserInputType ~= InputType then return end
+
+			Dragging = false
+			MouseMoveConnection:Disconnect()
+		end
+
 		--// Connect mouse events
-		local SliderHovered = ImGui:ConnectHover({
+		ImGui:ConnectHover({
 			Parent = Slider,
 			OnInput = function(MouseHovering, Input)
 				if not MouseHovering then return end
-				if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-					Dragging = true
+				if Input.UserInputType ~= InputType then return end
 
-					--// Save heavy performance
-					MouseMoveConnection = Mouse.Move:Connect(MouseMove)
-				end
+				Dragging = true
+				MouseMoveConnection = Mouse.Move:Connect(MouseMove) --// Save heavy performance
 			end
 		})
 
+		--// Connect events
 		Slider.Activated:Connect(MouseMove)
+		UserInputService.InputEnded:Connect(InputEnded)
 
-		UserInputService.InputEnded:Connect(function(inputObject)
-			if not Dragging then return end
-			if inputObject.UserInputType == Enum.UserInputType.MouseButton1 then
-				Dragging = false
-				MouseMoveConnection:Disconnect()
-			end
-		end)
+		--// Update UI
+		Config:SetValue(Value)
 
 		return ObjectClass
 	end
@@ -994,10 +1010,10 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 
 	function ContainerClass:Keybind(Config)
 		Config = Config or {}
-		
+
 		local Key = Config.Value
 		local TobeNullKey = Config.NullKey or Enum.KeyCode.Backspace
-		
+
 		local Keybind: TextButton = Prefabs.Keybind:Clone()
 		local ValueText: TextButton = Keybind.ValueText
 
@@ -1009,7 +1025,7 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 
 		function Config:SetValue(NewKey: Enum.KeyCode)
 			if not NewKey then return end
-			
+
 			if NewKey == TobeNullKey then
 				ValueText.Text = "Not set"
 				Config.Value = nil
@@ -1021,7 +1037,7 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 
 		Keybind.Activated:Connect(function()
 			ValueText.Text = "..."
-			
+
 			local NewKey = UserInputService.InputBegan:Wait()
 			if not UserInputService.WindowFocused then return end 
 
@@ -1039,10 +1055,10 @@ function ImGui:ContainerClass(Frame: Frame, Class, Window)
 			if not Config.IgnoreGameProcessed and GameProcessed then return end
 			local KeyCode = Input.KeyCode
 			local Match = Config.Value
-			
+
 			if KeyCode == TobeNullKey then return end
 			if KeyCode ~= Match then return end 
-				
+
 			return Callback(Input.KeyCode)
 		end)
 
@@ -1158,7 +1174,7 @@ function ImGui:Dropdown(Config)
 		if CloseCallback then
 			CloseCallback()
 		end
-		
+
 		Hover:Disconnect()
 		Selection:Remove()
 	end
@@ -1185,14 +1201,14 @@ function ImGui:Dropdown(Config)
 
 		self:ApplyAnimations(NewItem, "Tabs")
 	end
-	
+
 	--// Configure size of the frame
-		-- Roblox does not support UISizeConstraint on a scrolling frame grr
-	
+	-- Roblox does not support UISizeConstraint on a scrolling frame grr
+
 	local MaxSizeY = Config.MaxSizeY or 200
 	local YSize = math.clamp(Selection.AbsoluteCanvasSize.Y, Size.Y, MaxSizeY)
 	Selection.Size = UDim2.fromOffset(Size.X-Padding, YSize)
-	
+
 	return Config
 end
 
@@ -1441,20 +1457,20 @@ function ImGui:SetWindowProps(Properties, IgnoreWindows)
 	local Module = {
 		OldProperties = {}
 	}
-	
+
 	--// Collect windows & set properties
 	for Window in next, ImGui.Windows do
 		if table.find(IgnoreWindows, Window) then continue end
-		
+
 		local OldValues = {}
 		Module.OldProperties[Window] = OldValues
-		
+
 		for Key, Value in next, Properties do
 			OldValues[Key] = Window[Key]
 			Window[Key] = Value
 		end
 	end
-	
+
 	--// Revert to previous values
 	function Module:Revert()
 		for Window in next, ImGui.Windows do
@@ -1466,7 +1482,7 @@ function ImGui:SetWindowProps(Properties, IgnoreWindows)
 			end
 		end
 	end
-	
+
 	return Module
 end
 
@@ -1722,7 +1738,7 @@ function ImGui:CreateModal(Config)
 	Config = Window:CreateTab({
 		Visible = true
 	})
-	
+
 	--// Disable other windows
 	local WindowManger = ImGui:SetWindowProps({
 		Interactable = false
@@ -1737,7 +1753,7 @@ function ImGui:CreateModal(Config)
 		Tween.Completed:Connect(function()
 			ModalEffect:Remove()
 		end)
-		
+
 		WindowManger:Revert()
 		WindowClose()
 	end
