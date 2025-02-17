@@ -3084,6 +3084,8 @@ ReGui:DefineElement("PlotHistogram", {
 			local Plots = self._Plots
 
 			local Minimum, Maximum = self:GetBaseValues()
+			if not Minimum or not Maximum then return end
+			
 			local Difference = Maximum - Minimum
 
 			--// Update each plot on the graph
@@ -3166,7 +3168,9 @@ ReGui:DefineElement("PlotHistogram", {
 				--// Remove unused graph points
 				for Index = 1, Extra do
 					local Point = table.remove(Cache, Index)
-					Point:Remove()
+					if Point then
+						Point:Remove()
+					end
 				end
 			end
 
