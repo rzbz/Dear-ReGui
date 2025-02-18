@@ -1,18 +1,19 @@
-<img src="/docs/images/Dear ReGui.png" width="40%">
-
----
+# Dear ReGui
 Dear ReGui is a retained dear ImGui library remake designed for Roblox!
-Perfect for beginners and performance.
+This is perfect for beginners and performance.
 
-#### Visit the documentation for ReGui [here!](https://depso.gitbook.io/regui)
+Demo place: https://www.roblox.com/games/136436665525145/ReGui-Demo
+
+## Documentation
+- https://depso.gitbook.io/regui
 
 ## Notices
 - ReGui is still in beta, please report any bugs by opening an issue on Github
 - Any feedback or suggestions would be great
-- If you would like to fork this, please read the [Forking guide](#forking-this) section
+- If you would like to fork this, please read the [Forking guide](#forking-guide) section
   
 ## ReGui Usage
-See the [Getting Started & Integration](#getting-started--integration) section for more details
+- See the [Getting Started & Integration](#getting-started--integration) section for more details
 
 ## Demos/Usage examples
 - The demo window can be found [here](/Demo%20window.lua)
@@ -35,11 +36,7 @@ Window:InputText({Label="string"})
 Window:Slider({Label="float", Format="%.1f/%s", Minium=0, Maxium=1})
 ```
 
-</td>
-<td>
-	<img src="https://github.com/user-attachments/assets/9181571f-39c3-42bc-8677-3a433c92e6e3" width="400px">
-  </tr>
-</table>
+<img src="https://github.com/user-attachments/assets/9181571f-39c3-42bc-8677-3a433c92e6e3" width="400px">
 
 
 ## Getting Started & Integration
@@ -97,10 +94,13 @@ ReGui:Init({
 </table>
 
 ## Forking guide
-If you would like to create a fork of ReGui, please read the steps below for the category
+- If you would like to create a fork of ReGui, please read the steps below for the category
 
 ### Custom Prefabs
 Using custom prefabs with ReGUI is very simple. 
 To use custom prefabs you can point the library's `Prefabs` to the custom prefabs in the `:Init` call. For externally using custom prefabs, replace `rbxassetid://{ReGui.PrefabsId}` with `rbxassetid://PrefabsID` and replace `PrefabsID` with the id of your custom prefabs that you have published on Roblox.
 
 ReGui prefabs asset: [Prefabs Gui - Roblox](https://create.roblox.com/store/asset/71968920594655)
+
+---
+<img src="/docs/images/Dear ReGui.png" width="40%">
