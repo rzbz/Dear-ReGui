@@ -1,15 +1,12 @@
 local ReGui = require(game.ReplicatedStorage.ReGui)
-ReGui:Init({
-	Prefabs = game.StarterGui["ReGui-Prefabs"],
-	--Debug = true
-})
+ReGui:Init()
 
 --// Watermark demo
 local Watermark = ReGui.Elements:Canvas({
 	Parent = ReGui.Container.Windows,
 	Position = UDim2.fromOffset(10,10),
 	Size = UDim2.fromOffset(250, 50),
-	
+
 	CornerRadius = UDim.new(0, 2),
 	Border = true,
 	BorderThickness = 1,
@@ -28,7 +25,7 @@ local TimeLabel = Watermark:Label()
 game:GetService("RunService").RenderStepped:Connect(function(Delta)
 	local FPS = math.round(1/Delta)
 	local TimeString = DateTime.now():FormatLocalTime("dddd h:mm:ss A", "en-us")
-	
+
 	FPSLabel.Text = `FPS: {FPS}`
 	TimeLabel.Text = `The time is {TimeString}`
 end)
@@ -172,7 +169,7 @@ local WidgetDemos = {
 	["Basic"] = function(Header)
 		--// General
 		Header:Separator({Text="General"})
-		
+
 		local Row = Header:Row()
 		local Label = Row:Label({
 			Text = "Thanks for clicking me!",
@@ -184,14 +181,14 @@ local WidgetDemos = {
 				Label.Visible = not Label.Visible
 			end,
 		})
-		
+
 		Header:Checkbox()
-		
+
 		local RadioRow = Header:Row()
 		RadioRow:Radiobox({Label="radio a"})
 		RadioRow:Radiobox({Label="radio b"})
 		RadioRow:Radiobox({Label="radio c"})
-		
+
 		local ButtonsRow = Header:Row()
 		for i = 1,7 do
 			local Hue = i / 7.0
@@ -201,20 +198,20 @@ local WidgetDemos = {
 				BackgroundColor3 = Color3.fromHSV(Hue, 0.6, 0.6)
 			})
 		end
-		
+
 		local Tooltip = Header:Button({
 			Text = "Tooltip"
 		})
-		
+
 		ReGui:SetItemTooltip(Tooltip, function(Canvas)
 			Canvas:Label({
 				Text = "I am a tooltip"
 			})
 		end)
-		
+
 		--// Inputs
 		Header:Separator({Text="Inputs"})
-		
+
 		Header:InputText({
 			Value = "Hello world!"
 		})
@@ -232,10 +229,10 @@ local WidgetDemos = {
 			Maximum = 10,
 			Minimum = 1
 		})
-		
+
 		--// Drags
 		Header:Separator({Text="Drags"})
-		
+
 		Header:DragInt()
 
 		Header:DragInt({
@@ -244,16 +241,16 @@ local WidgetDemos = {
 			Label = "Drag Int 0..100",
 			Format = "%d%%"
 		})
-		
+
 		Header:DragFloat({
 			Maximum = 1,
 			Minimum = 0,
 			Value = 0.5
 		})
-		
+
 		--// Sliders
 		Header:Separator({Text="Sliders"})
-		
+
 		Header:SliderInt({
 			Format = "%.d/%s",
 			Value = 5,
@@ -261,7 +258,7 @@ local WidgetDemos = {
 			Maximum = 32,
 			ReadOnly = false,
 		}):SetValue(8)
-		
+
 		Header:SliderInt({
 			Label = "Slider Int (w/ snap)",
 			Value = 1,
@@ -269,26 +266,26 @@ local WidgetDemos = {
 			Maximum = 8,
 			Type = "Snap"
 		})
-		
+
 		Header:SliderFloat({
 			Label = "Slider Float", 
 			Minimum = 0.0, 
 			Maximum = 1.0, 
 			Format = "Ratio = %.3f"
 		})
-		
+
 		Header:SliderFloat({
 			Label = "Slider Angle", 
 			Minimum = -360, 
 			Maximum = 360, 
 			Format = "%.f deg"
 		})
-		
+
 		Header:SliderEnum({
 			Items = {"Fire", "Earth", "Air", "Water"},
 			Value = 2,
 		})
-		
+
 		Header:SliderEnum({
 			Items = {"Fire", "Earth", "Air", "Water"},
 			Value = 2,
@@ -302,15 +299,27 @@ local WidgetDemos = {
 			Minimum = 1,
 			Maximum = 32,
 		})
-		
+
 		--// Selectors/Pickers
 		Header:Separator({Text="Selectors/Pickers"})
-		
+
 		Header:InputColor3({
 			Value = ReGui.Accent.Light,
-			Label = "Color 1"
+			Label = "Color 1",
+			--Callback = print
 		})
+		--Header:InputColor4({
+		--	Value = ReGui.Accent.Light,
+		--	Label = "Color 2"
+		--})
 		
+		Header:InputCFrame({
+			Value = CFrame.new(1,1,1),
+			Minimum = -200,
+			Maximum = 200,
+			--Callback = print
+		})
+
 		Header:Combo({
 			Selected = 1,
 			Items = {
@@ -331,7 +340,7 @@ local WidgetDemos = {
 	["Tooltips"] = function(Header)
 		--// General
 		Header:Separator({Text="General"})
-		
+
 		local Basic = Header:Button({
 			Text = "Basic",
 			Size = UDim2.fromScale(1, 0)
@@ -341,7 +350,7 @@ local WidgetDemos = {
 				Text = "I am a tooltip"
 			})
 		end)
-		
+
 		local Fancy = Header:Button({
 			Text = "Fancy",
 			Size = UDim2.fromScale(1, 0)
@@ -353,7 +362,7 @@ local WidgetDemos = {
 			Canvas:Image({
 				Image = 18395893036
 			})
-			
+
 			local Time = Canvas:Label()
 			while wait() do
 				Time.Text = `Sin(time) = {math.sin(tick())}`
@@ -366,7 +375,7 @@ local WidgetDemos = {
 				Title = `Child {i}`,
 				Collapsed = i ~= 1
 			})
-			
+
 			local Row = Tree:Row()
 			Row:Label({Text="Blah blah"})
 			Row:SmallButton({Text="Button"})
@@ -384,18 +393,18 @@ local WidgetDemos = {
 				end
 			end,
 		})
-		
+
 		local First = Header:CollapsingHeader({
 			Title = "Header",
 		})
 		for i = 1, 5 do 
 			First:Label({Text=`Some content {i}`})
 		end
-		
+
 		Second = Header:CollapsingHeader({
 			Title = "Second Header",
 		})
-		
+
 		for i = 1, 5 do 
 			Second:Label({Text=`More content {i}`})
 		end
@@ -407,15 +416,15 @@ local WidgetDemos = {
 				"Bullet point 2\nOn multiple lines",
 			}
 		})
-		
+
 		Header:TreeNode():BulletText({
 			Rows = {"Another bullet point"}
 		})
-		
+
 		Header:Bullet():Label({
 			Text = "Bullet point 3 (two calls)"
 		})
-		
+
 		Header:Bullet():SmallButton()
 	end,
 	["Text"] = function(Header)
@@ -435,16 +444,16 @@ local WidgetDemos = {
 			Text = "Disabled",
 			NoTheme = true
 		})
-		
+
 		local Wrapping = Header:TreeNode({Title="Word Wrapping"})
 		Wrapping:Label({
 			TextColor3 = Color3.fromRGB(255, 0, 255),
 			Text = [[This text should automatically wrap on the edge of the window. The current implementation for text wrapping follows simple rules suitable for English and possibly other languages.]],
 			TextWrapped = true
 		})
-		
+
 		local Paragraph
-		
+
 		Wrapping:SliderInt({
 			Label = "Wrap width",
 			Value = 400,
@@ -455,7 +464,7 @@ local WidgetDemos = {
 				Paragraph.Size = UDim2.fromOffset(Value, 0)
 			end,
 		})
-		
+
 		Wrapping:Label({Text="Test paragraph:"})
 		Paragraph = Wrapping:Label({
 			Text = [[The lazy dog is a good dog. This paragraph should fit. Testing a 1 character word. The quick brown fox jumps over the lazy dog.]],
@@ -470,30 +479,30 @@ local WidgetDemos = {
 		Header:Label({
 			TextWrapped = true,
 			Text=`Below we are displaying the icons (which are the ones builtin to ReGui in this demo).\
-\
-\There is a total of {ReGui:GetDictSize(ReGui.Icons)} icons in this demo!`
+			\
+			\There is a total of {ReGui:GetDictSize(ReGui.Icons)} icons in this demo!`
 		})
-		
+
 		local List = Header:List({
 			Border = true
 		})
-		
+
 		local TooltipLabel 
 		local TooltipImage
-		
+
 		--// Asign Tooltip to image for displaying the Icon name
 		ReGui:SetItemTooltip(List, function(Canvas)
 			TooltipLabel = Canvas:Label()
 			TooltipImage = Canvas:Image()
 		end)
-		
+
 		for Name, ImageUrl in ReGui.Icons do
 			--// Create the Image object
 			local Image = List:Image({
 				Image = ImageUrl,
 				Size = UDim2.fromOffset(30, 30)
 			})
-			
+
 			ReGui:ConnectHover(Image, {
 				MouseEnter = true,
 				OnInput = function()
@@ -507,31 +516,31 @@ local WidgetDemos = {
 		--// Basic
 		local Basic = Header:TreeNode({Title="Basic"})
 		local TabsBox = Basic:TabsBox()
-		
+
 		local Names = {"Avocado", "Broccoli", "Cucumber"}
 		for _, Name in next, Names do
 			TabsBox:CreateTab({Name=Name}):Label({
 				Text = `This is the {Name} tab!\nblah blah blah blah blah`
 			})
 		end
-		
+
 		--// Advanced 
 		local Advanced = Header:TreeNode({Title="Advanced & Close Button"})
 		local TabsBox = Advanced:TabsBox()
-		
+
 		local Names = {"Artichoke", "Beetroot", "Celery", "Daikon"}
-		
+
 		for _, Name in next, Names do
 			local Tab = TabsBox:CreateTab({
 				Name=Name,
 				CanClose = true
 			})
-				
+
 			Tab:Label({
 				Text = `This is the {Name} tab!\nblah blah blah blah blah`
 			})
 		end
-		
+
 		Advanced:Button({
 			Text="Add tab",
 			Callback = function()
@@ -547,16 +556,16 @@ local WidgetDemos = {
 		local Graph = Header:PlotHistogram({
 			Points = {0.6, 0.1, 1.0, 0.5, 0.92, 0.1, 0.2}
 		})
-		
+
 		Header:Button({
 			Text = "Generate new graph",
 			Callback = function()
 				local Points = {}
-				
+
 				for I = 1, math.random(5, 10) do
 					table.insert(Points, math.random(1, 10))
 				end
-				
+
 				Graph:PlotGraph(Points)
 			end,
 		})
@@ -566,7 +575,7 @@ local WidgetDemos = {
 			Label = "Loading...",
 			Value = 80
 		})
-		
+
 		spawn(function()
 			local Percentage = 0
 			while wait(0.02) do
@@ -583,7 +592,7 @@ local WidgetDemos = {
 			AutoScroll = true,
 			MaxLines = 50
 		})
-		
+
 		--// Advanced
 		local Advanced = Header:TreeNode({Title="Advanced"})
 		local AdvancedConsole = Advanced:Console({
@@ -592,14 +601,14 @@ local WidgetDemos = {
 			RichText = true,
 			MaxLines = 50
 		})
-		
+
 		--// Editor
 		local Editor = Header:TreeNode({Title="Editor"})
 		Editor:Console({
 			Value = "print('Hello world!')",
 			LineNumbers = true
 		})
-		
+
 		coroutine.wrap(function()
 			while wait() do
 				local Date = DateTime.now():FormatLocalTime("h:mm:ss A", "en-us")
@@ -656,29 +665,29 @@ local WidgetDemos = {
 	end,
 	["Indent"] = function(Header)
 		Header:Label({Text="This is not indented"})
-		
+
 		local Indent = Header:Indent({Offset=30})
 		Indent:Label({Text="This is indented by 30 pixels"})
-		
+
 		local Indent2 = Indent:Indent({Offset=30})
 		Indent2:Label({Text="This is indented by 30 more pixels"})
 	end,
 	["Viewport"] = function(Header)
 		local Rig = ReGui:InsertPrefab("R15 Rig")
-		
+
 		local Viewport = Header:Viewport({
 			Size = UDim2.new(1, 0, 0, 200),
 			Clone = true, --// Otherwise will parent
 			Model = Rig,
 		})
-		
+
 		local Model = Viewport.Model
-		
+
 		local RunService = game:GetService("RunService")
 		RunService.RenderStepped:Connect(function(DeltaTime)
 			local Rotation = CFrame.Angles(0, math.rad(30*DeltaTime), 0) 
 			local Pivot = Model:GetPivot() * Rotation
-			
+
 			Model:PivotTo(Pivot)
 		end)
 	end,
@@ -696,7 +705,7 @@ local WidgetDemos = {
 				TestCheckbox:Toggle()
 			end,
 		})
-		
+
 		Header:Keybind({
 			Label = "Toggle UI visibility",
 			Value = Enum.KeyCode.E,
@@ -725,7 +734,7 @@ processors (all in the P5 microarchitecture).#
 for _, Title in DemosOrder do
 	local Header = Widgets:TreeNode({Title=Title})
 	local Generate = WidgetDemos[Title]
-	
+
 	if Generate then
 		Generate(Header)
 	end
@@ -798,7 +807,7 @@ local Rows = {"One", "Two", "Three"}
 
 for Count, RowHeader in Rows do
 	local Column = Row:Column()
-	
+
 	Column:Header({Text=RowHeader})
 
 	for Line = 1, 6 do

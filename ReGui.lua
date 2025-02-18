@@ -120,13 +120,13 @@ ReGui.Icons = {
 
 ReGui.Accent = {
 	--// ReGui acent colors
-	Light = Color3.fromRGB(60, 150, 250),
-	Dark = Color3.fromRGB(29, 66, 115),
+	Light = Color3.fromRGB(50, 150, 250),
+	Dark = Color3.fromRGB(30, 66, 115),
 	White = Color3.fromRGB(240, 240, 240),
 	Gray = Color3.fromRGB(127, 126, 129),
 	Black = Color3.fromRGB(15, 19, 24),
-	Yellow = Color3.fromRGB(217, 180, 62),
-	Orange = Color3.fromRGB(234, 157, 57),
+	Yellow = Color3.fromRGB(230, 180, 0),
+	Orange = Color3.fromRGB(230, 150, 0),
 	Green = Color3.fromRGB(130, 188, 91),
 	Red = Color3.fromRGB(255, 69, 69),
 
@@ -954,6 +954,17 @@ function Merge(Base, New)
 	for Key, Value in next, New do
 		Base[Key] = Value
 	end
+end
+
+function Copy(Original: table, Insert: table?)
+	local Table = table.clone(Original)
+	
+	--// Insert values
+	if Insert then
+		Merge(Table, Insert)
+	end
+	
+	return Table
 end
 
 function NewClass(Base)
@@ -4496,44 +4507,26 @@ ReGui:DefineElement("DragFloat", {
 	Create = Elements.DragInt,
 })
 
-export type InputColor3Flags = {
-	DragIntConfig: table?,
-	Label: string?,
-	Value: Color3?,
-	Callback: (InputColor3Flags, Value: Color3) -> any,
-
-	Update: (InputColor3Flags) -> nil,
-	SetValue: (InputColor3Flags, Value: Color3) -> InputColor3Flags,
-}
-ReGui:DefineElement("InputColor3", {
+ReGui:DefineElement("MultiDrag", {
 	Base = {
 		Callback = EmptyFunction,
 		Value = ReGui.Accent.Light,
-		Label = "Input Color3",
+		Label = "",
 		Disabled = false,
-		DragIntConfig = {
-			Size = UDim2.new(1, 0, 0, 20),
-			Label = "",
-			Format = "%.f",
-			CloneTable = true,
-			Minimum = 0,
-			Maximum = 255
-		}
+		BaseDragIntConfig = {},
+		DragIntsConfig = {}
 	},
-	Create = function(Canvas, Config: InputColor3Flags)
-
+	Create = function(Canvas, Config)
 		--// Unpack configuration
-		local DragIntConfig = Config.DragIntConfig
 		local LabelText = Config.Label
-		local Value = Config.Value
-		local Disabled = Config.Disabled
-
-		DragIntConfig.Callback = function()
-			if Config.Update then
-				Config:Update()
-			end
-		end
-
+		local BaseDragConfig = Config.BaseDragIntConfig
+		local DragIntsConfig = Config.DragIntsConfig
+		
+		ReGui:CheckConfig(BaseDragConfig, {
+			Size = UDim2.new(1, 0, 0, 20),
+			Label = ""
+		})
+		
 		--// Create container row
 		local ContainerRow = Canvas:Row({
 			Spacing = 5,
@@ -4550,12 +4543,84 @@ ReGui:DefineElement("InputColor3", {
 		local Row = ContainerRow:Row({
 			Size = UDim2.fromScale(0.65, 0),
 		})
+		
+		--// Expand row
+		Row:Expand()
 
-		--// Sliders
-		local R = Row:DragInt(DragIntConfig)
-		local G = Row:DragInt(DragIntConfig)
-		local B = Row:DragInt(DragIntConfig)
+		--// Create DragInt elements
+		local Drags = {}
+		for _, DragConfig in DragIntsConfig do
+			local Drag = Row:DragInt(Copy(BaseDragConfig, DragConfig))
+			table.insert(Drags, Drag)
+		end
+		
+		function Config:SetDisabled(Disabled: boolean)
+			self.Disabled = Disabled
+			
+			--// Chaneg the tag of the Label
+			Canvas:SetColorTags({
+				[Label] = Disabled and "LabelDisabled" or "Label"
+			}, true)
+			
+			--// Set state of each Drag element
+			for _, Drag in Drags do
+				Drag:SetDisabled(Disabled)
+			end
+		end
+		
+		--// Merge properties into the configuration
+		Merge(Config, {
+			Row = Row,
+			Drags = Drags
+		})
+		
+		return Config, ContainerRow
+	end,
+})
 
+export type InputColor3Flags = {
+	Label: string?,
+	Value: Color3?,
+	Callback: (InputColor3Flags, Value: Color3) -> any,
+
+	ValueChanged: (InputColor3Flags) -> nil,
+	SetValue: (InputColor3Flags, Value: Color3) -> InputColor3Flags,
+}
+ReGui:DefineElement("InputColor3", {
+	Base = {
+		Callback = EmptyFunction,
+		Value = ReGui.Accent.Light,
+		Label = "Input Color3",
+		Disabled = false,
+		BaseDragIntConfig = {
+			Minimum = 0,
+			Maximum = 255
+		},
+		DragIntsConfig = {
+			[1] = {Format = "R: %.f"},
+			[2] = {Format = "R: %.f"},
+			[3] = {Format = "R: %.f"},
+		}
+	},
+	Create = function(self, Config: InputColor3Flags)
+		--// Unpack configuration
+		local DragIntConfig = Config.BaseDragIntConfig
+		local Value = Config.Value
+		local Disabled = Config.Disabled
+		
+		DragIntConfig.Callback = function()
+			if Config.ValueChanged then
+				Config:ValueChanged()
+			end
+		end
+		
+		--// Create Object
+		local MultiInput = self:MultiDrag(Config)
+		local Class = ReGui:MergeMetatables(Config, MultiInput)
+		
+		local Row = MultiInput.Row
+		local Drags = MultiInput.Drags
+		
 		--// Preview frame
 		local Preview = Row:Button({
 			BackgroundTransparency = 0,
@@ -4565,10 +4630,7 @@ ReGui:DefineElement("InputColor3", {
 			ColorTag = "",
 			ElementStyle = ""
 		})
-
-		--// Fill
-		Row:Expand()
-
+		
 		local function Callback(...)
 			local func = Config.Callback
 			return func(Class, ...)
@@ -4579,28 +4641,20 @@ ReGui:DefineElement("InputColor3", {
 			Callback(Color)
 		end
 
-		function Config:Update()
+		function Config:ValueChanged()
+			local R, B, G = Drags[1], Drags[2], Drags[3]
 			local Color = Color3.fromRGB(R.Value, G.Value, B.Value)
+			
 			self.Value = Color
-
 			SetPreview(Color)
-		end
-		function Config:SetDisabled(Disabled: boolean)
-			self.Disabled = Disabled
-
-			R:SetDisabled(Disabled)
-			G:SetDisabled(Disabled)
-			B:SetDisabled(Disabled)
-
-			Canvas:SetColorTags({
-				[Label] = Disabled and "LabelDisabled" or "Label"
-			}, true)
 		end
 
 		function Config:SetValue(Color: Color3)
 			self.Value = Color
-
 			SetPreview(Color)
+			
+			--// Update Drag elements
+			local R, B, G = Drags[1], Drags[2], Drags[3]
 			R:SetValue(Color.R*255)
 			B:SetValue(Color.B*255)
 			G:SetValue(Color.G*255)
@@ -4610,7 +4664,87 @@ ReGui:DefineElement("InputColor3", {
 		Config:SetValue(Value)
 		Config:SetDisabled(Disabled)
 
-		return Config, ContainerRow
+		return MultiInput, Row
+	end,
+})
+
+export type InputCFrameFlags = {
+	Label: string?,
+	Value: CFrame?,
+	Callback: (InputCFrameFlags, Value: CFrame) -> any,
+
+	ValueChanged: (InputCFrameFlags) -> nil,
+	SetValue: (InputCFrameFlags, Value: CFrame) -> InputCFrameFlags,
+}
+ReGui:DefineElement("InputCFrame", {
+	Base = {
+		Callback = EmptyFunction,
+		Value = CFrame.new(1,1,1),
+		Label = "Input CFrame",
+		Disabled = false,
+		Minimum = -100,
+		Maximum = 100,
+		BaseDragIntConfig = {},
+		DragIntsConfig = {
+			[1] = {Format = "X: %.f"},
+			[2] = {Format = "Y: %.f"},
+			[3] = {Format = "Z: %.f"},
+		}
+	},
+	Create = function(self, Config: InputCFrameFlags)
+		--// Unpack configuration
+		local DragIntConfig = Config.BaseDragIntConfig
+		local Value = Config.Value
+		local Disabled = Config.Disabled
+		local Maximum = Config.Maximum
+		local Minimum = Config.Minimum
+		
+		ReGui:CheckConfig(DragIntConfig, {
+			Maximum = Maximum,
+			Minimum = Minimum
+		})
+
+		DragIntConfig.Callback = function()
+			if Config.ValueChanged then
+				Config:ValueChanged()
+			end
+		end
+
+		--// Create Object
+		local MultiInput = self:MultiDrag(Config)
+		local Class = ReGui:MergeMetatables(Config, MultiInput)
+
+		local Row = MultiInput.Row
+		local Drags = MultiInput.Drags
+		
+		local function Callback(...)
+			local func = Config.Callback
+			return func(Class, ...)
+		end
+
+		function Config:ValueChanged()
+			local X, Y, Z = Drags[1], Drags[2], Drags[3]
+			local _CFrame = CFrame.new(X.Value, Y.Value, Z.Value)
+
+			self.Value = _CFrame
+			Callback(_CFrame)
+		end
+
+		function Config:SetValue(_CFrame: CFrame)
+			self.Value = _CFrame
+
+			--// Update Drag elements
+			local X, Y, Z = Drags[1], Drags[2], Drags[3]
+			X:SetValue(_CFrame.X)
+			Y:SetValue(_CFrame.Y)
+			Z:SetValue(_CFrame.Z)
+		end
+
+		--// Update UI
+		Config:SetValue(Value)
+		Config:SetDisabled(Disabled)
+
+		return MultiInput, Row
 	end,
 })
 
