@@ -13,7 +13,7 @@
 
 local ReGui = {
 	--// Package data
-	Version = "1.0",
+	Version = "1.1",
 	Author = "Depso",
 	License = "MIT",
 	Repository = "https://github.com/depthso/regui",
@@ -41,9 +41,10 @@ local ReGui = {
 }
 
 ReGui.Icons = {
-	Dot = "rbxassetid://607738600",
+	Dot = "rbxasset://textures/whiteCircle.png",
 	Arrow = "rbxassetid://4731371527",
 	Close = "rbxasset://textures/AnimationEditor/icon_close.png",
+	Checkmark = "rbxasset://textures/AnimationEditor/icon_checkmark.png",
 	Cat = "rbxassetid://16211812161",
 	Script = "rbxassetid://11570895459",
 	Settings = "rbxassetid://9743465390",
@@ -524,7 +525,7 @@ ReGui.ElementFlags = {
 			local Image = Class.Icon
 			local Rotation = Class.IconRotation
 
-			Image = ReGui:CheckImageUrl(Image)
+			Image = ReGui:CheckAssetUrl(Image)
 
 			ReGui:SetProperties(Icon, {
 				Visible = Value and true,
@@ -562,14 +563,14 @@ ReGui.ElementFlags = {
 
 			ReGui:CheckConfig(Class, {
 				Ratio = 4/3,
-				Axis = Enum.DominantAxis.Height,
-				AspectType = Enum.AspectType.ScaleWithParentSize
+				RatioAxis = Enum.DominantAxis.Height,
+				RatioAspectType = Enum.AspectType.ScaleWithParentSize
 			})
 
 			--// Unpack data
 			local AspectRatio = Class.Ratio
-			local Axis = Class.Axis
-			local AspectType = Class.AspectType
+			local Axis = Class.RatioAxis
+			local AspectType = Class.RatioAspectType
 
 			local Ratio = ReGui:GetChildOfClass(Object, "UIAspectRatioConstraint")
 			ReGui:SetProperties(Ratio, {
@@ -1098,7 +1099,7 @@ function ReGui:CheckConfig(Source, Base, Call: boolean?)
 	return Source
 end
 
-function ReGui:CheckImageUrl(Url: (string|number)): string
+function ReGui:CheckAssetUrl(Url: (string|number)): string
 	--// Convert Id number to asset URL
 	if tonumber(Url) then
 		return `rbxassetid://{Url}`
@@ -1830,8 +1831,8 @@ function ReGui:WrapGeneration(Function, Data: WrapGeneration)
 		})
 
 		--// Create element and apply properties
-		local Class, Element = Function(Canvas, Flags, ...)
-		--local Success, Class, Element = pcall(Function, Canvas, Flags, ...)
+		--local Class, Element = Function(Canvas, Flags, ...)
+		local Success, Class, Element = pcall(Function, Canvas, Flags, ...)
 
 		--// Check for errors
 		if Success == false then
@@ -2258,10 +2259,10 @@ ReGui:DefineElement("Image", {
 		Image = "",
 		Callback = EmptyFunction
 	},
-	Create = function(self, Config: Image): ScrollingFrame
+	Create = function(self, Config: Image): ImageButton
 		--// Correct configuration
 		local Image = Config.Image
-		Config.Image = ReGui:CheckImageUrl(Image)
+		Config.Image = ReGui:CheckAssetUrl(Image)
 
 		--// Create image object
 		local Object = ReGui:InsertPrefab("Image", Config)
@@ -2270,6 +2271,26 @@ ReGui:DefineElement("Image", {
 			return Func(Object, ...)
 		end)
 
+		return Object
+	end,
+})
+
+export type VideoPlayer = {
+	Video: (string|number),
+	Callback: ((...any) -> unknown)?
+}
+ReGui:DefineElement("VideoPlayer", {
+	Base = {
+		Video = "",
+		Callback = EmptyFunction
+	},
+	Create = function(self, Config: VideoPlayer): VideoFrame
+		--// Correct configuration
+		local Video = Config.Video
+		Config.Video = ReGui:CheckAssetUrl(Video)
+
+		--// Create object
+		local Object = ReGui:InsertPrefab("VideoPlayer", Config)
 		return Object
 	end,
 })
@@ -2895,7 +2916,7 @@ ReGui:DefineElement("Checkbox", {
 		IsRadio = false,
 		Value = false,
 		NoAutoRegistor = true,
-		TickedImageSize = UDim2.fromScale(1,1),
+		TickedImageSize = UDim2.fromScale(1, 1),
 		UntickedImageSize = UDim2.fromScale(0,0),
 		Callback = EmptyFunction,
 		Disabled = false
@@ -2915,6 +2936,7 @@ ReGui:DefineElement("Checkbox", {
 
 		local Tickbox = Object.Tickbox
 		local Tick = Tickbox.Tick
+		Tick.Image = ReGui.Icons.Checkmark
 
 		--// Styles
 		local UIPadding = Tickbox:FindFirstChildOfClass("UIPadding")
@@ -3023,6 +3045,8 @@ export type PlotHistogram = {
 	Points: {
 		[number]: number
 	},
+	Minimum: number?,
+	Maximum: number?,
 	GetBaseValues: (PlotHistogram) -> (number, number),
 	UpdateGraph: (PlotHistogram) -> PlotHistogram,
 	PlotGraph: (PlotHistogram, Points: {
@@ -3070,9 +3094,15 @@ ReGui:DefineElement("PlotHistogram", {
 		})
 
 		function Config:GetBaseValues(): (number, number)
+			local Minimum = self.Minimum
+			local Maximum = self.Maximum
+			
+			--// User defined minimum
+			if Minimum and Maximum then
+				return Minimum, Maximum
+			end
+			
 			local Plots = self._Plots
-			local Maximum = nil
-			local Minimum = nil
 
 			for _, Data in Plots do
 				local Value = Data.Value
@@ -3125,16 +3155,33 @@ ReGui:DefineElement("PlotHistogram", {
 				Parent = GraphCanvas,
 				Visible = true
 			})
+			
+			local HoverConnection = ReGui:ConnectHover(Plot, {
+				MouseEnter = true,
+				OnInput = function()
+					Module:UpdateTooltip()
+				end,
+			})
 
 			local Data = {
 				Object = Plot,
 				Point = Point,
 				Value = Value
 			}
+			
+			function Module:UpdateTooltip()
+				local Index = Module:GetPointIndex()
+				ValueLabel.Text = `{Index}:	{Data.Value}`
+			end
 
 			function Module:SetValue(Value)
 				Data.Value = Value
 				Config:UpdateGraph()
+				
+				--// Update tooltip value if hovered
+				if HoverConnection.Hovering then
+					self:UpdateTooltip()
+				end
 			end
 
 			function Module:GetPointIndex(): number
@@ -3146,14 +3193,6 @@ ReGui:DefineElement("PlotHistogram", {
 				Plot:Remove()
 				Config:UpdateGraph()
 			end
-
-			ReGui:ConnectHover(Plot, {
-				MouseEnter = true,
-				OnInput = function()
-					local Index = Module:GetPointIndex()
-					ValueLabel.Text = `{Index}:	{Data.Value}`
-				end,
-			})
 
 			--// Registor plot
 			table.insert(Plots, Data)
@@ -4083,32 +4122,40 @@ export type Row = {
 }
 ReGui:DefineElement("Row", {
 	Base = {
-		Spacing = 4
+		Spacing = 4,
+		Expanded = false, 
 	},
 	Create = function(self, Config: Row)
 		local WindowClass = self.WindowClass
-
+		
+		--// Unpack configuration
 		local Spacing = Config.Spacing
-
+		local Expanded = Config.Expanded
+		
 		--// Create row object
 		local Object = ReGui:InsertPrefab("Row", Config)
 		local Class = ReGui:MergeMetatables(Config, Object)
-
+		
 		local UIListLayout = Object:FindFirstChildOfClass("UIListLayout")
 		UIListLayout.Padding = UDim.new(0, Spacing)
-
+		
 		function Config:Expand()
 			UIListLayout.HorizontalFlex = Enum.UIFlexAlignment.Fill
 			return self
 		end
-
+		
 		--// Content canvas
 		local Canvas = ReGui:MakeCanvas({
 			Element = Object,
 			WindowClass = WindowClass,
 			Class = Class
 		})
-
+		
+		--// Expand if Fill flag is enabled
+		if Expanded then
+			Config:Expand()
+		end
+		
 		return Canvas, Object
 	end,
 })
