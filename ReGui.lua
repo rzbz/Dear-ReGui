@@ -2950,13 +2950,22 @@ ReGui:DefineElement("Checkbox", {
 		})
 
 		--// Stylise to correct type
+		local PaddingSize = UDim.new(0, 3)
 		if IsRadio then
 			Tick.ImageTransparency = 1
 			Tick.BackgroundTransparency = 0
 			UICorner.CornerRadius = UDim.new(1, 0)
 		else
-			UIPadding:Remove()
+			PaddingSize = UDim.new(0, 2)
 		end
+		
+		--// Apply UIPadding sizes
+		ReGui:SetProperties(UIPadding, {
+			PaddingBottom = PaddingSize,
+			PaddingLeft = PaddingSize,
+			PaddingRight = PaddingSize,
+			PaddingTop = PaddingSize,
+		})
 
 		--// Callback
 		local function Callback(...)
