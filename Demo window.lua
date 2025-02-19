@@ -150,6 +150,7 @@ local DemosOrder = {
 	"Bullets",
 	"Text",
 	"Images",
+	"VideoPlayer",
 	"Combo", 
 	"Tabs", 
 	"Plotting", 
@@ -369,6 +370,52 @@ local WidgetDemos = {
 			end
 		end)
 	end,
+	["VideoPlayer"] = function(Header)
+		local Video = Header:VideoPlayer({
+			Video = 5608327482,
+			Looped = true,
+			Ratio = 16 / 9,
+			RatioAspectType = Enum.AspectType.FitWithinMaxSize,
+			RatioAxis = Enum.DominantAxis.Width,
+			Size = UDim2.fromScale(1, 1)
+		})
+		Video:Play()
+		
+		local Controls = Header:Row({
+			Expanded = true
+		})
+		Controls:Button({
+			Text = "Pause",
+			Callback = function()
+				Video:Pause()
+			end,
+		})
+		Controls:Button({
+			Text = "Play",
+			Callback = function()
+				Video:Play()
+			end,
+		})
+		
+		--// Wait for the video to load
+		if not Video.IsLoaded then 
+			Video.Loaded:Wait()
+		end
+
+		local TimeSlider = Controls:SliderInt({
+			Format = "%.f",
+			Value = 0,
+			Minimum = 0,
+			Maximum = Video.TimeLength,
+			Callback = function(self, Value)
+				Video.TimePosition = Value
+			end,
+		})
+		
+		game:GetService("RunService").RenderStepped:Connect(function(Delta)
+			TimeSlider:SetValue(Video.TimePosition)
+		end)
+	end,
 	["Tree Nodes"] = function(Header)
 		for i = 1,5 do
 			local Tree = Header:TreeNode({
@@ -480,7 +527,7 @@ local WidgetDemos = {
 			TextWrapped = true,
 			Text=`Below we are displaying the icons (which are the ones builtin to ReGui in this demo).\
 			\
-			\There is a total of {ReGui:GetDictSize(ReGui.Icons)} icons in this demo!`
+\There is a total of {ReGui:GetDictSize(ReGui.Icons)} icons in this demo!`
 		})
 
 		local List = Header:List({
@@ -493,7 +540,9 @@ local WidgetDemos = {
 		--// Asign Tooltip to image for displaying the Icon name
 		ReGui:SetItemTooltip(List, function(Canvas)
 			TooltipLabel = Canvas:Label()
-			TooltipImage = Canvas:Image()
+			TooltipImage = Canvas:Image({
+				Size = UDim2.fromOffset(50,50)
+			})
 		end)
 
 		for Name, ImageUrl in ReGui.Icons do
