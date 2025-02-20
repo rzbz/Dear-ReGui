@@ -1281,8 +1281,11 @@ function ReGui:MakeDraggable(Config: MakeDraggableFlags)
 	local function DragStart(Key)
 		if not Interface:CanDrag(Key) then return end
 		
+		local InputPosition = Key.Position
+		local InputVector = Vector2.new(InputPosition.X, InputPosition.Y)
+		
 		local DragBegin = Config.DragBegin
-		InputOrgin = Key.Position
+		InputOrgin =InputVector
 		Dragging = true
 
 		DragBegin(InputOrgin)
@@ -1296,7 +1299,10 @@ function ReGui:MakeDraggable(Config: MakeDraggableFlags)
 	local function DragMovement(Key)
 		if not Dragging then return end
 		
-		local Delta = Key.Position - InputOrgin
+		local InputPosition = Key.Position
+		local InputVector = Vector2.new(InputPosition.X, InputPosition.Y)
+		
+		local Delta = InputVector - InputOrgin
 		local OnUpdate = Config.OnUpdate
 
 		OnUpdate(Delta)
