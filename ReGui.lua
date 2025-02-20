@@ -167,6 +167,8 @@ ReGui.ThemeConfigs = {
 		HeaderBgTransparency = 0.6,
 		HistogramBar = ReGui.Accent.Yellow,
 		ProgressBar = ReGui.Accent.Yellow,
+		RegionBg = ReGui.Accent.Dark,
+		RegionBgTransparency = 0.1,
 
 		--// Tabsbox
 		TabTextPaddingTop = UDim.new(0, 3),
@@ -188,7 +190,7 @@ ReGui.ThemeConfigs = {
 		TitleBarBg = ReGui.Accent.Black,
 		TitleBarTransparency = 0,
 		ActiveTitle = ReGui.Accent.White,
-		ActiveTitleBar = ReGui.Accent.Dark,
+		ActiveTitleBarBg = ReGui.Accent.Dark,
 		ActiveTitleBarTransparency = 0.05,
 		ActiveBorderTransparency = 0.4,
 	},
@@ -222,7 +224,7 @@ ReGui.ThemeConfigs = {
 		TitleAlign = Enum.TextXAlignment.Center,
 		TitleBarBg = ReGui.Accent.Black,
 		ActiveTitle = ReGui.Accent.Black,
-		ActiveTitleBar = ReGui.Accent.Gray,
+		ActiveTitleBarBg = ReGui.Accent.Gray,
 	},
 	Classic = {
 		Text = Color3.fromRGB(255, 255, 255),
@@ -256,13 +258,17 @@ ReGui.ThemeConfigs = {
 		Title = ReGui.Accent.White,
 		TitleBarBg = ReGui.Accent.ImGui.Black,
 		TitleBarTransparency = 0,
-		ActiveTitleBar = ReGui.Accent.ImGui.Dark,
+		ActiveTitleBarBg = ReGui.Accent.ImGui.Dark,
 		ActiveBorderTransparency = 0.4,
 		ActiveTitleBarTransparency = 0,
 	}
 }
 
 ReGui.ElementColors = {
+	["Region"] = {
+		BackgroundColor3 = "RegionBg",
+		BackgroundTransparency = "RegionBgTransparency",
+	},
 	["Label"] = {
 		TextColor3 = "Text",
 		FontFace = "TextFont",
@@ -283,14 +289,14 @@ ReGui.ElementColors = {
 		FontFace = "TextFont"
 	},
 	["TitleBar"] = {
-		BackgroundColor3 = "ActiveTitleBar"
+		BackgroundColor3 = "ActiveTitleBarBg"
 	},
 	["Window"] = {
 		BackgroundColor3 = "WindowBg",
 		BackgroundTransparency = "WindowBgTransparency"
 	},
-	["ActiveTitleBar"] = {
-		BackgroundColor3 = "ActiveTitleBar",
+	["ActiveTitleBarBg"] = {
+		BackgroundColor3 = "ActiveTitleBarBg",
 		BackgroundTransparency = "ActiveTitleBarTransparency"
 	},
 	["DeActiveTitleBar"] = {
@@ -328,6 +334,11 @@ ReGui.ElementColors = {
 	},
 	["Button"] = {
 		BackgroundColor3 = "ButtonsBg",
+		TextColor3 = "Text",
+		FontFace = "TextFont",
+	},
+	["Keybind"] = {
+		BackgroundColor3 = "InputsBg",
 		TextColor3 = "Text",
 		FontFace = "TextFont",
 	},
@@ -1056,7 +1067,6 @@ function ReGui:ResolveContainerParent(): GuiObject?
 
 	local Test = self:CreateInstance("ScreenGui")
 
-
 	--// Test each step for a successful parent
 	for Step, CreateFunc in next, Steps do
 		local Success, Parent = pcall(CreateFunc)
@@ -1236,38 +1246,64 @@ function ReGui:MakeDraggable(Config: MakeDraggableFlags)
 
 	local PositionOrgin = nil
 	local InputOrgin = nil
+	local Dragging = false
 
-	local DragDetector = ReGui:GetChildOfClass(Grab, "UIDragDetector")
+	--// Whitelist
+	local UserInputTypes = {
+		Enum.UserInputType.MouseButton1,
+		Enum.UserInputType.Touch
+	}
+
+	local function UserInputTypeAllowed(InputType: Enum.UserInputType)
+		return table.find(UserInputTypes, InputType)
+	end
 
 	--// Interface
 	local Interface = {}
 	function Interface:SetEnabled(State: boolean)
 		local StateChanged = Config.StateChanged
 		self.Enabled = State
-		DragDetector.Enabled = State
+		--DragDetector.Enabled = State
 
 		--// Invoke the state changed callback function
 		if StateChanged then 
 			StateChanged(self)
 		end
 	end
+	function Interface:CanDrag(Key)
+		if not self.Enabled then return end
+		if not UserInputTypeAllowed(Key.UserInputType) then return end
+		
+		return true
+	end
 
 	--// DragDetector event functions
-	local function DragStart(InputPosition)
+	local function DragStart(Key)
+		if not Interface:CanDrag(Key) then return end
+		
 		local DragBegin = Config.DragBegin
-		InputOrgin = InputPosition
+		InputOrgin = Key.Position
+		Dragging = true
 
-		DragBegin(InputPosition)
+		DragBegin(InputOrgin)
 	end
-	local function DragMovement(InputPosition)
-		local Delta = InputPosition - InputOrgin
+	local function DragEnd(Key)
+		if not Dragging then return end
+		if not Interface:CanDrag(Key) then return end
+		
+		Dragging = false
+	end
+	local function DragMovement(Key)
+		if not Dragging then return end
+		
+		local Delta = Key.Position - InputOrgin
 		local OnUpdate = Config.OnUpdate
 
 		OnUpdate(Delta)
 	end
 
 	--// Movement functions
-	local function PositionBegan(InputPosition)
+	local function PositionBegan(Key)
 		PositionOrgin = Move.Position
 	end
 	local function UpdatePosition(Delta)
@@ -1292,16 +1328,109 @@ function ReGui:MakeDraggable(Config: MakeDraggableFlags)
 		OnUpdate = UpdatePosition,
 		DragBegin = PositionBegan
 	})
-
+	
 	--// Connect movement events
-	DragDetector.DragStart:Connect(DragStart)
-	DragDetector.DragContinue:Connect(DragMovement)
+	Grab.InputBegan:Connect(DragStart)
+	UserInputService.InputEnded:Connect(DragEnd)
+	UserInputService.TouchMoved:Connect(DragMovement)
+	UserInputService.InputChanged:Connect(function(Input)
+		if Input.UserInputType == Enum.UserInputType.MouseMovement then 
+			return DragMovement(Input)
+		end
+	end)
 
 	--// Set enabled state
 	Interface:SetEnabled(Enabled)
 
 	return Interface
 end
+
+--type MakeDraggableFlags = {
+--	Move: Instance,
+--	Grab: Instance,
+--	Enabled: boolean?,
+--	OnUpdate: ((Vector2) -> ...any)?,
+--	DragBegin: ((InputObject) -> ...any)?,
+--	StateChanged: ((MakeDraggableFlags) -> any)?
+--}
+--function ReGui:MakeDraggable(Config: MakeDraggableFlags)
+--	self:CheckConfig(Config, {
+--		Enabled = true
+--	})
+
+--	--// Unpack config
+--	local Move = Config.Move
+--	local Grab = Config.Grab
+--	local Enabled = Config.Enabled
+
+--	local PositionOrgin = nil
+--	local InputOrgin = nil
+
+--	local DragDetector = ReGui:GetChildOfClass(Grab, "UIDragDetector")
+
+--	--// Interface
+--	local Interface = {}
+--	function Interface:SetEnabled(State: boolean)
+--		local StateChanged = Config.StateChanged
+--		self.Enabled = State
+--		DragDetector.Enabled = State
+
+--		--// Invoke the state changed callback function
+--		if StateChanged then 
+--			StateChanged(self)
+--		end
+--	end
+
+--	--// DragDetector event functions
+--	local function DragStart(InputPosition)
+--		local DragBegin = Config.DragBegin
+--		InputOrgin = InputPosition
+
+--		DragBegin(InputPosition)
+--	end
+--	local function DragMovement(InputPosition)
+--		local Delta = InputPosition - InputOrgin
+--		local OnUpdate = Config.OnUpdate
+
+--		OnUpdate(Delta)
+--	end
+
+--	--// Movement functions
+--	local function PositionBegan(InputPosition)
+--		PositionOrgin = Move.Position
+--	end
+--	local function UpdatePosition(Delta)
+--		local Position = UDim2.new(
+--			PositionOrgin.X.Scale, 
+--			PositionOrgin.X.Offset + Delta.X, 
+--			PositionOrgin.Y.Scale, 
+--			PositionOrgin.Y.Offset + Delta.Y
+--		)
+
+--		--// Tween frame element to the new size
+--		Animation:Tween({
+--			Object = Move,
+--			EndProperties = {
+--				Position = Position
+--			}
+--		})
+--	end
+
+--	--// Check configuration
+--	self:CheckConfig(Config, {
+--		OnUpdate = UpdatePosition,
+--		DragBegin = PositionBegan
+--	})
+
+--	--// Connect movement events
+--	DragDetector.DragStart:Connect(DragStart)
+--	DragDetector.DragContinue:Connect(DragMovement)
+
+--	--// Set enabled state
+--	Interface:SetEnabled(Enabled)
+
+--	return Interface
+--end
 
 export type MakeResizableFlags = {
 	MinimumSize: Vector2,
@@ -2362,8 +2491,8 @@ ReGui:DefineElement("Keybind", {
 		Enabled = true,
 		ElementStyle = "Button",
 		UiPadding = UDim.new(),
-		Size = UDim2.fromOffset(60, 20),
-		AutomaticSize = Enum.AutomaticSize.Y
+		AutomaticSize = Enum.AutomaticSize.None,
+		Size = UDim2.new(0.4, 0, 0, 20)
 	},
 	Create = function(self, Config: Keybind)
 		local Value = Config.Value
@@ -2376,7 +2505,8 @@ ReGui:DefineElement("Keybind", {
 		self:Label({
 			Parent = Object, 
 			Text = Label,
-			Position = UDim2.new(1, 5)
+			Position = UDim2.new(1, 5, 0.5),
+			AnchorPoint = Vector2.new(0, 0.5)
 		})
 
 		function Config:SetValue(New: Enum.KeyCode)
@@ -3846,23 +3976,32 @@ ReGui:DefineElement("Table", {
 })
 
 export type List = {
-	Padding: number?
+	Spacing: number?
 }
 ReGui:DefineElement("List", {
 	Base = {
-		Padding = 5,
+		Spacing = 5,
+		HorizontalFlex = Enum.UIFlexAlignment.None,
+		VerticalFlex = Enum.UIFlexAlignment.None,
 	},
 	Create = function(self, Config)
 		local WindowClass = self.WindowClass
-
-		local Padding = Config.Padding
+		
+		--// Unpack configuration
+		local Spacing = Config.Spacing
+		local HorizontalFlex = Config.HorizontalFlex
+		local VerticalFlex = Config.VerticalFlex
 
 		--// Create object
 		local Object = ReGui:InsertPrefab("List", Config)
 		local Class = ReGui:MergeMetatables(Config, Object)
 
-		local ListLayout = Object.UIListLayout
-		ListLayout.Padding = UDim.new(0, Padding)
+		local ListLayout: UIListLayout = Object.UIListLayout
+		ReGui:SetProperties(ListLayout, {
+			Padding = UDim.new(0, Spacing),
+			HorizontalFlex = HorizontalFlex,
+			VerticalFlex = VerticalFlex
+		})
 
 		--// Content canvas
 		local Canvas = ReGui:MakeCanvas({
@@ -4024,11 +4163,39 @@ ReGui:DefineElement("Separator", {
 })
 
 export type Indent = {
-	Offset: number?
+	Scroll: boolean?
 }
 ReGui:DefineElement("Canvas", {
 	Base = {
 		Scroll = false
+	},
+	Create = function(self, Config: Indent)
+		local WindowClass = self.WindowClass
+
+		local Scroll = Config.Scroll
+		local Class = Scroll and "ScrollingCanvas" or "Canvas"
+
+		--// Create object
+		local Object = ReGui:InsertPrefab(Class, Config)
+
+		--// Content canvas
+		local Canvas = ReGui:MakeCanvas({
+			Element = Object,
+			WindowClass = WindowClass,
+			Class = Config
+		})
+
+		return Canvas, Object
+	end,
+})
+
+export type Region = {
+	Scroll: boolean?
+}
+ReGui:DefineElement("Region", {
+	Base = {
+		Scroll = false,
+		AutomaticSize = Enum.AutomaticSize.Y
 	},
 	Create = function(self, Config: Indent)
 		local WindowClass = self.WindowClass
@@ -4909,6 +5076,18 @@ ReGui:DefineElement("Combo", {
 
 			return Func(Class, Value, ...)
 		end
+		
+		local function SetAnimationState(Open: boolean)
+			Object.Interactable = not Open
+
+			--// Animate Arrow button
+			Animation:HeaderCollapseToggle({
+				NoAnimation = NoAnimation,
+				Collapsed = not Open,
+				Toggle = ArrowButton.Icon,
+			})
+
+		end
 
 		local function GetItems()
 			local GetItems = Config.GetItems
@@ -4959,15 +5138,8 @@ ReGui:DefineElement("Combo", {
 			local Selected = self._Selected
 
 			self.Open = Open
-			Object.Interactable = not Open
-
-			--// Animate Arrow button
-			Animation:HeaderCollapseToggle({
-				NoAnimation = NoAnimation,
-				Collapsed = not Open,
-				Toggle = ArrowButton.Icon,
-			})
-
+			SetAnimationState(Open)
+			
 			if not Open	then 
 				--// Close open dropdown
 				if Dropdown then
@@ -5002,7 +5174,9 @@ ReGui:DefineElement("Combo", {
 		Object.Activated:Connect(ToggleOpen)
 
 		--// Update UI
+		SetAnimationState(false)
 		Config:SetDisabled(Disabled)
+		
 		if Selected then
 			Config:SetValue(Selected)
 		end
@@ -5288,7 +5462,7 @@ function WindowClass:SetFocused(Focused: true)
 	local Tags = {
 		Focused = {
 			[Border] = "SelectedBorder",
-			[TitleBar] = "ActiveTitleBar",
+			[TitleBar] = "ActiveTitleBarBg",
 			[TitleLabel] = {
 				TextColor3 = "ActiveTitle"
 			}
