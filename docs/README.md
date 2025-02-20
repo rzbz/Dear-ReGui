@@ -1,24 +1,24 @@
 # Dear ReGui
-Dear ReGui is a retained dear ImGui library remake designed for Roblox!
+Dear ReGui is a retained dear ImGui library remake designed to be used on Roblox!
 This is perfect for beginners and performance.
 
 Demo place: https://www.roblox.com/games/136436665525145/ReGui-Demo
 
-## Documentation
-- https://depso.gitbook.io/regui
-
 ## Notices
 - ReGui is still in beta, please report any bugs by opening an issue on Github
 - Any feedback or suggestions would be great
-- If you would like to fork this, please read the [Forking guide](#forking-guide) section
+- If you would like to fork this, please read the [Forking](#forking) section
+- Technical documentation and addional infomation can be found on the gitbook
   
-## ReGui Usage
-- See the [Getting Started & Integration](#getting-started--integration) section for more details
+## Usage
+ReGui can be used on any GUI type you want such as CoreGui, PlayerGui, BillboardGui, PluginGui, and SurfaceGui.
+Installation is as simple as importing the rbxm model into your project and connecting a client script to begin using it!
 
-## Demos/Usage examples
-- The demo window can be found [here](/Demo%20window.lua)
-- More usage examples and element documentation can be found on the [Wiki](https://github.com/depthso/Roblox-ImGUI/wiki)
+ReGui requires prefabs as it does not generate the base elments required for many elements such as the Window.
 
+See the [Getting Started - Installing](https://depso.gitbook.io/regui/getting-started/installing) section for more details
+
+Once you have installed ReGUI into your project, it can be used by any client script anywhere!
 ```lua
 local Window = ReGui:Window({
 	Title = "Hello world!",
@@ -38,46 +38,11 @@ Window:Slider({Label="float", Format="%.1f/%s", Minium=0, Maxium=1})
 
 <img src="https://github.com/user-attachments/assets/9181571f-39c3-42bc-8677-3a433c92e6e3" width="400px">
 
+## Demo
+The best way to learn ReGUI is to look through the Demo window which comes bundled with ReGUI.
+The demo window is updated every significant update such as an addition of an element or a flag has been renamed.
 
-## Getting Started & Integration
-Integrating Dear ImGui within your script requires a prefabs base to provide elements \
-Using `:Init` to overwrite the default configuration, point `Prefabs` to the prefabs Gui instance
-
-<table>
-  <tr>
-    <th>Type</th>
-  </tr>
-  <tr>
-    <td>Roblox</td>
-    <td>
-	    
-```lua
--- Replace 'game.ReplicatedStorage.ReGui' with the location of the ReGui module
-local ReGui = require(game.ReplicatedStorage.ReGui)
-ReGui:Init()
-```
-
-</td>
-  </tr>
-  <tr>
-    <td>External</td>
-    <td>
-	    
-Reference detections have been mitigated using **cloneref** which compatibility is checked, \
-if support is not found, for example using this in _studio_, you are still able to use it
-
-```lua
-local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
-local PrefabsId = `rbxassetid://{ReGui.PrefabsId}`
-
---// Externally import the Prefabs asset
-ReGui:Init({
-	Prefabs = game:GetService("InsertService"):LoadLocalAsset(PrefabsId)
-})
-```
-</td>
-  </tr>
-</table>
+https://github.com/depthso/Dear-ReGui/blob/main/Demo%20window.lua
 
 ## Gallery
 <table>
@@ -93,8 +58,8 @@ ReGui:Init({
 	</tr>
 </table>
 
-## Forking guide
-- If you would like to create a fork of ReGui, please read the steps below for the category
+## Forking
+If you would like to create a fork of ReGui, please read the steps below
 
 ### Custom Prefabs
 Using custom prefabs with ReGUI is very simple. 
