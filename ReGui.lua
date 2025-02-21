@@ -1226,6 +1226,78 @@ function ReGui:GetChildOfClass(Object: GuiObject, ClassName: string): GuiObject
 	return Child
 end
 
+export type ConnectDrag = {
+	DragStart: () -> nil,
+	DragEnd: () -> nil,
+	DragMovement: () -> nil,
+}
+function ReGui:ConnectDrag(Frame: GuiObject, Data)
+	self:CheckConfig(Data, {
+		DragStart = EmptyFunction,
+		DragEnd = EmptyFunction,
+		DragMovement = EmptyFunction,
+	})
+	
+	--// Unpack Configuration
+	local DragStart = Data.DragStart
+	local DragEnd = Data.DragEnd
+	local DragMovement = Data.DragMovement
+	
+	--// Whitelist
+	local UserInputTypes = {
+		Enum.UserInputType.MouseButton1,
+		Enum.UserInputType.Touch
+	}
+	
+	local Dragging = false
+	
+	local function UserInputTypeAllowed(InputType: Enum.UserInputType)
+		return table.find(UserInputTypes, InputType)
+	end
+	
+	local function CanDrag(Key): boolean?
+		if not UserInputTypeAllowed(Key.UserInputType) then return end
+		return true
+	end
+	local function KeyToVector(Key): Vector2
+		local InputPosition = Key.Position
+		local InputVector = Vector2.new(InputPosition.X, InputPosition.Y)
+		return InputVector
+	end
+
+	--// DragDetector event functions
+	local function _DragStart(Key)
+		if not CanDrag(Key) then return end
+		local InputVector = KeyToVector(Key)
+		
+		Dragging = true
+		DragStart(InputVector)
+	end
+	local function _DragEnd(Key)
+		if not Dragging then return end
+		local InputVector = KeyToVector(Key)
+		
+		Dragging = false
+		DragEnd(InputVector)
+	end
+	local function _DragMovement(Key)
+		if not Dragging then return end
+		
+		local InputVector = KeyToVector(Key)
+		DragMovement(InputVector)
+	end
+	
+	--// Connect movement events
+	Frame.InputBegan:Connect(_DragStart)
+	UserInputService.InputEnded:Connect(_DragEnd)
+	UserInputService.TouchMoved:Connect(_DragMovement)
+	UserInputService.InputChanged:Connect(function(Input)
+		if Input.UserInputType == Enum.UserInputType.MouseMovement then 
+			return _DragMovement(Input)
+		end
+	end)
+end
+
 type MakeDraggableFlags = {
 	Move: Instance,
 	Grab: Instance,
@@ -1246,17 +1318,6 @@ function ReGui:MakeDraggable(Config: MakeDraggableFlags)
 
 	local PositionOrgin = nil
 	local InputOrgin = nil
-	local Dragging = false
-
-	--// Whitelist
-	local UserInputTypes = {
-		Enum.UserInputType.MouseButton1,
-		Enum.UserInputType.Touch
-	}
-
-	local function UserInputTypeAllowed(InputType: Enum.UserInputType)
-		return table.find(UserInputTypes, InputType)
-	end
 
 	--// Interface
 	local Interface = {}
@@ -1272,36 +1333,19 @@ function ReGui:MakeDraggable(Config: MakeDraggableFlags)
 	end
 	function Interface:CanDrag(Key)
 		if not self.Enabled then return end
-		if not UserInputTypeAllowed(Key.UserInputType) then return end
-		
 		return true
 	end
 
 	--// DragDetector event functions
-	local function DragStart(Key)
-		if not Interface:CanDrag(Key) then return end
-		
-		local InputPosition = Key.Position
-		local InputVector = Vector2.new(InputPosition.X, InputPosition.Y)
+	local function DragStart(InputVector)
+		if not Interface:CanDrag() then return end
 		
 		local DragBegin = Config.DragBegin
-		InputOrgin =InputVector
-		Dragging = true
+		InputOrgin = InputVector
 
 		DragBegin(InputOrgin)
 	end
-	local function DragEnd(Key)
-		if not Dragging then return end
-		if not Interface:CanDrag(Key) then return end
-		
-		Dragging = false
-	end
-	local function DragMovement(Key)
-		if not Dragging then return end
-		
-		local InputPosition = Key.Position
-		local InputVector = Vector2.new(InputPosition.X, InputPosition.Y)
-		
+	local function DragMovement(InputVector)
 		local Delta = InputVector - InputOrgin
 		local OnUpdate = Config.OnUpdate
 
@@ -1336,14 +1380,10 @@ function ReGui:MakeDraggable(Config: MakeDraggableFlags)
 	})
 	
 	--// Connect movement events
-	Grab.InputBegan:Connect(DragStart)
-	UserInputService.InputEnded:Connect(DragEnd)
-	UserInputService.TouchMoved:Connect(DragMovement)
-	UserInputService.InputChanged:Connect(function(Input)
-		if Input.UserInputType == Enum.UserInputType.MouseMovement then 
-			return DragMovement(Input)
-		end
-	end)
+	self:ConnectDrag(Grab, {
+		DragStart = DragStart,
+		DragMovement = DragMovement,
+	})
 
 	--// Set enabled state
 	Interface:SetEnabled(Enabled)
@@ -4389,7 +4429,7 @@ ReGui:DefineElement("SliderBase", {
 		local Grab = Track.Grab
 		local ValueText = Track.ValueText
 
-		local Drag = ReGui:GetChildOfClass(Track, "UIDragDetector")
+		--local Drag = ReGui:GetChildOfClass(Track, "UIDragDetector")
 		local UIPadding = Track:FindFirstChildOfClass("UIPadding")
 
 		local Class = ReGui:MergeMetatables(Config, Object)
@@ -4501,15 +4541,19 @@ ReGui:DefineElement("SliderBase", {
 		local function DragMovement(InputPosition)
 			if not CanDrag() then return end
 
-			local MouseX = InputPosition.X
-			local LeftPos = Object.AbsolutePosition.X
+			--// Track Position and Size
+			local TrackLeft = Track.AbsolutePosition.X
+			local TrackWidth = Track.AbsoluteSize.X
 
-			local Percentage = (MouseX - LeftPos) / Object.AbsoluteSize.X
-			Percentage = math.clamp(Percentage, 0, 1)
+			--// Get the mouse position relative to the track
+			local MouseX = InputPosition.X
+			local RelativeX = MouseX - TrackLeft
+
+			--// Get the percentage based on the width of the track
+			local Percentage = math.clamp(RelativeX / TrackWidth, 0, 1)
 
 			Config:SetValue(Percentage, true)
 		end
-
 		--// Update UI
 		Grab.Visible = not NoGrab
 		Config:SetValue(Value) -- Ensure the grab is positioned correctly on initialization
@@ -4524,10 +4568,15 @@ ReGui:DefineElement("SliderBase", {
 		})
 
 		--// Connect movement events
-		if not NoClick then
-			Drag.DragStart:Connect(DragMovement)
-		end
-		Drag.DragContinue:Connect(DragMovement)
+		ReGui:ConnectDrag(Track, {
+			DragStart =  not NoClick and DragMovement or nil,
+			DragMovement = DragMovement,
+		})
+		
+		--if not NoClick then
+		--	Drag.DragStart:Connect(DragMovement)
+		--end
+		--Drag.DragContinue:Connect(DragMovement)
 
 		return Class, Object
 	end,
@@ -4717,8 +4766,13 @@ ReGui:DefineElement("DragInt", {
 		Config:SetDisabled(Disabled)
 
 		--// Connect movement events
-		Drag.DragStart:Connect(DragStart)
-		Drag.DragContinue:Connect(DragMovement)
+		ReGui:ConnectDrag(Track, {
+			DragStart = DragStart,
+			DragMovement = DragMovement,
+		})
+		
+		--Drag.DragStart:Connect(DragStart)
+		--Drag.DragContinue:Connect(DragMovement)
 
 		--// Set object animations
 		ReGui:SetAnimation(Object, "Inputs")
