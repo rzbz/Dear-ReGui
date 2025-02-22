@@ -792,8 +792,9 @@ end
 local Windows = Demos:CollapsingHeader({
 	Title = "Popups & child windows"
 })
-local ChildWindows = Windows:TreeNode({Title="Child windows"})
 
+--// ChildWindows
+local ChildWindows = Windows:TreeNode({Title="Child windows"})
 local Window = ChildWindows:Window({
 	Size = UDim2.fromOffset(300, 200),
 	NoSelect = true,
@@ -807,6 +808,101 @@ Window:Label({Text="Hello, world!"})
 Window:Button({Text = "Save"})
 Window:InputText({Label="string"})
 Window:SliderInt({Label="float", Format="%.1f/%s", Minimum=0, Maximum=1})
+
+--// Modals
+local Modals = Windows:TreeNode({Title="Modals"})
+Modals:Label({
+	Text="Modal windows are like popups but the user cannot close them by clicking outside.",
+	TextWrapped = true
+})
+
+Modals:Button({
+	Text = "Delete..",
+	Callback = function()
+		local ModalWindow = Modals:PopupModal({
+			Title = "Delete?"
+		})
+
+		ModalWindow:Label({
+			Text = "All those beautiful files will be deleted.\nThis operation cannot be undone!",
+			TextWrapped = true
+		})
+		ModalWindow:Separator()
+		
+		ModalWindow:Checkbox({
+			Value = false,
+			Label = "Don't ask me next time"
+		})
+
+		local Row = ModalWindow:Row({
+			Expanded = true
+		})
+		Row:Button({
+			Text = "Okay",
+			Callback = function()
+				ModalWindow:ClosePopup()
+			end,
+		})
+		Row:Button({
+			Text = "Cancel",
+			Callback = function()
+				ModalWindow:ClosePopup()
+			end,
+		})
+	end,
+})
+
+Modals:Button({
+	Text = "Stacked modals..",
+	Callback = function()
+		local Stacked1 = Modals:PopupModal({
+			Title = "Stacked 1"
+		})
+
+		Stacked1:Label({
+			Text = `Hello from Stacked The First\nUsing Theme["ModalWindowDimBg"] behind it.`,
+			TextWrapped = true
+		})
+		Stacked1:Combo({
+			Items = {"aaaa", "bbbb", "cccc", "dddd", "eeee"}
+		})
+		Stacked1:InputColor3({
+			Value = Color3.fromRGB(102, 178, 0)
+		})
+		
+		Stacked1:Button({
+			Text = "Add another modal..",
+			Callback = function()
+				local Stacked2 = Modals:PopupModal({
+					Title = "Stacked 2"
+				})
+				
+				Stacked2:Label({
+					Text = "Hello from Stacked The Second!",
+					TextWrapped = true
+				})
+				
+				Stacked2:InputColor3({
+					Value = Color3.fromRGB(102, 178, 0)
+				})
+				
+				Stacked2:Button({
+					Text = "Close",
+					Callback = function()
+						Stacked2:ClosePopup()
+					end,
+				})
+			end,
+		})
+
+		Stacked1:Button({
+			Text = "Close",
+			Callback = function()
+				Stacked1:ClosePopup()
+			end,
+		})
+	end,
+})
 
 local TablesNColumns = Demos:CollapsingHeader({
 	Title = "Tables & Columns"
