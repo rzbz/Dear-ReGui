@@ -2,13 +2,14 @@
 Dear ReGui is a retained dear ImGui library remake designed to be used on Roblox!
 This is perfect for beginners and performance.
 
-Demo place: https://www.roblox.com/games/136436665525145/ReGui-Demo
+Demo place: https://www.roblox.com/games/136436665525145/ReGui-Demo \
+Documentation: https://depso.gitbook.io/regui
 
 ## Notices
 - ReGui is still in beta, please report any bugs by opening an issue on Github
 - Any feedback or suggestions would be great
 - If you would like to fork this, please read the [Forking](#forking) section
-- Technical documentation and addional infomation can be found on the gitbook
+- Technical documentation and addional infomation such as commonly asked questions can be found on the Gitbook documentation
   
 ## Usage
 ReGui can be used on any GUI type you want such as CoreGui, PlayerGui, BillboardGui, PluginGui, and SurfaceGui.
@@ -33,7 +34,7 @@ Window:Button({
 	end,
 })
 Window:InputText({Label="string"})
-Window:Slider({Label="float", Format="%.1f/%s", Minium=0, Maxium=1})
+Window:Slider({Label="float", Format="%.1f/%s", Minimum=0, Maximum=1})
 ```
 
 <img src="https://github.com/user-attachments/assets/9181571f-39c3-42bc-8677-3a433c92e6e3" width="400px">
@@ -68,4 +69,4 @@ To use custom prefabs you can point the library's `Prefabs` to the custom prefab
 ReGui prefabs asset: [Prefabs Gui - Roblox](https://create.roblox.com/store/asset/71968920594655)
 
 ---
-<img src="/docs/images/Dear ReGui.png" width="40%">
+<img src="/docs/images/Dear ReGui.png" width="30%">
