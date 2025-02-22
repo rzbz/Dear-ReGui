@@ -47,13 +47,13 @@ https://github.com/depthso/Dear-ReGui/blob/main/Demo%20window.lua
 ## Gallery
 <table>
 	<tr>
-		<td width="600">
+		<td width="400">
 			Demo window
 			<img src="https://github.com/user-attachments/assets/0b9028a1-4615-4ddb-a2cc-0068653f562e">
 		</td>
 		<td width="600">
-			Demo Window + Light Theme
-			<img src="https://github.com/user-attachments/assets/2c6eab9a-83c9-4b1b-b589-f9debbe21d84">
+			Advanced customization example
+			<img src="https://github.com/user-attachments/assets/c2e9be5d-819b-4620-9a0f-b99f42e21886">
 		</td>
 	</tr>
 </table>
