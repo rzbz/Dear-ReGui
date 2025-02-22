@@ -13,10 +13,10 @@
 
 local ReGui = {
 	--// Package data
-	Version = "1.1",
+	Version = "1.2",
 	Author = "Depso",
 	License = "MIT",
-	Repository = "https://github.com/depthso/regui",
+	Repository = "https://github.com/depthso/Dear-ReGui/",
 
 	Debug = false,
 
@@ -33,7 +33,7 @@ local ReGui = {
 	--// Classes
 	Elements = {},
 	Animation = {
-		DefaultTweenInfo = TweenInfo.new(0.08)
+		DefaultTweenInfo = TweenInfo.new(0.08),
 	},
 
 	Windows = {},
@@ -146,6 +146,7 @@ type ThemeData = {
 ReGui.ThemeConfigs = {
 	--// Base theme
 	DarkTheme = {
+		AnimationTweenInfo = TweenInfo.new(0.08),
 		TextFont = Font.fromName("Inconsolata"),
 		Text = ReGui.Accent.White,
 		TextDisabled = ReGui.Accent.Gray,
@@ -179,8 +180,11 @@ ReGui.ThemeConfigs = {
 		ActiveTabBg = ReGui.Accent.Light,
 		TabsBarBg = Color3.fromRGB(36, 36, 36),
 		TabsBarBgTransparency = 1,
+		TabPadding = UDim.new(0, 8),
 
 		--// Window
+		ModalWindowDimBg = Color3.fromRGB(230, 230, 230),
+		ModalWindowDimTweenInfo = TweenInfo.new(0.2),
 		WindowBg = ReGui.Accent.Black,
 		WindowBgTransparency = 0.05,
 		Border = ReGui.Accent.Gray,
@@ -227,6 +231,7 @@ ReGui.ThemeConfigs = {
 		ActiveTitleBarBg = ReGui.Accent.Gray,
 	},
 	Classic = {
+		AnimationTweenInfo = TweenInfo.new(0),
 		Text = Color3.fromRGB(255, 255, 255),
 
 		--// Elements
@@ -265,6 +270,9 @@ ReGui.ThemeConfigs = {
 }
 
 ReGui.ElementColors = {
+	["ModalWindowDim"] = {
+		BackgroundColor3 = "ModalWindowDimBg"
+	},
 	["Region"] = {
 		BackgroundColor3 = "RegionBg",
 		BackgroundTransparency = "RegionBgTransparency",
@@ -306,10 +314,6 @@ ReGui.ElementColors = {
 	["TabsBoxTabsBar"] = {
 		BackgroundColor3 = "TabsBarBg",
 		BackgroundTransparency = "TabsBarBgTransparency",
-	},
-	["TabPadding"] = {
-		PaddingTop = "TabTextPaddingTop",
-		PaddingBottom = "TabTextPaddingBottom"
 	},
 	["Border"] = {
 		Color = "Border"
@@ -599,7 +603,7 @@ ReGui.ElementFlags = {
 		end,
 	},
 	{
-		Recursive = true,
+		--Recursive = true,
 		Properties = {"CornerRadius"},
 		Callback = function<StyleFunc>(Data, Object, Value)
 			local UICorner = ReGui:GetChildOfClass(Object, "UICorner")
@@ -662,15 +666,24 @@ ReGui.ElementFlags = {
 		},
 		Callback = function<StyleFunc>(Data, Object, Value)
 			Value = Value or 0
-
+			
+			--// Convert number value into a UDim
+			if typeof(Value) == "number" then
+				Value = UDim.new(0, Value)
+			end
+			
 			local Class = Data.Class
-			ReGui:CheckConfig(Class, {
-				PaddingBottom = UDim.new(0, Value),
-				PaddingLeft = UDim.new(0, Value),
-				PaddingRight = UDim.new(0, Value),
-				PaddingTop = UDim.new(0, Value),
-			})
-
+			
+			local IsUiPadding = Class.UiPadding
+			if IsUiPadding then
+				ReGui:CheckConfig(Class, {
+					PaddingBottom = Value,
+					PaddingLeft = Value,
+					PaddingRight = Value,
+					PaddingTop = Value,
+				})
+			end
+			
 			local UIPadding = ReGui:GetChildOfClass(Object, "UIPadding")
 			ReGui:SetProperties(UIPadding, {
 				PaddingBottom = Class.PaddingBottom,
@@ -858,7 +871,8 @@ type HeaderCollapseToggle = {
 	},
 	Toggle: GuiObject,
 	NoAnimation: boolean?,
-	Collapsed: boolean
+	Collapsed: boolean,
+	Tweeninfo: TweenInfo?,
 }
 function Animation:HeaderCollapseToggle(Data: HeaderCollapseToggle)
 	--// Check configuration
@@ -874,11 +888,13 @@ function Animation:HeaderCollapseToggle(Data: HeaderCollapseToggle)
 	local NoAnimation = Data.NoAnimation
 	local Rotations = Data.Rotations
 	local Collapsed = Data.Collapsed
+	local Tweeninfo = Data.Tweeninfo
 
 	local Rotation = Collapsed and Rotations.Closed or Rotations.Open
 
 	--// Animate toggle
 	self:Tween({
+		Tweeninfo = Tweeninfo,
 		NoAnimation = NoAnimation,
 		Object = Toggle,
 		EndProperties = {
@@ -905,6 +921,7 @@ type HeaderCollapse = {
 }
 function Animation:HeaderCollapse(Data: HeaderCollapse): Tween
 	--// Unpack config
+	local Tweeninfo = Data.Tweeninfo
 	local Collapsed = Data.Collapsed
 	local ClosedSize = Data.ClosedSize
 	local OpenSize: UDim2 = Data.OpenSize
@@ -926,6 +943,7 @@ function Animation:HeaderCollapse(Data: HeaderCollapse): Tween
 
 	--// Build and play animation keyframes
 	self:HeaderCollapseToggle({
+		Tweeninfo = Tweeninfo,
 		Collapsed = Collapsed,
 		NoAnimation = NoAnimation,
 		Toggle = Toggle,
@@ -933,6 +951,7 @@ function Animation:HeaderCollapse(Data: HeaderCollapse): Tween
 	})
 
 	local Tween = self:Tween({
+		Tweeninfo = Tweeninfo,
 		NoAnimation = NoAnimation,
 		Object = Resize,
 		StartProperties = {
@@ -1884,7 +1903,8 @@ end
 function ReGui:GetContentSize(Object: GuiObject): Vector2
 	local UIListLayout = Object:FindFirstChildOfClass("UIListLayout")
 	local UIPadding = Object:FindFirstChildOfClass("UIPadding")
-
+	local UIStroke = Object:FindFirstChildOfClass("UIStroke")
+	
 	local ContentSize
 
 	--// Fetch absolute size
@@ -1903,6 +1923,11 @@ function ReGui:GetContentSize(Object: GuiObject): Vector2
 		local Right = UIPadding.PaddingRight.Offset
 
 		ContentSize += Vector2.new(Left+Right, Top+Bottom)
+	end
+	
+	if UIStroke then
+		local Thickness = UIStroke.Thickness
+		ContentSize += Vector2.new(Thickness/2, Thickness/2)
 	end
 
 	return ContentSize
@@ -2230,6 +2255,18 @@ function Elements:TagElements(Objects)
 	end
 end
 
+function Elements:GetThemeKey(Tag: string)
+	local WindowClass = self.WindowClass
+	local Themes = ReGui.ThemeConfigs
+	local BaseTheme = Themes.DarkTheme
+
+	if WindowClass then 
+		return WindowClass:GetThemeKey(Tag)
+	end
+	
+	return BaseTheme[Tag]
+end
+
 function Elements:SetColorTags(Objects, Animate)
 	local WindowClass = self.WindowClass
 	if not WindowClass then return end
@@ -2288,11 +2325,10 @@ ReGui:DefineElement("Dropdown", {
 
 		function Config:Close()
 			if self.Disabled then return end
-
+			self.Disabled = true
+			
 			Hover:Disconnect()
 			Object:Remove()
-
-			self.Disabled = true
 
 			--// Invoke closed callback
 			OnClosed()
@@ -2306,9 +2342,10 @@ ReGui:DefineElement("Dropdown", {
 		end
 
 		--// Position dropdown
+		local Relative = Object.Parent.AbsolutePosition
 		Object.Position = UDim2.fromOffset(
-			Position.X + Padding, 
-			Position.Y + Size.Y
+			Position.X - Relative.X + Padding, 
+			Position.Y - Relative.Y + Size.Y
 		)
 
 		--// Append items
@@ -2370,9 +2407,11 @@ ReGui:DefineElement("Tooltip", {
 
 			--// Set frame position to mosue location
 			local X, Y = ReGui:GetMouseLocation()
+			local Position = Overlay.Parent.AbsolutePosition
+			
 			Overlay.Position = UDim2.fromOffset(
-				X + Offset, 
-				Y + Offset
+				X - Position.X + Offset, 
+				Y - Position.Y + Offset
 			)
 		end
 
@@ -2758,7 +2797,7 @@ function TabsBoxClass:UpdateButton(Tab: table, Selected: boolean)
 	})
 end
 
-function TabsBoxClass:ShowTab(Target: (table|string))
+function TabsBoxClass:SetActiveTab(Target: (table|string))
 	--// Unpack class data
 	local Tabs = self.Tabs
 	local NoAnimation = self.NoAnimation
@@ -2884,7 +2923,7 @@ function TabsBoxClass:CreateTab(Config: Tab): Elements
 	local Tab = TabButton:Clone()
 	local Button = Tab.Button
 	local Label = Button.Label
-	local Padding = ReGui:GetChildOfClass(Button, "UIPadding")
+	local TextPadding = ReGui:GetChildOfClass(Button, "UIPadding")
 
 	Label.Text = tostring(Name)
 	Tab.Parent = TabsBar
@@ -2892,6 +2931,8 @@ function TabsBoxClass:CreateTab(Config: Tab): Elements
 
 	--// Create new page
 	local NewPage = Page:Clone()
+	local PagePadding = ReGui:GetChildOfClass(NewPage, "UIPadding")
+	
 	ReGui:SetProperties(NewPage, {
 		Parent = Body,
 		Name = Name,
@@ -2906,7 +2947,7 @@ function TabsBoxClass:CreateTab(Config: Tab): Elements
 	})
 
 	local function Activated()
-		self:ShowTab(Canvas)
+		self:SetActiveTab(Canvas)
 	end
 
 	local TabData = {
@@ -2947,7 +2988,8 @@ function TabsBoxClass:CreateTab(Config: Tab): Elements
 	WindowClass:TagElements({
 		[Button] = "Tab",
 		[Label] = "TabLabel",
-		[Padding] = "TabPadding",
+		[TextPadding] = "TabsBoxTabPadding",
+		[PagePadding] = "TabsBoxPagePadding",
 	})
 
 	--// Apply automatic size
@@ -2977,16 +3019,16 @@ function TabsBoxClass:CreateTab(Config: Tab): Elements
 end
 
 export type TabsBox = {
-	TabsBar: boolean?,
+	NoTabsBar: boolean?,
 	NoAnimation: boolean?,
 
 	CreateTab: (TabsBox, Tab) -> Elements,
 	RemoveTab: (TabsBox, Target: (table|string)) -> nil,
-	ShowTab: (TabsBox, Target: (table|string)) -> nil,
+	SetActiveTab: (TabsBox, Target: (table|string)) -> nil,
 }
 ReGui:DefineElement("TabsBox", {
 	Base = {
-		TabsBar = true
+		NoTabsBar = false
 	},
 	ColorData = {
 		["DeselectedTab"] = {
@@ -3006,11 +3048,21 @@ ReGui:DefineElement("TabsBox", {
 		["TabsBoxLine"] = {
 			Color = "ActiveTabBg",
 		},
+		["TabsBoxTabPadding"] = {
+			PaddingTop = "TabTextPaddingTop",
+			PaddingBottom = "TabTextPaddingBottom"
+		},
+		["TabsBoxPagePadding"] = {
+			PaddingBottom = "TabPadding",
+			PaddingLeft = "TabPadding",
+			PaddingRight = "TabPadding",
+			PaddingTop = "TabPadding",
+		}
 	},
 	Create = function(self, Config: TabsBox): (TabsBox, GuiObject)
 		local WindowClass = self.WindowClass
 
-		local TabsBarShown = Config.TabsBar
+		local NoTabsBar = Config.NoTabsBar
 
 		--// Create TabsBox object
 		local Object = ReGui:InsertPrefab("TabsBox", Config)
@@ -3029,7 +3081,7 @@ ReGui:DefineElement("TabsBox", {
 		PageTemplate.Visible = false
 
 		--// Hide/Show elements
-		TabsBar.Visible = TabsBarShown
+		TabsBar.Visible = not NoTabsBar
 
 		--// Merge table into class
 		Merge(Class, Config)
@@ -3150,10 +3202,13 @@ ReGui:DefineElement("Checkbox", {
 		end
 
 		local function SetStyle(Value: boolean, NoAnimation: boolean)
+			local Tweeninfo = Canvas:GetThemeKey("AnimationTweenInfo")
+			
 			--// Animate tick
 			local Size = Value and TickedSize or UntickedSize
 			Animation:Tween({
 				Object = Tick,
+				Tweeninfo = Tweeninfo,
 				NoAnimation = NoAnimation,
 				EndProperties = {
 					Size = Size
@@ -4029,6 +4084,8 @@ ReGui:DefineElement("List", {
 		Spacing = 5,
 		HorizontalFlex = Enum.UIFlexAlignment.None,
 		VerticalFlex = Enum.UIFlexAlignment.None,
+		HorizontalAlignment = Enum.HorizontalAlignment.Left,
+		VerticalAlignment = Enum.VerticalAlignment.Top
 	},
 	Create = function(self, Config)
 		local WindowClass = self.WindowClass
@@ -4037,6 +4094,8 @@ ReGui:DefineElement("List", {
 		local Spacing = Config.Spacing
 		local HorizontalFlex = Config.HorizontalFlex
 		local VerticalFlex = Config.VerticalFlex
+		local HorizontalAlignment = Config.HorizontalAlignment
+		local VerticalAlignment = Config.VerticalAlignment
 
 		--// Create object
 		local Object = ReGui:InsertPrefab("List", Config)
@@ -4046,7 +4105,9 @@ ReGui:DefineElement("List", {
 		ReGui:SetProperties(ListLayout, {
 			Padding = UDim.new(0, Spacing),
 			HorizontalFlex = HorizontalFlex,
-			VerticalFlex = VerticalFlex
+			VerticalFlex = VerticalFlex,
+			HorizontalAlignment = HorizontalAlignment,
+			VerticalAlignment = VerticalAlignment
 		})
 
 		--// Content canvas
@@ -4079,7 +4140,7 @@ ReGui:DefineElement("CollapsingHeader", {
 		NoAutoRegistor = true,
 		NoAutoFlags = true,
 	},
-	Create = function(self, Config: CollapsingHeader): CollapsingHeader
+	Create = function(Canvas, Config: CollapsingHeader): CollapsingHeader
 		--// Unpack config
 		local Title = Config.Title
 		local Icon = Config.Icon
@@ -4094,7 +4155,7 @@ ReGui:DefineElement("CollapsingHeader", {
 		local Titlebar = Object.TitleBar
 		local ToggleButton = Titlebar.Toggle.Icon
 
-		local TitleText = self:Label({
+		local TitleText = Canvas:Label({
 			ColorTag = "CollapsingHeader",
 			Text = Title,
 			Parent = Titlebar,
@@ -4102,7 +4163,7 @@ ReGui:DefineElement("CollapsingHeader", {
 		})
 
 		--// Content canvas
-		local Canvas, ContentFrame = self:Indent({
+		local Canvas, ContentFrame = Canvas:Indent({
 			Parent = Object,
 			Offset = Offset,
 			LayoutOrder = 2,
@@ -4118,12 +4179,14 @@ ReGui:DefineElement("CollapsingHeader", {
 			self.Collapsed = Collapsed
 
 			local ContentSize = ReGui:GetContentSize(ContentFrame)
+			local Tweeninfo = Canvas:GetThemeKey("AnimationTweenInfo")
 
 			--// Sizes
 			local ClosedSize = UDim2.fromScale(1, 0)
 			local OpenSize = ClosedSize + UDim2.fromOffset(0, ContentSize.Y)
 
 			Animation:HeaderCollapse({
+				Tweeninfo = Tweeninfo,
 				Collapsed = Collapsed,
 				Toggle = ToggleButton,
 				Resize = ContentFrame,
@@ -4163,7 +4226,7 @@ ReGui:DefineElement("CollapsingHeader", {
 		ToggleButton.Activated:Connect(Toggle)
 
 		--// Register elements
-		self:TagElements({
+		Canvas:TagElements({
 			[Titlebar] = "CollapsingHeader",
 		})
 
@@ -4201,7 +4264,9 @@ ReGui:DefineElement("Separator", {
 			Visible = Text ~= nil,
 			Parent = Object,
 			LayoutOrder = 2,
-			Size = UDim2.new()
+			Size = UDim2.new(),
+			PaddingLeft = UDim.new(0, 5),
+			PaddingRight = UDim.new(0, 5),
 		})
 
 		return Object
@@ -4243,7 +4308,7 @@ ReGui:DefineElement("Region", {
 		Scroll = false,
 		AutomaticSize = Enum.AutomaticSize.Y
 	},
-	Create = function(self, Config: Indent)
+	Create = function(self, Config: Region)
 		local WindowClass = self.WindowClass
 
 		local Scroll = Config.Scroll
@@ -4251,6 +4316,28 @@ ReGui:DefineElement("Region", {
 
 		--// Create object
 		local Object = ReGui:InsertPrefab(Class, Config)
+
+		--// Content canvas
+		local Canvas = ReGui:MakeCanvas({
+			Element = Object,
+			WindowClass = WindowClass,
+			Class = Config
+		})
+
+		return Canvas, Object
+	end,
+})
+
+ReGui:DefineElement("Group", {
+	Base = {
+		Scroll = false,
+		AutomaticSize = Enum.AutomaticSize.Y
+	},
+	Create = function(self, Config)
+		local WindowClass = self.WindowClass
+		
+		--// Create object
+		local Object = ReGui:InsertPrefab("Group", Config)
 
 		--// Content canvas
 		local Canvas = ReGui:MakeCanvas({
@@ -4494,6 +4581,8 @@ ReGui:DefineElement("SliderBase", {
 		end
 
 		function Config:SetValue(Value, IsPercentage: boolean)
+			local Tweeninfo = Canvas:GetThemeKey("AnimationTweenInfo")
+			
 			local Minimum = Config.Minimum
 			local Maximum = Config.Maximum
 
@@ -4517,6 +4606,7 @@ ReGui:DefineElement("SliderBase", {
 			--// Animate
 			Animation:Tween({
 				Object = Grab,
+				Tweeninfo = Tweeninfo,
 				NoAnimation = NoAnimation,
 				EndProperties = Props
 			})
@@ -5137,16 +5227,18 @@ ReGui:DefineElement("Combo", {
 			return Func(Class, Value, ...)
 		end
 		
-		local function SetAnimationState(Open: boolean)
+		local function SetAnimationState(Open: boolean, NoAnimation: boolean?)
+			local Tweeninfo = Canvas:GetThemeKey("AnimationTweenInfo")
+			
 			Object.Interactable = not Open
 
 			--// Animate Arrow button
 			Animation:HeaderCollapseToggle({
+				Tweeninfo = Tweeninfo,
 				NoAnimation = NoAnimation,
 				Collapsed = not Open,
 				Toggle = ArrowButton.Icon,
 			})
-
 		end
 
 		local function GetItems()
@@ -5198,7 +5290,7 @@ ReGui:DefineElement("Combo", {
 			local Selected = self._Selected
 
 			self.Open = Open
-			SetAnimationState(Open)
+			SetAnimationState(Open, NoAnimation)
 			
 			if not Open	then 
 				--// Close open dropdown
@@ -5234,7 +5326,7 @@ ReGui:DefineElement("Combo", {
 		Object.Activated:Connect(ToggleOpen)
 
 		--// Update UI
-		SetAnimationState(false)
+		SetAnimationState(false, true)
 		Config:SetDisabled(Disabled)
 		
 		if Selected then
@@ -5268,6 +5360,14 @@ local WindowClass = {
 	Open = true,
 	Focused = false
 }
+
+function WindowClass:Tween(Data)
+	ReGui:CheckConfig(Data, {
+		Tweeninfo = self:GetThemeKey("AnimationTweenInfo")
+	})
+	
+	return Animation:Tween(Data)
+end
 
 function WindowClass:TagElements(Objects)
 	local Debug = ReGui.Debug
@@ -5450,7 +5550,7 @@ function WindowClass:SetSize(Size: (Vector2|UDim2), NoAnimation: boolean): Windo
 	end
 
 	--// Tween to the new size
-	Animation:Tween({
+	self:Tween({
 		Object = Window,
 		NoAnimation = NoAnimation,
 		EndProperties = {
@@ -5544,7 +5644,7 @@ function WindowClass:SetFocused(Focused: true)
 	})
 end
 
-function WindowClass:GetColor(Tag: string)
+function WindowClass:GetThemeKey(Tag: string)
 	local Themes = ReGui.ThemeConfigs
 
 	local BaseTheme = Themes.DarkTheme
@@ -5596,6 +5696,7 @@ function WindowClass:SetCollapsed(Collapsed: boolean, NoAnimation: false): Windo
 	local ResizeGrab = self.ResizeGrab
 	local OpenSize = self.Size
 	local AutoSize = self.AutoSize
+	local Tweeninfo = self:GetThemeKey("AnimationTweenInfo")
 
 	local WindowSize = self:GetWindowSize()
 	local TitleBarSizeY = self:GetTitleBarSizeY()
@@ -5608,9 +5709,10 @@ function WindowClass:SetCollapsed(Collapsed: boolean, NoAnimation: false): Windo
 
 	--// Change the window focus
 	self:SetFocused(not Collapsed)
-
+	
 	--// Animate the closing
 	Animation:HeaderCollapse({
+		Tweeninfo = Tweeninfo,
 		NoAnimation = NoAnimation,
 		Collapsed = Collapsed,
 		Toggle = ToggleIcon,
@@ -5626,7 +5728,7 @@ function WindowClass:SetCollapsed(Collapsed: boolean, NoAnimation: false): Windo
 	})
 
 	--// ResizeGrab
-	Animation:Tween({
+	self:Tween({
 		Object = ResizeGrab,
 		NoAnimation = NoAnimation,
 		EndProperties = {
@@ -5671,7 +5773,7 @@ function WindowClass:UpdateConfig(Config)
 			Drag:SetEnabled(not Value)
 		end,
 		NoBackground = function(Value)
-			local Transparency = self:GetColor("WindowBgTransparency")
+			local Transparency = self:GetThemeKey("WindowBgTransparency")
 			local Frame = self.CanvasFrame
 			Frame.BackgroundTransparency = Value and 1 or Transparency
 		end,
@@ -5732,7 +5834,8 @@ ReGui:DefineElement("Window", {
 		AutoSize = false,
 		MinSize = Vector2.new(160, 90),
 		Theme = "DarkTheme",
-		NoTheme = true
+		NoTheme = true,
+		NoWindowRegistor = false
 	},
 	Create = function(self, Config: WindowFlags)
 		ReGui:CheckConfig(Config, {
@@ -5751,6 +5854,8 @@ ReGui:DefineElement("Window", {
 		local NoTabs = Config.NoTabs
 		local NoScroll = Config.NoScroll
 		local Theme = Config.Theme
+		local AutomaticSize = Config.AutomaticSize
+		local NoWindowRegistor = Config.NoWindowRegistor
 
 		--// Create Window frame
 		local Window = ReGui:InsertPrefab("Window", Config)
@@ -5802,16 +5907,23 @@ ReGui:DefineElement("Window", {
 
 		--// Create canvas for Window type
 		local Canvas, Body = nil, nil
+		
 		if NoTabs then
-			--// Window
-			Canvas, Body = WindowCanvas:Canvas({
-				Scroll = not NoScroll,
-				Fill = true
+			--// Apply flags to the CanvasFrame
+			ReGui:ApplyFlags({
+				Object = CanvasFrame,
+				Class = {
+					UiPadding = UDim.new(0, 8)
+				}
 			})
+			
+			--// Window
+			Canvas, Body = WindowCanvas, CanvasFrame --WindowCanvas:Canvas(CanvasConfig)
 		else
 			--// TabsWindow
 			Canvas, Body = WindowCanvas:TabsBox({
-				Fill = true
+				Scroll = not NoScroll,
+				Fill = not AutomaticSize and true or nil
 			})
 		end
 
@@ -5841,7 +5953,9 @@ ReGui:DefineElement("Window", {
 		Class:SetFocused()
 
 		--// Append to Windows array
-		table.insert(Windows, WindowClass)
+		if not NoWindowRegistor then
+			table.insert(Windows, WindowClass)
+		end
 
 		--// Register elements into Window Class
 		WindowClass:TagElements({
@@ -5861,6 +5975,85 @@ ReGui:DefineElement("TabsWindow", {
 	},
 	Create = function(self, Config: WindowFlags)
 		return self:Window(Config)
+	end,
+})
+
+ReGui:DefineElement("PopupModal", {
+	Export = true,
+	Base = {
+		NoAnimation = false,
+		NoCollapse = true,
+		NoClose = true,
+		NoResize = true,
+		NoSelect = true,
+		NoAutoFlags = true,
+		NoWindowRegistor = true,
+		NoScroll = true
+	},
+	Create = function(self, Config: WindowFlags)
+		local WindowClass = self.WindowClass
+		
+		--// Unpack configuration
+		local NoAnimation = Config.NoAnimation
+		local WindowDimTweenInfo = nil
+		
+		if WindowClass then 
+			Config.Theme = WindowClass.Theme
+			WindowDimTweenInfo = WindowClass:GetThemeKey("ModalWindowDimTweenInfo")
+		end
+		
+		--// Create Effect object
+		local ModalEffect = ReGui:InsertPrefab("ModalEffect", Config)
+		ModalEffect.Parent = ReGui.Container.Overlays
+		
+		--// Create window used for the modal
+		local Window = self:Window(Copy(Config, {
+			Parent = ModalEffect,
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			Position = UDim2.fromScale(0.5, 0.5),
+			Size = UDim2.fromOffset(372, 38),
+			NoAutoFlags = false,
+			AutomaticSize = Enum.AutomaticSize.Y
+		}))
+		
+		function Config:ClosePopup()
+			Animation:Tween({
+				Object = ModalEffect,
+				Tweeninfo = WindowDimTweenInfo,
+				NoAnimation = NoAnimation,
+				EndProperties = {
+					BackgroundTransparency = 1
+				},
+				Completed = function()
+					ModalEffect:Destroy()
+				end
+			})
+			
+			Window:Close()
+		end
+		
+		--// Fade modal effect 
+		Animation:Tween({
+			Object = ModalEffect,
+			Tweeninfo = WindowDimTweenInfo,
+			NoAnimation = NoAnimation,
+			StartProperties = {
+				BackgroundTransparency = 1
+			},
+			EndProperties = {
+				BackgroundTransparency = 0.8
+			}
+		})
+		
+		--// Tag elements into the theme
+		self:TagElements({
+			[ModalEffect] = "ModalWindowDim"
+		})
+		
+		--// Create the modal class
+		local ModalClass = ReGui:MergeMetatables(Config, Window)
+
+		return ModalClass, ModalEffect
 	end,
 })
 
