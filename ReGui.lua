@@ -2918,7 +2918,7 @@ function TabsBoxClass:CreateTab(Config: Tab): Elements
 	ReGui:CheckConfig(Config, {
 		Name = "Tab",
 		AutoSize = "Y",
-		CanClose = false
+		Closeable = false
 	})
 
 	--// Unpack class data
@@ -2980,7 +2980,7 @@ function TabsBoxClass:CreateTab(Config: Tab): Elements
 
 	--// Addional flags
 	local ExtraFlags = {
-		["CanClose"] = function()
+		["Closeable"] = function()
 			local Button = ParentCanvas:RadioButton({
 				Parent = Button,
 				Visible = not self.NoClose,
