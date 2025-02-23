@@ -1,20 +1,8 @@
+--// Import ReGui
 local ReGui = require(game.ReplicatedStorage.ReGui)
 ReGui:Init({
 	--Debug = true
 })
-
-local Window = ReGui:TabsWindow({
-	Title = "Tabs window demo!",
-	Size = UDim2.fromOffset(300, 200)
-})
-
-local Names = {"Avocado", "Broccoli", "Cucumber"}
-for _, Name in next, Names do
-	local Tab = Window:CreateTab({Name=Name})
-	Tab:Label({
-		Text = `This is the {Name} tab!`
-	})
-end
 
 --// Watermark demo
 local Watermark = ReGui.Elements:Canvas({
@@ -609,8 +597,8 @@ local WidgetDemos = {
 
 		for _, Name in next, Names do
 			local Tab = TabsBox:CreateTab({
-				Name=Name,
-				CanClose = true
+				Name = Name,
+				Closeable = true
 			})
 
 			Tab:Label({
@@ -622,7 +610,7 @@ local WidgetDemos = {
 			Text="Add tab",
 			Callback = function()
 				TabsBox:CreateTab({
-					CanClose = true
+					Closeable = true
 				}):Label({
 					Text = "I am an odd tab."
 				})
@@ -828,38 +816,36 @@ local Windows = Window:CollapsingHeader({
 	Title = "Popups & child windows"
 })
 
-local Popups = Windows:TreeNode({Title="Popups"})
-local Row = Popups:Row()
+--local Popups = Windows:TreeNode({Title="Popups"})
+--local Row = Popups:Row()
 
-local SelectedText = Row:Label({
-	Text = "",
-	LayoutOrder = 2
-})
+--local SelectedText = Row:Label({
+--	Text = "",
+--	LayoutOrder = 2
+--})
 
-Popups:Button({
-	Text = "Select..",
-	Callback = function(self)
-		local Names = {"Bream", "Haddock", "Mackerel", "Pollock", "Tilefish"}
+--Popups:Button({
+--	Text = "Select..",
+--	Callback = function(self)
+--		local Names = {"Bream", "Haddock", "Mackerel", "Pollock", "Tilefish"}
 		
-		local Popup = Popups:PopupCanvas({
-			Object = self
-		})
+--		local Popup = Popups:PopupCanvas({
+--			Object = self
+--		})
 		
-		Popup:Separator({Text="Aquarium"})
+--		Popup:Separator({Text="Aquarium"})
 		
-		for _, Name in Names do
-			Popup:Button({
-				Text = Name,
-				Callback = function(self)
-					SelectedText.Text = Name
-					Popup:ClosePopup()
-				end,
-			})
-		end
-	end,
-})
-
-
+--		for _, Name in Names do
+--			Popup:Button({
+--				Text = Name,
+--				Callback = function(self)
+--					SelectedText.Text = Name
+--					Popup:ClosePopup()
+--				end,
+--			})
+--		end
+--	end,
+--})
 
 --// ChildWindows
 local ChildWindows = Windows:TreeNode({Title="Child windows"})
