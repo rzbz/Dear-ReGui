@@ -8,23 +8,23 @@ local Window = ReGui:Window({
 
 --// Fetch canvases
 local TitleCanvas = Window.TitleBarCanvas
-local Right = TitleCanvas.Right
-local Left = TitleCanvas.Left
 
 --// Collapse toggle button
-Right:Button({
+TitleCanvas:Button({
 	Text = "Skibidi toilet",
+	LayoutOrder = 2,
 	Callback = function()
 		Window:ToggleCollapsed()
 	end,
 })
 
 --// Help button
-local Help = Left:RadioButton({
+local Help = TitleCanvas:RadioButton({
+	LayoutOrder = 1,
 	Icon = 12905962634
 })
 ReGui:SetItemTooltip(Help, function(Canvas)
 	Canvas:Label({
-		Text = "Check github.com/depthso/ReGui"
+		Text = "Check github.com/depthso/Dear-ReGui/"
 	})
 end)
