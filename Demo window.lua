@@ -1,5 +1,20 @@
 local ReGui = require(game.ReplicatedStorage.ReGui)
-ReGui:Init()
+ReGui:Init({
+	--Debug = true
+})
+
+local Window = ReGui:TabsWindow({
+	Title = "Tabs window demo!",
+	Size = UDim2.fromOffset(300, 200)
+})
+
+local Names = {"Avocado", "Broccoli", "Cucumber"}
+for _, Name in next, Names do
+	local Tab = Window:CreateTab({Name=Name})
+	Tab:Label({
+		Text = `This is the {Name} tab!`
+	})
+end
 
 --// Watermark demo
 local Watermark = ReGui.Elements:Canvas({
@@ -31,20 +46,16 @@ game:GetService("RunService").RenderStepped:Connect(function(Delta)
 end)
 
 --// Demo 
-local Window = ReGui:TabsWindow({
+local Window = ReGui:Window({
 	Title = "ReGui Demo",
-	Size = UDim2.new(0, 350, 0, 370),
+	Size = UDim2.new(0, 400, 0, 300),
 }):Center()
 
-local Demos = Window:CreateTab({
-	Name = "Demos"
+Window:Label({
+	Text = `Dear ReGui says hello! ({ReGui:GetVersion()})`
 })
 
-Demos:Label({
-	Text = `ReGui says hello! ({ReGui:GetVersion()})`
-})
-
-local Help = Demos:CollapsingHeader({
+local Help = Window:CollapsingHeader({
 	Title = "Help"
 })
 
@@ -71,7 +82,7 @@ Help:Indent():BulletText({
 	}
 })
 
-local ConfigurationHeader = Demos:CollapsingHeader({
+local ConfigurationHeader = Window:CollapsingHeader({
 	Title = "Configuration"
 })
 
@@ -110,16 +121,18 @@ Row:Button({
 	end,
 })
 
-local WindowOptions = Demos:CollapsingHeader({
+local WindowOptions = Window:CollapsingHeader({
 	Title = "Window options"
-}):List()
+}):Table({
+	MaxColumns = 3 -- Per row
+}):NextRow()
 
 local Options = {
 	NoResize = false,
 	NoTitleBar = false,
-	NoClose = false,
+	NoClose = true,
 	NoCollapse = false,
-	NoTabsBar = false,
+	--NoTabsBar = false, --:TabsWindow only
 	NoMove = false,
 	NoSelect = false,
 	NoScrollBar = false,
@@ -127,7 +140,9 @@ local Options = {
 }
 
 for Key, Value in pairs(Options) do
-	WindowOptions:Checkbox({
+	local Column = WindowOptions:NextColumn()
+	
+	Column:Checkbox({
 		Value = Value,
 		Label = Key,
 		Callback = function(self, Value)
@@ -138,7 +153,19 @@ for Key, Value in pairs(Options) do
 	})
 end
 
-local Widgets = Demos:CollapsingHeader({
+--for Key, Value in pairs(Options) do
+--	WindowOptions:Checkbox({
+--		Value = Value,
+--		Label = Key,
+--		Callback = function(self, Value)
+--			Window:UpdateConfig({
+--				[Key] = Value
+--			})
+--		end,
+--	})
+--end
+
+local Widgets = Window:CollapsingHeader({
 	Title = "Widgets"
 })
 
@@ -156,6 +183,7 @@ local DemosOrder = {
 	"Plotting", 
 	"Progress Bars",
 	"Console",
+	"List",
 	--"Selectable", 
 	--"Group", 
 	"Indent", 
@@ -643,7 +671,7 @@ local WidgetDemos = {
 		})
 
 		--// Advanced
-		local Advanced = Header:TreeNode({Title="Advanced"})
+		local Advanced = Header:TreeNode({Title="Advanced & RichText"})
 		local AdvancedConsole = Advanced:Console({
 			ReadOnly = true,
 			AutoScroll = true,
@@ -740,6 +768,13 @@ local WidgetDemos = {
 			Model:PivotTo(Pivot)
 		end)
 	end,
+	["List"] = function(Header)
+		local List = Header:List()
+		
+		for i = 1, 10 do
+			List:Button({Text=`Hello world! {i}`})
+		end
+	end,
 	["Keybinds"] = function(Header)
 		local TestCheckbox = Header:Checkbox({
 			Value = true
@@ -789,13 +824,46 @@ for _, Title in DemosOrder do
 	end
 end
 
-local Windows = Demos:CollapsingHeader({
+local Windows = Window:CollapsingHeader({
 	Title = "Popups & child windows"
 })
 
+local Popups = Windows:TreeNode({Title="Popups"})
+local Row = Popups:Row()
+
+local SelectedText = Row:Label({
+	Text = "",
+	LayoutOrder = 2
+})
+
+Popups:Button({
+	Text = "Select..",
+	Callback = function(self)
+		local Names = {"Bream", "Haddock", "Mackerel", "Pollock", "Tilefish"}
+		
+		local Popup = Popups:PopupCanvas({
+			Object = self
+		})
+		
+		Popup:Separator({Text="Aquarium"})
+		
+		for _, Name in Names do
+			Popup:Button({
+				Text = Name,
+				Callback = function(self)
+					SelectedText.Text = Name
+					Popup:ClosePopup()
+				end,
+			})
+		end
+	end,
+})
+
+
+
 --// ChildWindows
 local ChildWindows = Windows:TreeNode({Title="Child windows"})
-local Window = ChildWindows:Window({
+local ChildWindow = ChildWindows:Window({
 	Size = UDim2.fromOffset(300, 200),
 	NoSelect = true,
 	NoMove = true,
@@ -804,10 +872,10 @@ local Window = ChildWindows:Window({
 	NoResize = true
 })
 
-Window:Label({Text="Hello, world!"})
-Window:Button({Text = "Save"})
-Window:InputText({Label="string"})
-Window:SliderInt({Label="float", Format="%.1f/%s", Minimum=0, Maximum=1})
+ChildWindow:Label({Text="Hello, world!"})
+ChildWindow:Button({Text = "Save"})
+ChildWindow:InputText({Label="string"})
+ChildWindow:SliderInt({Label="float", Format="%.1f/%s", Minimum=0, Maximum=1})
 
 --// Modals
 local Modals = Windows:TreeNode({Title="Modals"})
@@ -904,7 +972,7 @@ Modals:Button({
 	end,
 })
 
-local TablesNColumns = Demos:CollapsingHeader({
+local TablesNColumns = Window:CollapsingHeader({
 	Title = "Tables & Columns"
 })
 local Basic = TablesNColumns:TreeNode({
@@ -928,13 +996,14 @@ local Borders = TablesNColumns:TreeNode({
 
 local BasicTable = Borders:Table({
 	RowBackground = true,
-	Border = true
+	Border = true,
+	MaxColumns = 3 -- Per row
 })
 
 for RowCount = 1, 5 do
-	local Row = BasicTable:Row()
+	local Row = BasicTable:NextRow()
 	for ColumnCount = 1, 3 do
-		local Column = Row:Column()
+		local Column = Row:NextColumn()
 		Column:Label({Text=`Hello {ColumnCount},{RowCount}`})
 	end
 end
@@ -944,17 +1013,20 @@ local Headers = TablesNColumns:TreeNode({
 })
 
 local BasicTable = Headers:Table({
-	Border = true
+	Border = true,
+	RowBackground = true,
+	MaxColumns = 3 -- Per row
 })
 
-local Row = BasicTable:Row()
 local Rows = {"One", "Two", "Three"}
 
+local HeaderRow = BasicTable:HeaderRow()
+local Row = BasicTable:NextRow()
+
 for Count, RowHeader in Rows do
-	local Column = Row:Column()
-
-	Column:Header({Text=RowHeader})
-
+	HeaderRow:NextColumn():Label({Text=RowHeader})
+	
+	local Column = Row:NextColumn()
 	for Line = 1, 6 do
 		Column:Label({Text=`Hello {Count},{Line}`})
 	end

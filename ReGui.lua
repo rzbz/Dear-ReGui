@@ -13,7 +13,7 @@
 
 local ReGui = {
 	--// Package data
-	Version = "1.2",
+	Version = "1.2.1",
 	Author = "Depso",
 	License = "MIT",
 	Repository = "https://github.com/depthso/Dear-ReGui/",
@@ -386,6 +386,17 @@ ReGui.Styles = {
 }
 
 ReGui.Animations = {
+	["Invisible"] = {
+		Connections = {
+			MouseEnter = {
+				Visible = true,
+			},
+			MouseLeave = {
+				Visible = false,
+			}
+		},
+		Init = "MouseLeave"
+	},
 	["Buttons"] = {
 		Connections = {
 			MouseEnter = {
@@ -1190,7 +1201,11 @@ function ReGui:SetAnimation(Object: GuiObject, Reference: string, Listener: GuiO
 
 	local Animations = self.Animations
 
-	local Data = Animations[Reference]
+	local Data = Reference 
+	if typeof(Reference) ~= "table" then
+		Data = Animations[Reference]
+	end
+	
 	assert(Data, `No animation data for Class {Reference}!`)
 
 	--// Disconnect previous
@@ -2029,10 +2044,15 @@ function ReGui:WrapGeneration(Function, Data: WrapGeneration)
 			Parent = Parent,
 			Name = Flags.ColorTag
 		})
+		
+		--// Convert self from 'ReGui' to 'Elements'
+		if Canvas == self then
+			Canvas = self.Elements
+		end
 
 		--// Create element and apply properties
-		--local Class, Element = Function(Canvas, Flags, ...)
-		local Success, Class, Element = pcall(Function, Canvas, Flags, ...)
+		local Class, Element = Function(Canvas, Flags, ...)
+		--local Success, Class, Element = pcall(Function, Canvas, Flags, ...)
 
 		--// Check for errors
 		if Success == false then
@@ -2577,7 +2597,7 @@ ReGui:DefineElement("Keybind", {
 		ElementStyle = "Button",
 		UiPadding = UDim.new(),
 		AutomaticSize = Enum.AutomaticSize.None,
-		Size = UDim2.new(0.4, 0, 0, 20)
+		Size = UDim2.new(0.4, 0, 0, 19)
 	},
 	Create = function(self, Config: Keybind)
 		local Value = Config.Value
@@ -2902,6 +2922,7 @@ function TabsBoxClass:CreateTab(Config: Tab): Elements
 	})
 
 	--// Unpack class data
+	local AutoSelectNewTabs = self.AutoSelectNewTabs
 	local ParentCanvas = self.ParentCanvas
 	local WindowClass = self.WindowClass
 	local Templates = self.Templates
@@ -2913,7 +2934,7 @@ function TabsBoxClass:CreateTab(Config: Tab): Elements
 	local Name = Config.Name
 	local Icon = Config.Icon
 	local AutoSize = Config.AutoSize
-	local Selected = #Tabs <= 0
+	local Selected = #Tabs <= 0 and AutoSelectNewTabs
 
 	--// Template sources
 	local Page = Templates.Page
@@ -2960,7 +2981,7 @@ function TabsBoxClass:CreateTab(Config: Tab): Elements
 	--// Addional flags
 	local ExtraFlags = {
 		["CanClose"] = function()
-			ParentCanvas:RadioButton({
+			local Button = ParentCanvas:RadioButton({
 				Parent = Button,
 				Visible = not self.NoClose,
 				Icon = ReGui.Icons.Close,
@@ -2972,6 +2993,20 @@ function TabsBoxClass:CreateTab(Config: Tab): Elements
 					self:RemoveTab(Canvas)
 				end,
 			})
+			
+			--// Animate close icon on hover
+			local Icon = Button.Icon
+			ReGui:SetAnimation(Icon, {
+				Connections = {
+					MouseEnter = {
+						ImageTransparency = 0,
+					},
+					MouseLeave = {
+						ImageTransparency = 1,
+					}
+				},
+				Init = "MouseLeave"
+			}, Tab)
 		end,
 	}
 
@@ -3028,7 +3063,8 @@ export type TabsBox = {
 }
 ReGui:DefineElement("TabsBox", {
 	Base = {
-		NoTabsBar = false
+		NoTabsBar = false,
+		AutoSelectNewTabs = true
 	},
 	ColorData = {
 		["DeselectedTab"] = {
@@ -3965,18 +4001,12 @@ ReGui:DefineElement("Console", {
 	end,
 })
 
-ReGui:DefineElement("Header", {
-	Base = {
-		Size = UDim2.new(1, 0, 0, 20)
-	},
-	Create = Elements.Label,
-})
-
 export type Table = {
 	Align: string?,
 	Border: boolean?,
 	RowBackground: boolean?,
 	RowBgTransparency: number?,
+	MaxColumns: number?,
 
 	Row: (Table) -> {
 		Column: (Row) -> Elements
@@ -3985,7 +4015,7 @@ export type Table = {
 }
 ReGui:DefineElement("Table", {
 	Base = {
-		Align = "Center",
+		VerticalAlignment = Enum.VerticalAlignment.Top,
 		RowBackground = false,
 		RowBgTransparency = 0.9,
 		Border = false,
@@ -3997,7 +4027,8 @@ ReGui:DefineElement("Table", {
 		local RowTransparency = Config.RowBgTransparency
 		local RowBackground = Config.RowBackground
 		local Border = Config.Border
-		local Align = Config.Align
+		local VerticalAlignment = Config.VerticalAlignment
+		local MaxColumns = Config.MaxColumns
 
 		--// Create table object
 		local Object = ReGui:InsertPrefab("Table", Config)
@@ -4006,8 +4037,15 @@ ReGui:DefineElement("Table", {
 		local RowTemplate = Object.RowTemp
 
 		local RowsCount = 0
-		function Config:Row()
-			RowsCount += 1
+		local Rows = {}
+		
+		function Config:Row(Config)
+			Config = Config or {}
+			
+			local IsHeader = Config.IsHeader
+			
+			local ColumnIndex = 0
+			local Columns = {}
 
 			--// Create Row object (Different to :Row)
 			local Row = RowTemplate:Clone()
@@ -4016,20 +4054,29 @@ ReGui:DefineElement("Table", {
 				Visible = true,
 				Parent = Object,
 			})
-
+			
 			--// Set alignment
 			local UIListLayout = Row:FindFirstChildOfClass("UIListLayout")
-			UIListLayout.VerticalAlignment = Enum.VerticalAlignment[Align]
-
+			UIListLayout.VerticalAlignment = VerticalAlignment
+			
+			--// Apply header styles
+			if IsHeader then
+				Canvas:TagElements({
+					[Row] = "Header"
+				})
+			else
+				RowsCount += 1
+			end
+			
 			--// Background colors
-			if RowBackground then
+			if RowBackground and not IsHeader then
 				local Transparency = RowsCount % 2 ~= 1 and RowTransparency or 1
 				Row.BackgroundTransparency = Transparency
 			end
 
 			--// Row class
 			local RowClass = {}
-			function RowClass:Column()
+			function RowClass:Column(Config)
 				--// Create column object
 				local Column = Row.ColumnTemp:Clone()
 				ReGui:SetProperties(Column, {
@@ -4041,7 +4088,7 @@ ReGui:DefineElement("Table", {
 				--// Apply border
 				local Stroke = Column:FindFirstChildOfClass("UIStroke")
 				Stroke.Enabled = Border
-
+				
 				--// Content canvas
 				return ReGui:MakeCanvas({
 					Element =  Column,
@@ -4049,12 +4096,37 @@ ReGui:DefineElement("Table", {
 					Class = Class
 				})
 			end
-
+			
+			function RowClass:NextColumn()
+				ColumnIndex += 1
+				
+				local Index = ColumnIndex%MaxColumns+1
+				local Column = Columns[Index]
+				
+				--// Create Column
+				if not Column then
+					Column = self:Column()	
+					Columns[Index] = Column
+				end
+				
+				return Column
+			end
+			
+			table.insert(Rows, RowClass)
+			
 			--// Content canvas
-			return ReGui:MakeCanvas({
-				Element = Row,
-				WindowClass = WindowClass,
-				Class = RowClass
+			local Class = ReGui:MergeMetatables(RowClass, Row)
+			return Class
+		end
+		
+		--// TODO: 
+		function Config:NextRow()
+			return self:Row()
+		end
+		
+		function Config:HeaderRow()
+			return self:Row({
+				IsHeader = true
 			})
 		end
 
@@ -4169,7 +4241,7 @@ ReGui:DefineElement("CollapsingHeader", {
 			LayoutOrder = 2,
 			Size = UDim2.fromScale(1, 0),
 			AutomaticSize = Enum.AutomaticSize.None,
-			PaddingTop = UDim.new(0, 5),
+			PaddingTop = UDim.new(0, 4),
 			PaddingBottom = UDim.new(0, 2),
 			UsePropertiesList = true,
 		})
@@ -4265,8 +4337,8 @@ ReGui:DefineElement("Separator", {
 			Parent = Object,
 			LayoutOrder = 2,
 			Size = UDim2.new(),
-			PaddingLeft = UDim.new(0, 5),
-			PaddingRight = UDim.new(0, 5),
+			PaddingLeft = UDim.new(0, 4),
+			PaddingRight = UDim.new(0, 4),
 		})
 
 		return Object
@@ -4896,13 +4968,13 @@ ReGui:DefineElement("MultiDrag", {
 		local DragIntsConfig = Config.DragIntsConfig
 		
 		ReGui:CheckConfig(BaseDragConfig, {
-			Size = UDim2.new(1, 0, 0, 20),
+			Size = UDim2.new(1, 0, 0, 19),
 			Label = ""
 		})
 		
 		--// Create container row
 		local ContainerRow = Canvas:Row({
-			Spacing = 5,
+			Spacing = 4,
 		})
 		local Class = ReGui:MergeMetatables(Config, ContainerRow)
 
@@ -4997,7 +5069,8 @@ ReGui:DefineElement("InputColor3", {
 		--// Preview frame
 		local Preview = Row:Button({
 			BackgroundTransparency = 0,
-			Size = UDim2.fromOffset(16, 16),
+			Size = UDim2.fromOffset(19, 19),
+			UiPadding = 0,
 			Text = "",
 			Ratio = 1,
 			ColorTag = "",
@@ -5398,17 +5471,11 @@ function WindowClass:MakeTitleBarCanvas(): TitleBarCanvas
 	local TitleBar = self.TitleBar
 
 	--// Create canvas for each side
-	local Canvas = {
-		Right = ReGui:MakeCanvas({
-			WindowClass = self,
-			Element = TitleBar.Right
-		}),
-		Left = ReGui:MakeCanvas({
-			WindowClass = self,
-			Element = TitleBar.Left
-		})
-	}
-
+	local Canvas = ReGui:MakeCanvas({
+		WindowClass = self,
+		Element = TitleBar
+	})
+	
 	self.TitleBarCanvas = Canvas
 
 	return Canvas
@@ -5417,6 +5484,7 @@ end
 function WindowClass:AddDefaultTitleButtons()
 	local Config = self.TileBarConfig
 	local IsOpen = self.Open
+	local TitleBar = self.TitleBar
 
 	local Toggle = Config.Collapse
 	local Close = Config.Close
@@ -5426,14 +5494,10 @@ function WindowClass:AddDefaultTitleButtons()
 	if not Canvas then
 		Canvas = self:MakeTitleBarCanvas()
 	end
-
-	--// Canvas groups
-	local Left = Canvas.Left
-	local Right = Canvas.Right
-
+	
 	ReGui:CheckConfig(self, {
 		--// Create window interaction buttons
-		Toggle = Left:RadioButton({
+		Toggle = Canvas:RadioButton({
 			Icon = Toggle.Image,
 			IconSize = Toggle.IconSize,
 			Rotation = IsOpen and 90 or 0,
@@ -5443,16 +5507,16 @@ function WindowClass:AddDefaultTitleButtons()
 				self:ToggleCollapsed()
 			end,
 		}),
-		CloseButton = Right:RadioButton({
+		CloseButton = Canvas:RadioButton({
 			Icon = Close.Image,
 			IconSize = Close.IconSize,
-			LayoutOrder = 2,
+			LayoutOrder = 3,
 
 			Callback = function()
 				self:Close()
 			end,
 		}),
-		TitleLabel = Left:Label({
+		TitleLabel = Canvas:Label({
 			Text = "ReGui by depso",
 			ColorTag = "Title",
 			LayoutOrder = 2,
@@ -5756,13 +5820,25 @@ function WindowClass:UpdateConfig(Config)
 		end,
 		NoTabsBar = function(Value)
 			local Object = self.WindowTabsBox
+			if not Object then return end
+			
 			local TabsBar = Object.TabsBar
 			TabsBar.Visible = not Value
 		end,
 		NoScrollBar = function(Value)
-			local Object = self.WindowTabsBox
-			local Body = Object.Body
-			Body.ScrollBarThickness = Value and 0 or 9
+			local ScrollBarThickness = Value and 0 or 9
+			local NoScroll = self.NoScroll
+			local TabsBox = self.WindowTabsBox
+			local ContentCanvas = self.ContentCanvas
+			
+			--// TabsBox
+			if TabsBox then 
+				TabsBox.Body.ScrollBarThickness = ScrollBarThickness
+			end
+			--// Check if the window is a scrolling type
+			if not NoScroll then
+				ContentCanvas.ScrollBarThickness = ScrollBarThickness
+			end
 		end,
 		NoMove = function(Value)
 			local Drag = self.DragConnection
@@ -5856,12 +5932,26 @@ ReGui:DefineElement("Window", {
 		local Theme = Config.Theme
 		local AutomaticSize = Config.AutomaticSize
 		local NoWindowRegistor = Config.NoWindowRegistor
+		local AutoSelectNewTabs = Config.AutoSelectNewTabs
+		
+		local CanvasConfig = {
+			Scroll = not NoScroll,
+			Fill = not AutomaticSize and true or nil,
+			UiPadding = UDim.new(0, NoTabs and 8 or 0),
+			AutoSelectNewTabs = AutoSelectNewTabs
+		}
+		
+		--// Merge AutomaticSize configuration 
+		if AutomaticSize then
+			Merge(CanvasConfig, {
+				AutomaticSize = AutomaticSize,
+				Size = UDim2.new(1, 0)
+			})
+		end
 
 		--// Create Window frame
 		local Window = ReGui:InsertPrefab("Window", Config)
 		local ContentFrame = Window.Content
-
-		local CanvasFrame = ContentFrame.Canvas
 		local TitleBar = ContentFrame.TitleBar
 
 		--// Create window class
@@ -5875,6 +5965,18 @@ ReGui:DefineElement("Window", {
 				Class:SetSize(Size, true)
 			end,
 		})
+		
+		--// Content canvas
+		local ContentCanvas = ReGui:MakeCanvas({
+			Element = ContentFrame,
+			WindowClass = Class,
+			Class = Class
+		})
+		
+		--// Create Window content canvas
+		local WindowCanvas, CanvasFrame = ContentCanvas:Canvas(Copy(CanvasConfig, {
+			Parent = ContentFrame
+		}))
 
 		--// Merge tables
 		Merge(Class, Config)
@@ -5897,40 +5999,23 @@ ReGui:DefineElement("Window", {
 			}),
 			ResizeConnection = ResizeConnection,
 		})
-
-		--// Content canvas
-		local WindowCanvas = ReGui:MakeCanvas({
-			Element = CanvasFrame,
-			WindowClass = Class,
-			Class = Class
-		})
-
+		
 		--// Create canvas for Window type
 		local Canvas, Body = nil, nil
 		
 		if NoTabs then
-			--// Apply flags to the CanvasFrame
-			ReGui:ApplyFlags({
-				Object = CanvasFrame,
-				Class = {
-					UiPadding = UDim.new(0, 8)
-				}
-			})
-			
 			--// Window
-			Canvas, Body = WindowCanvas, CanvasFrame --WindowCanvas:Canvas(CanvasConfig)
+			Canvas, Body = WindowCanvas, CanvasFrame
 		else
 			--// TabsWindow
-			Canvas, Body = WindowCanvas:TabsBox({
-				Scroll = not NoScroll,
-				Fill = not AutomaticSize and true or nil
-			})
+			Canvas, Body = WindowCanvas:TabsBox(CanvasConfig)
+			Class.WindowTabsBox = Canvas
 		end
-
+		
 		--// Merge canvas data
 		Merge(Class, {
-			WindowTabsBox = Canvas,
 			Body = Body,
+			ContentCanvas = Canvas
 		})
 
 		--// Create Window class from Canvas and Class merge
@@ -5968,13 +6053,61 @@ ReGui:DefineElement("Window", {
 	end,
 })
 
+export type TabsWindowFlags = {
+	AutoSelectNewTabs: boolean?,
+} & WindowFlags
 ReGui:DefineElement("TabsWindow", {
 	Export = true,
 	Base = {
-		NoTabs = false
+		NoTabs = false,
+		AutoSelectNewTabs = true
 	},
-	Create = function(self, Config: WindowFlags)
+	Create = function(self, Config: TabsWindowFlags)
 		return self:Window(Config)
+	end,
+})
+
+export type Region = {
+	Scroll: boolean?
+}
+ReGui:DefineElement("PopupCanvas", {
+	Base = {
+		Scroll = false,
+		AutomaticSize = Enum.AutomaticSize.Y
+	},
+	Create = function(self, Config: Region)
+		local WindowClass = self.WindowClass
+
+		local Scroll = Config.Scroll
+		local Class = Scroll and "ScrollingCanvas" or "Canvas"
+
+		--// Create object
+		local Object = ReGui:InsertPrefab(Class, Config)
+		
+		function Config:ClosePopup()
+			Object:Destroy()
+		end
+		function Config:ShowPopup()
+			Object.Visible = true
+		end
+		
+		--// Connect mouse events
+		local Hover = ReGui:ConnectHover(Object, {
+			MouseOnly = true,
+			OnInput = function(MouseHovering, Input)
+				if MouseHovering then return end
+				Config:ClosePopup()
+			end,
+		})
+
+		--// Content canvas
+		local Canvas = ReGui:MakeCanvas({
+			Element = Object,
+			WindowClass = WindowClass,
+			Class = Config
+		})
+
+		return Canvas, Object
 	end,
 })
 
