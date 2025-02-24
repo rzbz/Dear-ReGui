@@ -171,7 +171,7 @@ ReGui.ThemeConfigs = {
 		RegionBg = ReGui.Accent.Dark,
 		RegionBgTransparency = 0.1,
 
-		--// Tabsbox
+		--// TabSelector
 		TabTextPaddingTop = UDim.new(0, 3),
 		TabTextPaddingBottom = UDim.new(0, 8),
 		TabText = ReGui.Accent.Gray,
@@ -311,7 +311,7 @@ ReGui.ElementColors = {
 		BackgroundColor3 = "TitleBarBg",
 		BackgroundTransparency = "TitleBarTransparency"
 	},
-	["TabsBoxTabsBar"] = {
+	["TabSelectorTabsBar"] = {
 		BackgroundColor3 = "TabsBarBg",
 		BackgroundTransparency = "TabsBarBgTransparency",
 	},
@@ -1380,6 +1380,8 @@ function ReGui:MakeDraggable(Config: MakeDraggableFlags)
 		DragBegin(InputOrgin)
 	end
 	local function DragMovement(InputVector)
+		if not Interface:CanDrag() then return end
+		
 		local Delta = InputVector - InputOrgin
 		local OnUpdate = Config.OnUpdate
 
@@ -2773,7 +2775,7 @@ ReGui:DefineElement("Error", {
 })
 
 ----// Tabs box class
-local TabsBoxClass = {
+local TabSelectorClass = {
 	ColorTags = {
 		BGSelected = {
 			[true] = "SelectedTab",
@@ -2785,7 +2787,7 @@ local TabsBoxClass = {
 		},
 	}
 }
-function TabsBoxClass:UpdateButton(Tab: table, Selected: boolean)	
+function TabSelectorClass:UpdateButton(Tab: table, Selected: boolean)	
 	local IsSelected = Tab.IsSelected
 	local TabFrame = Tab.Tab
 	local Button = TabFrame.Button
@@ -2817,7 +2819,7 @@ function TabsBoxClass:UpdateButton(Tab: table, Selected: boolean)
 	})
 end
 
-function TabsBoxClass:SetActiveTab(Target: (table|string))
+function TabSelectorClass:SetActiveTab(Target: (table|string))
 	--// Unpack class data
 	local Tabs = self.Tabs
 	local NoAnimation = self.NoAnimation
@@ -2874,7 +2876,7 @@ function TabsBoxClass:SetActiveTab(Target: (table|string))
 	return self
 end
 
-function TabsBoxClass:RemoveTab(Target: (table|string))
+function TabSelectorClass:RemoveTab(Target: (table|string))
 	--// Unpack class data
 	local Tabs = self.Tabs
 
@@ -2914,7 +2916,7 @@ export type Tab = {
 	TabButton: boolean?,
 	Icon: (string|number)?
 }
-function TabsBoxClass:CreateTab(Config: Tab): Elements
+function TabSelectorClass:CreateTab(Config: Tab): Elements
 	ReGui:CheckConfig(Config, {
 		Name = "Tab",
 		AutoSize = "Y",
@@ -3023,8 +3025,8 @@ function TabsBoxClass:CreateTab(Config: Tab): Elements
 	WindowClass:TagElements({
 		[Button] = "Tab",
 		[Label] = "TabLabel",
-		[TextPadding] = "TabsBoxTabPadding",
-		[PagePadding] = "TabsBoxPagePadding",
+		[TextPadding] = "TabSelectorTabPadding",
+		[PagePadding] = "TabSelectorPagePadding",
 	})
 
 	--// Apply automatic size
@@ -3053,15 +3055,15 @@ function TabsBoxClass:CreateTab(Config: Tab): Elements
 	return Canvas
 end
 
-export type TabsBox = {
+export type TabSelector = {
 	NoTabsBar: boolean?,
 	NoAnimation: boolean?,
 
-	CreateTab: (TabsBox, Tab) -> Elements,
-	RemoveTab: (TabsBox, Target: (table|string)) -> nil,
-	SetActiveTab: (TabsBox, Target: (table|string)) -> nil,
+	CreateTab: (TabSelector, Tab) -> Elements,
+	RemoveTab: (TabSelector, Target: (table|string)) -> nil,
+	SetActiveTab: (TabSelector, Target: (table|string)) -> nil,
 }
-ReGui:DefineElement("TabsBox", {
+ReGui:DefineElement("TabSelector", {
 	Base = {
 		NoTabsBar = false,
 		AutoSelectNewTabs = true
@@ -3081,28 +3083,28 @@ ReGui:DefineElement("TabsBox", {
 			FontFace = "TextFont",
 			TextColor3 = "ActiveTabText",
 		},
-		["TabsBoxLine"] = {
+		["TabSelectorLine"] = {
 			Color = "ActiveTabBg",
 		},
-		["TabsBoxTabPadding"] = {
+		["TabSelectorTabPadding"] = {
 			PaddingTop = "TabTextPaddingTop",
 			PaddingBottom = "TabTextPaddingBottom"
 		},
-		["TabsBoxPagePadding"] = {
+		["TabSelectorPagePadding"] = {
 			PaddingBottom = "TabPadding",
 			PaddingLeft = "TabPadding",
 			PaddingRight = "TabPadding",
 			PaddingTop = "TabPadding",
 		}
 	},
-	Create = function(self, Config: TabsBox): (TabsBox, GuiObject)
+	Create = function(self, Config: TabSelector): (TabSelector, GuiObject)
 		local WindowClass = self.WindowClass
 
 		local NoTabsBar = Config.NoTabsBar
 
-		--// Create TabsBox object
-		local Object = ReGui:InsertPrefab("TabsBox", Config)
-		local Class = NewClass(TabsBoxClass)
+		--// Create TabSelector object
+		local Object = ReGui:InsertPrefab("TabSelector", Config)
+		local Class = NewClass(TabSelectorClass)
 
 		--// TabsBar (TabsBar)
 		local TabsBar = Object.TabsBar
@@ -3134,8 +3136,8 @@ ReGui:DefineElement("TabsBox", {
 		})
 
 		self:TagElements({
-			[TabsBar] = "TabsBoxTabsBar",
-			[Line] = "TabsBoxLine",
+			[TabsBar] = "TabSelectorTabsBar",
+			[Line] = "TabSelectorLine",
 		})
 
 		return Class, Object
@@ -5819,7 +5821,7 @@ function WindowClass:UpdateConfig(Config)
 			Object.Visible = not Value
 		end,
 		NoTabsBar = function(Value)
-			local Object = self.WindowTabsBox
+			local Object = self.WindowTabSelector
 			if not Object then return end
 			
 			local TabsBar = Object.TabsBar
@@ -5828,12 +5830,12 @@ function WindowClass:UpdateConfig(Config)
 		NoScrollBar = function(Value)
 			local ScrollBarThickness = Value and 0 or 9
 			local NoScroll = self.NoScroll
-			local TabsBox = self.WindowTabsBox
+			local TabSelector = self.WindowTabSelector
 			local ContentCanvas = self.ContentCanvas
 			
-			--// TabsBox
-			if TabsBox then 
-				TabsBox.Body.ScrollBarThickness = ScrollBarThickness
+			--// TabSelector
+			if TabSelector then 
+				TabSelector.Body.ScrollBarThickness = ScrollBarThickness
 			end
 			--// Check if the window is a scrolling type
 			if not NoScroll then
@@ -6008,8 +6010,8 @@ ReGui:DefineElement("Window", {
 			Canvas, Body = WindowCanvas, CanvasFrame
 		else
 			--// TabsWindow
-			Canvas, Body = WindowCanvas:TabsBox(CanvasConfig)
-			Class.WindowTabsBox = Canvas
+			Canvas, Body = WindowCanvas:TabSelector(CanvasConfig)
+			Class.WindowTabSelector = Canvas
 		end
 		
 		--// Merge canvas data

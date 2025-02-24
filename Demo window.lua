@@ -129,7 +129,7 @@ local Options = {
 
 for Key, Value in pairs(Options) do
 	local Column = WindowOptions:NextColumn()
-	
+
 	Column:Checkbox({
 		Value = Value,
 		Label = Key,
@@ -177,7 +177,7 @@ local DemosOrder = {
 	"Indent", 
 	"Viewport", 
 	"Keybinds", 
-	--"Input", 
+	"Input", 
 	"MultiInput", 
 	"Text Input", 
 }
@@ -329,7 +329,7 @@ local WidgetDemos = {
 		--	Value = ReGui.Accent.Light,
 		--	Label = "Color 2"
 		--})
-		
+
 		Header:InputCFrame({
 			Value = CFrame.new(1,1,1),
 			Minimum = -200,
@@ -396,7 +396,7 @@ local WidgetDemos = {
 			Size = UDim2.fromScale(1, 1)
 		})
 		Video:Play()
-		
+
 		local Controls = Header:Row({
 			Expanded = true
 		})
@@ -412,7 +412,7 @@ local WidgetDemos = {
 				Video:Play()
 			end,
 		})
-		
+
 		--// Wait for the video to load
 		if not Video.IsLoaded then 
 			Video.Loaded:Wait()
@@ -427,7 +427,7 @@ local WidgetDemos = {
 				Video.TimePosition = Value
 			end,
 		})
-		
+
 		game:GetService("RunService").RenderStepped:Connect(function(Delta)
 			TimeSlider:SetValue(Video.TimePosition)
 		end)
@@ -543,7 +543,7 @@ local WidgetDemos = {
 			TextWrapped = true,
 			Text=`Below we are displaying the icons (which are the ones builtin to ReGui in this demo).\
 			\
-\There is a total of {ReGui:GetDictSize(ReGui.Icons)} icons in this demo!`
+			\There is a total of {ReGui:GetDictSize(ReGui.Icons)} icons in this demo!`
 		})
 
 		local List = Header:List({
@@ -580,23 +580,23 @@ local WidgetDemos = {
 	["Tabs"] = function(Header)
 		--// Basic
 		local Basic = Header:TreeNode({Title="Basic"})
-		local TabsBox = Basic:TabsBox()
+		local TabSelector = Basic:TabSelector()
 
 		local Names = {"Avocado", "Broccoli", "Cucumber"}
 		for _, Name in next, Names do
-			TabsBox:CreateTab({Name=Name}):Label({
+			TabSelector:CreateTab({Name=Name}):Label({
 				Text = `This is the {Name} tab!\nblah blah blah blah blah`
 			})
 		end
 
 		--// Advanced 
 		local Advanced = Header:TreeNode({Title="Advanced & Close Button"})
-		local TabsBox = Advanced:TabsBox()
+		local TabSelector = Advanced:TabSelector()
 
 		local Names = {"Artichoke", "Beetroot", "Celery", "Daikon"}
 
 		for _, Name in next, Names do
-			local Tab = TabsBox:CreateTab({
+			local Tab = TabSelector:CreateTab({
 				Name = Name,
 				Closeable = true
 			})
@@ -609,7 +609,7 @@ local WidgetDemos = {
 		Advanced:Button({
 			Text="Add tab",
 			Callback = function()
-				TabsBox:CreateTab({
+				TabSelector:CreateTab({
 					Closeable = true
 				}):Label({
 					Text = "I am an odd tab."
@@ -745,9 +745,12 @@ local WidgetDemos = {
 			Clone = true, --// Otherwise will parent
 			Model = Rig,
 		})
-
+		
+		--// Fetch the new model from the viewport
 		local Model = Viewport.Model
-
+		Model:PivotTo(CFrame.new(0, -2.5, -5))
+		
+		--// Rotate the rig
 		local RunService = game:GetService("RunService")
 		RunService.RenderStepped:Connect(function(DeltaTime)
 			local Rotation = CFrame.Angles(0, math.rad(30*DeltaTime), 0) 
@@ -758,7 +761,7 @@ local WidgetDemos = {
 	end,
 	["List"] = function(Header)
 		local List = Header:List()
-		
+
 		for i = 1, 10 do
 			List:Button({Text=`Hello world! {i}`})
 		end
@@ -787,6 +790,11 @@ local WidgetDemos = {
 			end,
 		})
 	end,
+	["Input"] = function(Header)
+		Header:InputText({Label="One Line Text"})
+		Header:InputTextMultiline({Label="Multiline Text"})
+		Header:InputInt({Label="Input int"})
+	end,
 	["Text Input"] = function(Header)
 		--// Multiline
 		local Multiline = Header:TreeNode({Title="Multiline"})
@@ -808,7 +816,7 @@ for _, Title in DemosOrder do
 	local Generate = WidgetDemos[Title]
 
 	if Generate then
-		Generate(Header)
+		task.spawn(Generate, Header)
 	end
 end
 
@@ -828,13 +836,13 @@ local Windows = Window:CollapsingHeader({
 --	Text = "Select..",
 --	Callback = function(self)
 --		local Names = {"Bream", "Haddock", "Mackerel", "Pollock", "Tilefish"}
-		
+
 --		local Popup = Popups:PopupCanvas({
 --			Object = self
 --		})
-		
+
 --		Popup:Separator({Text="Aquarium"})
-		
+
 --		for _, Name in Names do
 --			Popup:Button({
 --				Text = Name,
@@ -882,7 +890,7 @@ Modals:Button({
 			TextWrapped = true
 		})
 		ModalWindow:Separator()
-		
+
 		ModalWindow:Checkbox({
 			Value = false,
 			Label = "Don't ask me next time"
@@ -923,23 +931,23 @@ Modals:Button({
 		Stacked1:InputColor3({
 			Value = Color3.fromRGB(102, 178, 0)
 		})
-		
+
 		Stacked1:Button({
 			Text = "Add another modal..",
 			Callback = function()
 				local Stacked2 = Modals:PopupModal({
 					Title = "Stacked 2"
 				})
-				
+
 				Stacked2:Label({
 					Text = "Hello from Stacked The Second!",
 					TextWrapped = true
 				})
-				
+
 				Stacked2:InputColor3({
 					Value = Color3.fromRGB(102, 178, 0)
 				})
-				
+
 				Stacked2:Button({
 					Text = "Close",
 					Callback = function()
@@ -1011,7 +1019,7 @@ local Row = BasicTable:NextRow()
 
 for Count, RowHeader in Rows do
 	HeaderRow:NextColumn():Label({Text=RowHeader})
-	
+
 	local Column = Row:NextColumn()
 	for Line = 1, 6 do
 		Column:Label({Text=`Hello {Count},{Line}`})
