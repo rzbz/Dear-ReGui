@@ -677,14 +677,14 @@ ReGui.ElementFlags = {
 		},
 		Callback = function<StyleFunc>(Data, Object, Value)
 			Value = Value or 0
-			
+
 			--// Convert number value into a UDim
 			if typeof(Value) == "number" then
 				Value = UDim.new(0, Value)
 			end
-			
+
 			local Class = Data.Class
-			
+
 			local IsUiPadding = Class.UiPadding
 			if IsUiPadding then
 				ReGui:CheckConfig(Class, {
@@ -694,7 +694,7 @@ ReGui.ElementFlags = {
 					PaddingTop = Value,
 				})
 			end
-			
+
 			local UIPadding = ReGui:GetChildOfClass(Object, "UIPadding")
 			ReGui:SetProperties(UIPadding, {
 				PaddingBottom = Class.PaddingBottom,
@@ -1000,12 +1000,12 @@ end
 
 function Copy(Original: table, Insert: table?)
 	local Table = table.clone(Original)
-	
+
 	--// Insert values
 	if Insert then
 		Merge(Table, Insert)
 	end
-	
+
 	return Table
 end
 
@@ -1205,7 +1205,7 @@ function ReGui:SetAnimation(Object: GuiObject, Reference: string, Listener: GuiO
 	if typeof(Reference) ~= "table" then
 		Data = Animations[Reference]
 	end
-	
+
 	assert(Data, `No animation data for Class {Reference}!`)
 
 	--// Disconnect previous
@@ -1271,26 +1271,32 @@ function ReGui:ConnectDrag(Frame: GuiObject, Data)
 		DragEnd = EmptyFunction,
 		DragMovement = EmptyFunction,
 	})
-	
+
 	--// Unpack Configuration
 	local DragStart = Data.DragStart
 	local DragEnd = Data.DragEnd
 	local DragMovement = Data.DragMovement
-	
+
 	--// Whitelist
 	local UserInputTypes = {
-		Enum.UserInputType.MouseButton1,
-		Enum.UserInputType.Touch
+		Start = {
+			Enum.UserInputType.MouseButton1,
+			Enum.UserInputType.Touch
+		},
+		Movement = {
+			Enum.UserInputType.MouseMovement,
+			Enum.UserInputType.Touch
+		}
 	}
-	
+
 	local Dragging = false
-	
-	local function UserInputTypeAllowed(InputType: Enum.UserInputType)
-		return table.find(UserInputTypes, InputType)
+
+	local function InputTypeAllowed(InputType: Enum.UserInputType, Type: string)
+		return table.find(UserInputTypes[Type], InputType)
 	end
-	
-	local function CanDrag(Key): boolean?
-		if not UserInputTypeAllowed(Key.UserInputType) then return end
+
+	local function CanDrag(Key, Type: string): boolean?
+		if not InputTypeAllowed(Key.UserInputType, Type) then return end
 		return true
 	end
 	local function KeyToVector(Key): Vector2
@@ -1301,35 +1307,31 @@ function ReGui:ConnectDrag(Frame: GuiObject, Data)
 
 	--// DragDetector event functions
 	local function _DragStart(Key)
-		if not CanDrag(Key) then return end
+		if not CanDrag(Key, "Start") then return end
 		local InputVector = KeyToVector(Key)
-		
+
 		Dragging = true
 		DragStart(InputVector)
 	end
 	local function _DragEnd(Key)
 		if not Dragging then return end
 		local InputVector = KeyToVector(Key)
-		
+
 		Dragging = false
 		DragEnd(InputVector)
 	end
 	local function _DragMovement(Key)
 		if not Dragging then return end
-		
+		if not CanDrag(Key, "Movement") then return end
+
 		local InputVector = KeyToVector(Key)
 		DragMovement(InputVector)
 	end
-	
+
 	--// Connect movement events
 	Frame.InputBegan:Connect(_DragStart)
 	UserInputService.InputEnded:Connect(_DragEnd)
-	UserInputService.TouchMoved:Connect(_DragMovement)
-	UserInputService.InputChanged:Connect(function(Input)
-		if Input.UserInputType == Enum.UserInputType.MouseMovement then 
-			return _DragMovement(Input)
-		end
-	end)
+	UserInputService.InputChanged:Connect(_DragMovement)
 end
 
 type MakeDraggableFlags = {
@@ -1373,7 +1375,7 @@ function ReGui:MakeDraggable(Config: MakeDraggableFlags)
 	--// DragDetector event functions
 	local function DragStart(InputVector)
 		if not Interface:CanDrag() then return end
-		
+
 		local DragBegin = Config.DragBegin
 		InputOrgin = InputVector
 
@@ -1381,7 +1383,7 @@ function ReGui:MakeDraggable(Config: MakeDraggableFlags)
 	end
 	local function DragMovement(InputVector)
 		if not Interface:CanDrag() then return end
-		
+
 		local Delta = InputVector - InputOrgin
 		local OnUpdate = Config.OnUpdate
 
@@ -1414,7 +1416,7 @@ function ReGui:MakeDraggable(Config: MakeDraggableFlags)
 		OnUpdate = UpdatePosition,
 		DragBegin = PositionBegan
 	})
-	
+
 	--// Connect movement events
 	self:ConnectDrag(Grab, {
 		DragStart = DragStart,
@@ -1921,7 +1923,7 @@ function ReGui:GetContentSize(Object: GuiObject): Vector2
 	local UIListLayout = Object:FindFirstChildOfClass("UIListLayout")
 	local UIPadding = Object:FindFirstChildOfClass("UIPadding")
 	local UIStroke = Object:FindFirstChildOfClass("UIStroke")
-	
+
 	local ContentSize
 
 	--// Fetch absolute size
@@ -1941,7 +1943,7 @@ function ReGui:GetContentSize(Object: GuiObject): Vector2
 
 		ContentSize += Vector2.new(Left+Right, Top+Bottom)
 	end
-	
+
 	if UIStroke then
 		local Thickness = UIStroke.Thickness
 		ContentSize += Vector2.new(Thickness/2, Thickness/2)
@@ -2046,7 +2048,7 @@ function ReGui:WrapGeneration(Function, Data: WrapGeneration)
 			Parent = Parent,
 			Name = Flags.ColorTag
 		})
-		
+
 		--// Convert self from 'ReGui' to 'Elements'
 		if Canvas == self then
 			Canvas = self.Elements
@@ -2106,7 +2108,7 @@ function ReGui:DefineElement(Name: string, Data)
 	local Elements = self.Elements
 	local Themes = self.ThemeConfigs
 	local ElementColors = self.ElementColors
-	
+
 	local BaseTheme = Themes.DarkTheme
 
 	--// Element data
@@ -2285,7 +2287,7 @@ function Elements:GetThemeKey(Tag: string)
 	if WindowClass then 
 		return WindowClass:GetThemeKey(Tag)
 	end
-	
+
 	return BaseTheme[Tag]
 end
 
@@ -2348,7 +2350,7 @@ ReGui:DefineElement("Dropdown", {
 		function Config:Close()
 			if self.Disabled then return end
 			self.Disabled = true
-			
+
 			Hover:Disconnect()
 			Object:Remove()
 
@@ -2430,7 +2432,7 @@ ReGui:DefineElement("Tooltip", {
 			--// Set frame position to mosue location
 			local X, Y = ReGui:GetMouseLocation()
 			local Position = Overlay.Parent.AbsolutePosition
-			
+
 			Overlay.Position = UDim2.fromOffset(
 				X - Position.X + Offset, 
 				Y - Position.Y + Offset
@@ -2955,7 +2957,7 @@ function TabSelectorClass:CreateTab(Config: Tab): Elements
 	--// Create new page
 	local NewPage = Page:Clone()
 	local PagePadding = ReGui:GetChildOfClass(NewPage, "UIPadding")
-	
+
 	ReGui:SetProperties(NewPage, {
 		Parent = Body,
 		Name = Name,
@@ -2995,7 +2997,7 @@ function TabSelectorClass:CreateTab(Config: Tab): Elements
 					self:RemoveTab(Canvas)
 				end,
 			})
-			
+
 			--// Animate close icon on hover
 			local Icon = Button.Icon
 			ReGui:SetAnimation(Icon, {
@@ -3224,7 +3226,7 @@ ReGui:DefineElement("Checkbox", {
 		else
 			PaddingSize = UDim.new(0, 2)
 		end
-		
+
 		--// Apply UIPadding sizes
 		ReGui:SetProperties(UIPadding, {
 			PaddingBottom = PaddingSize,
@@ -3241,7 +3243,7 @@ ReGui:DefineElement("Checkbox", {
 
 		local function SetStyle(Value: boolean, NoAnimation: boolean)
 			local Tweeninfo = Canvas:GetThemeKey("AnimationTweenInfo")
-			
+
 			--// Animate tick
 			local Size = Value and TickedSize or UntickedSize
 			Animation:Tween({
@@ -3374,12 +3376,12 @@ ReGui:DefineElement("PlotHistogram", {
 		function Config:GetBaseValues(): (number, number)
 			local Minimum = self.Minimum
 			local Maximum = self.Maximum
-			
+
 			--// User defined minimum
 			if Minimum and Maximum then
 				return Minimum, Maximum
 			end
-			
+
 			local Plots = self._Plots
 
 			for _, Data in Plots do
@@ -3404,7 +3406,7 @@ ReGui:DefineElement("PlotHistogram", {
 
 			local Minimum, Maximum = self:GetBaseValues()
 			if not Minimum or not Maximum then return end
-			
+
 			local Difference = Maximum - Minimum
 
 			--// Update each plot on the graph
@@ -3433,7 +3435,7 @@ ReGui:DefineElement("PlotHistogram", {
 				Parent = GraphCanvas,
 				Visible = true
 			})
-			
+
 			local HoverConnection = ReGui:ConnectHover(Plot, {
 				MouseEnter = true,
 				OnInput = function()
@@ -3446,7 +3448,7 @@ ReGui:DefineElement("PlotHistogram", {
 				Point = Point,
 				Value = Value
 			}
-			
+
 			function Module:UpdateTooltip()
 				local Index = Module:GetPointIndex()
 				ValueLabel.Text = `{Index}:	{Data.Value}`
@@ -3455,7 +3457,7 @@ ReGui:DefineElement("PlotHistogram", {
 			function Module:SetValue(Value)
 				Data.Value = Value
 				Config:UpdateGraph()
-				
+
 				--// Update tooltip value if hovered
 				if HoverConnection.Hovering then
 					self:UpdateTooltip()
@@ -4040,12 +4042,12 @@ ReGui:DefineElement("Table", {
 
 		local RowsCount = 0
 		local Rows = {}
-		
+
 		function Config:Row(Config)
 			Config = Config or {}
-			
+
 			local IsHeader = Config.IsHeader
-			
+
 			local ColumnIndex = 0
 			local Columns = {}
 
@@ -4056,11 +4058,11 @@ ReGui:DefineElement("Table", {
 				Visible = true,
 				Parent = Object,
 			})
-			
+
 			--// Set alignment
 			local UIListLayout = Row:FindFirstChildOfClass("UIListLayout")
 			UIListLayout.VerticalAlignment = VerticalAlignment
-			
+
 			--// Apply header styles
 			if IsHeader then
 				Canvas:TagElements({
@@ -4069,7 +4071,7 @@ ReGui:DefineElement("Table", {
 			else
 				RowsCount += 1
 			end
-			
+
 			--// Background colors
 			if RowBackground and not IsHeader then
 				local Transparency = RowsCount % 2 ~= 1 and RowTransparency or 1
@@ -4090,7 +4092,7 @@ ReGui:DefineElement("Table", {
 				--// Apply border
 				local Stroke = Column:FindFirstChildOfClass("UIStroke")
 				Stroke.Enabled = Border
-				
+
 				--// Content canvas
 				return ReGui:MakeCanvas({
 					Element =  Column,
@@ -4098,34 +4100,34 @@ ReGui:DefineElement("Table", {
 					Class = Class
 				})
 			end
-			
+
 			function RowClass:NextColumn()
 				ColumnIndex += 1
-				
+
 				local Index = ColumnIndex%MaxColumns+1
 				local Column = Columns[Index]
-				
+
 				--// Create Column
 				if not Column then
 					Column = self:Column()	
 					Columns[Index] = Column
 				end
-				
+
 				return Column
 			end
-			
+
 			table.insert(Rows, RowClass)
-			
+
 			--// Content canvas
 			local Class = ReGui:MergeMetatables(RowClass, Row)
 			return Class
 		end
-		
+
 		--// TODO: 
 		function Config:NextRow()
 			return self:Row()
 		end
-		
+
 		function Config:HeaderRow()
 			return self:Row({
 				IsHeader = true
@@ -4163,7 +4165,7 @@ ReGui:DefineElement("List", {
 	},
 	Create = function(self, Config)
 		local WindowClass = self.WindowClass
-		
+
 		--// Unpack configuration
 		local Spacing = Config.Spacing
 		local HorizontalFlex = Config.HorizontalFlex
@@ -4409,7 +4411,7 @@ ReGui:DefineElement("Group", {
 	},
 	Create = function(self, Config)
 		local WindowClass = self.WindowClass
-		
+
 		--// Create object
 		local Object = ReGui:InsertPrefab("Group", Config)
 
@@ -4510,35 +4512,35 @@ ReGui:DefineElement("Row", {
 	},
 	Create = function(self, Config: Row)
 		local WindowClass = self.WindowClass
-		
+
 		--// Unpack configuration
 		local Spacing = Config.Spacing
 		local Expanded = Config.Expanded
-		
+
 		--// Create row object
 		local Object = ReGui:InsertPrefab("Row", Config)
 		local Class = ReGui:MergeMetatables(Config, Object)
-		
+
 		local UIListLayout = Object:FindFirstChildOfClass("UIListLayout")
 		UIListLayout.Padding = UDim.new(0, Spacing)
-		
+
 		function Config:Expand()
 			UIListLayout.HorizontalFlex = Enum.UIFlexAlignment.Fill
 			return self
 		end
-		
+
 		--// Content canvas
 		local Canvas = ReGui:MakeCanvas({
 			Element = Object,
 			WindowClass = WindowClass,
 			Class = Class
 		})
-		
+
 		--// Expand if Fill flag is enabled
 		if Expanded then
 			Config:Expand()
 		end
-		
+
 		return Canvas, Object
 	end,
 })
@@ -4656,7 +4658,7 @@ ReGui:DefineElement("SliderBase", {
 
 		function Config:SetValue(Value, IsPercentage: boolean)
 			local Tweeninfo = Canvas:GetThemeKey("AnimationTweenInfo")
-			
+
 			local Minimum = Config.Minimum
 			local Maximum = Config.Maximum
 
@@ -4736,7 +4738,7 @@ ReGui:DefineElement("SliderBase", {
 			DragStart =  not NoClick and DragMovement or nil,
 			DragMovement = DragMovement,
 		})
-		
+
 		--if not NoClick then
 		--	Drag.DragStart:Connect(DragMovement)
 		--end
@@ -4934,7 +4936,7 @@ ReGui:DefineElement("DragInt", {
 			DragStart = DragStart,
 			DragMovement = DragMovement,
 		})
-		
+
 		--Drag.DragStart:Connect(DragStart)
 		--Drag.DragContinue:Connect(DragMovement)
 
@@ -4968,12 +4970,12 @@ ReGui:DefineElement("MultiDrag", {
 		local LabelText = Config.Label
 		local BaseDragConfig = Config.BaseDragIntConfig
 		local DragIntsConfig = Config.DragIntsConfig
-		
+
 		ReGui:CheckConfig(BaseDragConfig, {
 			Size = UDim2.new(1, 0, 0, 19),
 			Label = ""
 		})
-		
+
 		--// Create container row
 		local ContainerRow = Canvas:Row({
 			Spacing = 4,
@@ -4990,7 +4992,7 @@ ReGui:DefineElement("MultiDrag", {
 		local Row = ContainerRow:Row({
 			Size = UDim2.fromScale(0.65, 0),
 		})
-		
+
 		--// Expand row
 		Row:Expand()
 
@@ -5000,27 +5002,27 @@ ReGui:DefineElement("MultiDrag", {
 			local Drag = Row:DragInt(Copy(BaseDragConfig, DragConfig))
 			table.insert(Drags, Drag)
 		end
-		
+
 		function Config:SetDisabled(Disabled: boolean)
 			self.Disabled = Disabled
-			
+
 			--// Chaneg the tag of the Label
 			Canvas:SetColorTags({
 				[Label] = Disabled and "LabelDisabled" or "Label"
 			}, true)
-			
+
 			--// Set state of each Drag element
 			for _, Drag in Drags do
 				Drag:SetDisabled(Disabled)
 			end
 		end
-		
+
 		--// Merge properties into the configuration
 		Merge(Config, {
 			Row = Row,
 			Drags = Drags
 		})
-		
+
 		return Config, ContainerRow
 	end,
 })
@@ -5054,20 +5056,20 @@ ReGui:DefineElement("InputColor3", {
 		local DragIntConfig = Config.BaseDragIntConfig
 		local Value = Config.Value
 		local Disabled = Config.Disabled
-		
+
 		DragIntConfig.Callback = function()
 			if Config.ValueChanged then
 				Config:ValueChanged()
 			end
 		end
-		
+
 		--// Create Object
 		local MultiInput = self:MultiDrag(Config)
 		local Class = ReGui:MergeMetatables(Config, MultiInput)
-		
+
 		local Row = MultiInput.Row
 		local Drags = MultiInput.Drags
-		
+
 		--// Preview frame
 		local Preview = Row:Button({
 			BackgroundTransparency = 0,
@@ -5078,7 +5080,7 @@ ReGui:DefineElement("InputColor3", {
 			ColorTag = "",
 			ElementStyle = ""
 		})
-		
+
 		local function Callback(...)
 			local func = Config.Callback
 			return func(Class, ...)
@@ -5092,7 +5094,7 @@ ReGui:DefineElement("InputColor3", {
 		function Config:ValueChanged()
 			local R, B, G = Drags[1], Drags[2], Drags[3]
 			local Color = Color3.fromRGB(R.Value, G.Value, B.Value)
-			
+
 			self.Value = Color
 			SetPreview(Color)
 		end
@@ -5100,7 +5102,7 @@ ReGui:DefineElement("InputColor3", {
 		function Config:SetValue(Color: Color3)
 			self.Value = Color
 			SetPreview(Color)
-			
+
 			--// Update Drag elements
 			local R, B, G = Drags[1], Drags[2], Drags[3]
 			R:SetValue(Color.R*255)
@@ -5146,7 +5148,7 @@ ReGui:DefineElement("InputCFrame", {
 		local Disabled = Config.Disabled
 		local Maximum = Config.Maximum
 		local Minimum = Config.Minimum
-		
+
 		ReGui:CheckConfig(DragIntConfig, {
 			Maximum = Maximum,
 			Minimum = Minimum
@@ -5164,7 +5166,7 @@ ReGui:DefineElement("InputCFrame", {
 
 		local Row = MultiInput.Row
 		local Drags = MultiInput.Drags
-		
+
 		local function Callback(...)
 			local func = Config.Callback
 			return func(Class, ...)
@@ -5301,10 +5303,10 @@ ReGui:DefineElement("Combo", {
 
 			return Func(Class, Value, ...)
 		end
-		
+
 		local function SetAnimationState(Open: boolean, NoAnimation: boolean?)
 			local Tweeninfo = Canvas:GetThemeKey("AnimationTweenInfo")
-			
+
 			Object.Interactable = not Open
 
 			--// Animate Arrow button
@@ -5366,7 +5368,7 @@ ReGui:DefineElement("Combo", {
 
 			self.Open = Open
 			SetAnimationState(Open, NoAnimation)
-			
+
 			if not Open	then 
 				--// Close open dropdown
 				if Dropdown then
@@ -5403,7 +5405,7 @@ ReGui:DefineElement("Combo", {
 		--// Update UI
 		SetAnimationState(false, true)
 		Config:SetDisabled(Disabled)
-		
+
 		if Selected then
 			Config:SetValue(Selected)
 		end
@@ -5440,7 +5442,7 @@ function WindowClass:Tween(Data)
 	ReGui:CheckConfig(Data, {
 		Tweeninfo = self:GetThemeKey("AnimationTweenInfo")
 	})
-	
+
 	return Animation:Tween(Data)
 end
 
@@ -5477,7 +5479,7 @@ function WindowClass:MakeTitleBarCanvas(): TitleBarCanvas
 		WindowClass = self,
 		Element = TitleBar
 	})
-	
+
 	self.TitleBarCanvas = Canvas
 
 	return Canvas
@@ -5496,7 +5498,7 @@ function WindowClass:AddDefaultTitleButtons()
 	if not Canvas then
 		Canvas = self:MakeTitleBarCanvas()
 	end
-	
+
 	ReGui:CheckConfig(self, {
 		--// Create window interaction buttons
 		Toggle = Canvas:RadioButton({
@@ -5525,6 +5527,7 @@ function WindowClass:AddDefaultTitleButtons()
 			TextSize = 14,
 			Size = UDim2.new(1, 0),
 			Fill = true,
+			Active = false,
 			AutomaticSize = Enum.AutomaticSize.Y
 		})
 	})
@@ -5775,7 +5778,7 @@ function WindowClass:SetCollapsed(Collapsed: boolean, NoAnimation: false): Windo
 
 	--// Change the window focus
 	self:SetFocused(not Collapsed)
-	
+
 	--// Animate the closing
 	Animation:HeaderCollapse({
 		Tweeninfo = Tweeninfo,
@@ -5823,7 +5826,7 @@ function WindowClass:UpdateConfig(Config)
 		NoTabsBar = function(Value)
 			local Object = self.WindowTabSelector
 			if not Object then return end
-			
+
 			local TabsBar = Object.TabsBar
 			TabsBar.Visible = not Value
 		end,
@@ -5832,7 +5835,7 @@ function WindowClass:UpdateConfig(Config)
 			local NoScroll = self.NoScroll
 			local TabSelector = self.WindowTabSelector
 			local ContentCanvas = self.ContentCanvas
-			
+
 			--// TabSelector
 			if TabSelector then 
 				TabSelector.Body.ScrollBarThickness = ScrollBarThickness
@@ -5867,7 +5870,7 @@ function WindowClass:UpdateConfig(Config)
 			Func(Value)
 		end
 	end
-	
+
 	return self
 end
 
@@ -5935,14 +5938,14 @@ ReGui:DefineElement("Window", {
 		local AutomaticSize = Config.AutomaticSize
 		local NoWindowRegistor = Config.NoWindowRegistor
 		local AutoSelectNewTabs = Config.AutoSelectNewTabs
-		
+
 		local CanvasConfig = {
 			Scroll = not NoScroll,
 			Fill = not AutomaticSize and true or nil,
 			UiPadding = UDim.new(0, NoTabs and 8 or 0),
 			AutoSelectNewTabs = AutoSelectNewTabs
 		}
-		
+
 		--// Merge AutomaticSize configuration 
 		if AutomaticSize then
 			Merge(CanvasConfig, {
@@ -5967,14 +5970,14 @@ ReGui:DefineElement("Window", {
 				Class:SetSize(Size, true)
 			end,
 		})
-		
+
 		--// Content canvas
 		local ContentCanvas = ReGui:MakeCanvas({
 			Element = ContentFrame,
 			WindowClass = Class,
 			Class = Class
 		})
-		
+
 		--// Create Window content canvas
 		local WindowCanvas, CanvasFrame = ContentCanvas:Canvas(Copy(CanvasConfig, {
 			Parent = ContentFrame
@@ -6001,10 +6004,10 @@ ReGui:DefineElement("Window", {
 			}),
 			ResizeConnection = ResizeConnection,
 		})
-		
+
 		--// Create canvas for Window type
 		local Canvas, Body = nil, nil
-		
+
 		if NoTabs then
 			--// Window
 			Canvas, Body = WindowCanvas, CanvasFrame
@@ -6013,7 +6016,7 @@ ReGui:DefineElement("Window", {
 			Canvas, Body = WindowCanvas:TabSelector(CanvasConfig)
 			Class.WindowTabSelector = Canvas
 		end
-		
+
 		--// Merge canvas data
 		Merge(Class, {
 			Body = Body,
@@ -6085,14 +6088,14 @@ ReGui:DefineElement("PopupCanvas", {
 
 		--// Create object
 		local Object = ReGui:InsertPrefab(Class, Config)
-		
+
 		function Config:ClosePopup()
 			Object:Destroy()
 		end
 		function Config:ShowPopup()
 			Object.Visible = true
 		end
-		
+
 		--// Connect mouse events
 		local Hover = ReGui:ConnectHover(Object, {
 			MouseOnly = true,
@@ -6127,20 +6130,20 @@ ReGui:DefineElement("PopupModal", {
 	},
 	Create = function(self, Config: WindowFlags)
 		local WindowClass = self.WindowClass
-		
+
 		--// Unpack configuration
 		local NoAnimation = Config.NoAnimation
 		local WindowDimTweenInfo = nil
-		
+
 		if WindowClass then 
 			Config.Theme = WindowClass.Theme
 			WindowDimTweenInfo = WindowClass:GetThemeKey("ModalWindowDimTweenInfo")
 		end
-		
+
 		--// Create Effect object
 		local ModalEffect = ReGui:InsertPrefab("ModalEffect", Config)
 		ModalEffect.Parent = ReGui.Container.Overlays
-		
+
 		--// Create window used for the modal
 		local Window = self:Window(Copy(Config, {
 			Parent = ModalEffect,
@@ -6150,7 +6153,7 @@ ReGui:DefineElement("PopupModal", {
 			NoAutoFlags = false,
 			AutomaticSize = Enum.AutomaticSize.Y
 		}))
-		
+
 		function Config:ClosePopup()
 			Animation:Tween({
 				Object = ModalEffect,
@@ -6163,10 +6166,10 @@ ReGui:DefineElement("PopupModal", {
 					ModalEffect:Destroy()
 				end
 			})
-			
+
 			Window:Close()
 		end
-		
+
 		--// Fade modal effect 
 		Animation:Tween({
 			Object = ModalEffect,
@@ -6179,12 +6182,12 @@ ReGui:DefineElement("PopupModal", {
 				BackgroundTransparency = 0.8
 			}
 		})
-		
+
 		--// Tag elements into the theme
 		self:TagElements({
 			[ModalEffect] = "ModalWindowDim"
 		})
-		
+
 		--// Create the modal class
 		local ModalClass = ReGui:MergeMetatables(Config, Window)
 
