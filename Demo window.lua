@@ -2,7 +2,21 @@
 local ReGui = require(game.ReplicatedStorage.ReGui)
 ReGui:Init({
 	--Debug = true
+	--Prefabs = game.StarterGui["ReGui-Prefabs"]
 })
+
+local Window = ReGui:TabsWindow({
+	Title = "Tabs window demo!",
+	Size = UDim2.fromOffset(300, 200)
+})
+
+local Names = {"Avocado", "Broccoli", "Cucumber"}
+for _, Name in next, Names do
+	local Tab = Window:CreateTab({Name=Name})
+	Tab:Label({
+		Text = `This is the {Name} tab!`
+	})
+end
 
 --// Watermark demo
 local Watermark = ReGui.Elements:Canvas({
@@ -121,6 +135,7 @@ local Options = {
 	NoClose = true,
 	NoCollapse = false,
 	--NoTabsBar = false, --:TabsWindow only
+	OpenOnDoubleClick = true,
 	NoMove = false,
 	NoSelect = false,
 	NoScrollBar = false,
@@ -165,7 +180,7 @@ local DemosOrder = {
 	"Bullets",
 	"Text",
 	"Images",
-	"VideoPlayer",
+	"Videos",
 	"Combo", 
 	"Tabs", 
 	"Plotting", 
@@ -386,7 +401,7 @@ local WidgetDemos = {
 			end
 		end)
 	end,
-	["VideoPlayer"] = function(Header)
+	["Videos"] = function(Header)
 		local Video = Header:VideoPlayer({
 			Video = 5608327482,
 			Looped = true,
@@ -568,7 +583,7 @@ local WidgetDemos = {
 				Size = UDim2.fromOffset(30, 30)
 			})
 
-			ReGui:ConnectHover(Image, {
+			ReGui:DetectHover(Image, {
 				MouseEnter = true,
 				OnInput = function()
 					TooltipLabel.Text = Name
@@ -689,6 +704,19 @@ local WidgetDemos = {
 		end)()
 	end,
 	["Combo"] = function(Header)
+		Header:Combo({
+			WidthFitPreview = true,
+			Label = "WidthFitPreview",
+			Selected = 1,
+			Items = {
+				"AAAAAAAAAAAA",
+				"BBB",
+				"C",
+			},
+		})
+		
+		Header:Separator({Text="One-liner variants"})
+		
 		Header:Combo({
 			Label = "Combo 1 (array)",
 			Selected = 1,
