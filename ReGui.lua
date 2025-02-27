@@ -365,11 +365,6 @@ ReGui.ElementColors = {
 		TextColor3 = "Text",
 		FontFace = "TextFont",
 	},
-	["Keybind"] = {
-		BackgroundColor3 = "FrameBg",
-		TextColor3 = "Text",
-		FontFace = "TextFont",
-	},
 	["CollapsingHeader"] = {
 		FontFace = "TextFont",
 		TextColor3 = "CollapsingHeaderText",
@@ -2837,7 +2832,7 @@ ReGui:DefineElement("Keybind", {
 		Callback = EmptyFunction,
 		IgnoreGameProcessed = true,
 		Enabled = true,
-		ElementStyle = "Button",
+		ColorTag = "Frame",
 		UiPadding = UDim.new(),
 		AutomaticSize = Enum.AutomaticSize.None,
 		Size = UDim2.new(0.4, 0, 0, 19)
@@ -2923,6 +2918,8 @@ ReGui:DefineElement("Keybind", {
 		Object.Activated:Connect(function()
 			Config:WaitForNewKey()
 		end)
+		
+		ReGui:SetAnimation(Object, "Inputs")
 
 		return Class, Object
 	end

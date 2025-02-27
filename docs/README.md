@@ -34,7 +34,7 @@ Window:Button({
 	end,
 })
 Window:InputText({Label="string"})
-Window:Slider({Label="float", Format="%.1f/%s", Minimum=0, Maximum=1})
+Window:SliderFloat({Label = "float", Minimum = 0.0, Maximum = 1.0})
 ```
 
 <img src="https://github.com/user-attachments/assets/9181571f-39c3-42bc-8677-3a433c92e6e3" width="400px">
@@ -49,8 +49,8 @@ https://github.com/depthso/Dear-ReGui/blob/main/Demo%20window.lua
 <table>
 	<tr>
 		<td width="400">
-			Demo window
-			<img src="https://github.com/user-attachments/assets/0b9028a1-4615-4ddb-a2cc-0068653f562e">
+			Demo window 
+			<img src="https://github.com/user-attachments/assets/f36d12d7-a938-462b-9c57-2f010db32ca3">
 		</td>
 		<td width="600">
 			Advanced customization example
