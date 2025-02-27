@@ -13,7 +13,7 @@
 
 local ReGui = {
 	--// Package data
-	Version = "1.2.2",
+	Version = "1.2.3",
 	Author = "Depso",
 	License = "MIT",
 	Repository = "https://github.com/depthso/Dear-ReGui/",
@@ -22,7 +22,7 @@ local ReGui = {
 	PrefabsId = 71968920594655,
 	DefaultTitle = "ReGui",
 	ContainerName = "ReGui",
-	DoubleClickThreshold = 0.2,
+	DoubleClickThreshold = 0.3,
 
 	Container = nil,
 	Prefabs = nil,
@@ -167,7 +167,7 @@ ReGui.ThemeConfigs = {
 		CollapsingHeaderBg = ReGui.Accent.Light,
 		CollapsingHeaderText = ReGui.Accent.White,
 		CheckMark = ReGui.Accent.Light,
-		RadioButtonSelectedBg = ReGui.Accent.Light,
+		RadioButtonHoveredBg = ReGui.Accent.Light,
 		ResizeGrab = ReGui.Accent.Light,
 		HeaderBg = ReGui.Accent.Gray,
 		HeaderBgTransparency = 0.6,
@@ -217,13 +217,14 @@ ReGui.ThemeConfigs = {
 		FrameBg = ReGui.Accent.Gray,
 		FrameBgTransparency = 0.4,
 		FrameBgActive = ReGui.Accent.Gray,
+		FrameBgTransparencyActive = 0,
 		
 		SliderGrab = ReGui.Accent.White,
 		ButtonsBg = ReGui.Accent.Gray,
 		CollapsingHeaderBg = ReGui.Accent.Gray,
 		CollapsingHeaderText = ReGui.Accent.Black,
 		CheckMark = ReGui.Accent.Black,
-		RadioButtonSelectedBg = ReGui.Accent.Black,
+		RadioButtonHoveredBg = ReGui.Accent.Black,
 		Separator = ReGui.Accent.Black,
 
 		TabText = ReGui.Accent.Black,
@@ -254,7 +255,7 @@ ReGui.ThemeConfigs = {
 		CollapsingHeaderBg = ReGui.Accent.ImGui.Light,
 		CollapsingHeaderText = ReGui.Accent.White,
 		CheckMark = ReGui.Accent.ImGui.Light,
-		RadioButtonSelectedBg = ReGui.Accent.ImGui.Light,
+		RadioButtonHoveredBg = ReGui.Accent.ImGui.Light,
 		ResizeGrab = ReGui.Accent.ImGui.Light,
 
 		TabTextPaddingTop = UDim.new(0, 0),
@@ -382,11 +383,8 @@ ReGui.ElementColors = {
 		BackgroundColor3 = "CheckMark",
 	},
 	["RadioButton"] = {
-		BackgroundColor3 = "RadioButtonSelectedBg",
+		BackgroundColor3 = "RadioButtonHoveredBg",
 	},
-	["Combo"] = {
-		BackgroundColor3 = "FrameBg"
-	}
 }
 
 ReGui.Styles = {
@@ -538,20 +536,18 @@ ReGui.ElementFlags = {
 	{
 		Properties = {"ColorTag"},
 		Callback = function<StyleFunc>(Data, Object, Value)
-			local WindowClass = Data.WindowClass
 			local Class = Data.Class
+			local WindowClass = Data.WindowClass
 			local NoAutoTheme = Class.NoAutoTheme
-
+			
 			if not WindowClass then return end
 			if NoAutoTheme then return end
-
-			local Theme = WindowClass.Theme
 
 			ReGui:UpdateColors({
 				Object = Object,
 				Tag = Value,
 				NoAnimation = true,
-				Theme = Theme,
+				Theme = WindowClass.Theme,
 			})
 		end,
 	},
@@ -560,7 +556,6 @@ ReGui.ElementFlags = {
 		Callback = function<StyleFunc>(Data, Object, Value)
 			local NoAnimation = Data.Class.NoAnimation
 			if NoAnimation then return end
-
 			ReGui:SetAnimation(Object, Value)
 		end,
 	},
@@ -685,7 +680,7 @@ ReGui.ElementFlags = {
 			local Class = Data.Class
 			function Class:SetLabel(Text)
 				Label.Text = Text
-				return Class
+				return self
 			end
 
 			Label.Text = tostring(Value)
@@ -744,12 +739,12 @@ ReGui.ElementFlags = {
 			local Class = Data.Class
 
 			function Class:SetCallback(NewCallback)
-				Class.Callback = NewCallback
-				return Class
+				self.Callback = NewCallback
+				return self
 			end
 			function Class:FireCallback(NewCallback)
-				Class.Callback(Object)
-				return Class
+				self.Callback(Object)
+				return self
 			end
 		end,
 	},
@@ -836,7 +831,6 @@ function Animation:Tween(Data: AnimationTween): Tween?
 
 	--// Create the tween animation
 	local MasterTween = nil
-
 	for Key, Value in next, EndProperties do
 		local Properties = {
 			[Key] = Value
@@ -1213,12 +1207,21 @@ end
 function ReGui:ConnectMouseEvent(Object: GuiObject, Config)
 	local Callback = Config.Callback
 	local DoubleClick = Config.DoubleClick
+	local OnlyMouseHovering = Config.OnlyMouseHovering
 	
 	local LastClick = 0
+	local HoverSignal = nil
+		
+	if OnlyMouseHovering then
+		HoverSignal = self:DetectHover(OnlyMouseHovering)
+	end
 	
 	Object.Activated:Connect(function(...)
 		local ClickTick = tick()
 		local ClickRange = ClickTick-LastClick
+		
+		--// OnlyMouseHovering
+		if HoverSignal and not HoverSignal.Hovering then return end
 
 		--// DoubleClick
 		if DoubleClick then
@@ -1413,7 +1416,7 @@ function ReGui:ConnectDrag(Frame: GuiObject, Data)
 	
 	--// Whitelist
 	local UserInputTypes = {
-		Start = {
+		StartAndEnd = {
 			Enum.UserInputType.MouseButton1,
 			Enum.UserInputType.Touch
 		},
@@ -1434,39 +1437,56 @@ function ReGui:ConnectDrag(Frame: GuiObject, Data)
 		return Vector2.new(InputPosition.X, InputPosition.Y)
 	end
 	local function SetIsDragging(DraggingState: boolean)
+		--// Globally disable drag on other objects
+		self._DraggingDisabled = DraggingState
+		
 		IsDragging = DraggingState
 		OnDragStateChange(DraggingState)
 	end
-
-	--// DragDetector event functions
-	local function _DragStart(Key)
-		if IsDragging then return end
-		if not InputTypeAllowed(Key, "Start") then return end
+	local function MakeSignal(Data)
+		local DraggingDisabledCheck = Data.CheckDraggingDisabled
+		local DraggingRequired = Data.DraggingRequired
+		local UpdateState = Data.UpdateState
+		local IsDraggingState = Data.IsDragging
+		local InputType = Data.InputType
+		local Callback = Data.Callback
 		
-		local InputVector = KeyToVector(Key)
-		SetIsDragging(true)
-		DragStart(InputVector)
-	end
-	local function _DragEnd(Key)
-		if not IsDragging then return end
-		if not InputTypeAllowed(Key, "Start") then return end
-		
-		local InputVector = KeyToVector(Key)
-		SetIsDragging(false)
-		DragEnd(InputVector)
-	end
-	local function _DragMovement(Key)
-		if not IsDragging then return end
-		if not InputTypeAllowed(Key, "Movement") then return end
-		
-		local InputVector = KeyToVector(Key)
-		DragMovement(InputVector)
+		return function(Key)
+			if IsDragging ~= DraggingRequired then return end
+			if DraggingDisabledCheck and self._DraggingDisabled then return end
+			if not InputTypeAllowed(Key, InputType) then return end
+			
+			--// Update drag state
+			if UpdateState then
+				SetIsDragging(IsDraggingState)
+			end
+			
+			local InputVector = KeyToVector(Key)
+			Callback(InputVector)
+		end
 	end
 	
 	--// Connect movement events
-	Frame.InputBegan:Connect(_DragStart)
-	UserInputService.InputEnded:Connect(_DragEnd)
-	UserInputService.InputChanged:Connect(_DragMovement)
+	Frame.InputBegan:Connect(MakeSignal({
+		CheckDraggingDisabled = true,
+		DraggingRequired = false,
+		UpdateState = true,
+		IsDragging = true,
+		InputType = "StartAndEnd",
+		Callback = DragStart,
+	}))
+	UserInputService.InputEnded:Connect(MakeSignal({
+		DraggingRequired = true,
+		UpdateState = true,
+		IsDragging = false,
+		InputType = "StartAndEnd",
+		Callback = DragEnd,
+	}))
+	UserInputService.InputChanged:Connect(MakeSignal({
+		DraggingRequired = true,
+		InputType = "Movement",
+		Callback = DragMovement,
+	}))
 end
 
 type MakeDraggableFlags = {
@@ -2192,8 +2212,8 @@ function ReGui:WrapGeneration(Function, Data: WrapGeneration)
 		end
 
 		--// Create element and apply properties
-		local Class, Element = Function(Canvas, Flags, ...)
-		--local Success, Class, Element = pcall(Function, Canvas, Flags, ...)
+		--local Class, Element = Function(Canvas, Flags, ...)
+		local Success, Class, Element = pcall(Function, Canvas, Flags, ...)
 
 		--// Check for errors
 		if Success == false then
@@ -2451,6 +2471,28 @@ function Elements:SetColorTags(Objects, Animate)
 	})
 end
 
+function Elements:SetElementFocused(Object: GuiObject, Data)
+	local WindowClass = self.WindowClass
+	
+	local Focused = Data.Focused
+	local Animation = Data.Animation
+	
+	--// Change global animation state
+	ReGui:SetAnimationsEnabled(not Focused)
+	
+	--// Reset animation state
+	if not Focused and Animation then
+		Animation:Reset()
+	end
+	
+	--// Window modification
+	if not WindowClass then return end
+	local ContentCanvas = WindowClass.ContentCanvas
+
+	--// Disable interaction with other elements
+	ContentCanvas.Interactable = not Focused
+end
+
 ReGui:DefineElement("Dropdown", {
 	Base = {
 		Disabled = false,
@@ -2482,9 +2524,6 @@ ReGui:DefineElement("Dropdown", {
 		local Position = Parent.AbsolutePosition
 		local Size = ReGui:GetContentSize(Parent, true)
 
-		local Entries = {}
-		local IsHovered
-
 		--// Connect hover watch
 		local Hover = ReGui:DetectHover(Object, {
 			MouseOnly = true,
@@ -2500,16 +2539,13 @@ ReGui:DefineElement("Dropdown", {
 			
 			Hover:Disconnect()
 			Object:Remove()
-
-			--// Invoke closed callback
-			OnClosed()
+			
+			OnClosed() -- Invoke closed callback
 		end
 
 		local function SetValue(Value)
 			Config:Close()
-
-			--// Invoke selected callback
-			OnSelected(Value)
+			OnSelected(Value) -- Invoke selected callback
 		end
 
 		--// Position dropdown
@@ -2520,9 +2556,9 @@ ReGui:DefineElement("Dropdown", {
 		)
 
 		--// Append items
-		for Index, Index2 in next, Items do
-			local Value = typeof(Index) ~= "number" and Index or Index2
-			local IsSelected = Index == Selected or Index2 == Selected
+		for A, B in Items do
+			local Value = typeof(A) ~= "number" and A or B
+			local IsSelected = A == Selected or B == Selected
 
 			--// Create selectable
 			local Entry = Canvas:Selectable({
@@ -2533,8 +2569,6 @@ ReGui:DefineElement("Dropdown", {
 					return SetValue(Value)
 				end,
 			})
-
-			table.insert(Entries, Entry)
 		end
 
 		--// Configure size of the frame
@@ -2542,8 +2576,6 @@ ReGui:DefineElement("Dropdown", {
 		local Absolute = Canvas:GetCanvasSize()
 		local YSize = math.clamp(Absolute.Y, Size.Y, MaxSizeY)
 		local XSize = math.clamp(Size.X-Padding, MinSizeX, math.huge)
-		
-		print(Size.X, XSize)
 		
 		Object.Size = UDim2.fromOffset(XSize, YSize)
 
@@ -3267,6 +3299,7 @@ end
 export type TabSelector = {
 	NoTabsBar: boolean?,
 	NoAnimation: boolean?,
+	AutoSelectNewTabs: boolean?,
 
 	CreateTab: (TabSelector, Tab) -> Elements,
 	RemoveTab: (TabSelector, Target: (table|string)) -> nil,
@@ -4867,7 +4900,7 @@ ReGui:DefineElement("SliderBase", {
 		function Config:SetDisabled(Disabled: boolean)
 			self.Disabled = Disabled
 			Object.Interactable = not Disabled
-
+			
 			Canvas:SetColorTags({
 				[Label] = Disabled and "LabelDisabled" or "Label"
 			}, true)
@@ -4918,17 +4951,16 @@ ReGui:DefineElement("SliderBase", {
 			return self
 		end
 		
-		local function SetActive(Active: boolean)
-			ReGui:SetAnimationsEnabled(not Active)
+		local function SetFocused(Focused: boolean)
+			Canvas:SetElementFocused(Object, {
+				Focused = Focused,
+				Animation = HoverAnimation
+			})
 			
 			--// Update object colors from a style
 			Canvas:SetColorTags({
-				[Object] = Active and "FrameActive" or "Frame"
+				[Object] = Focused and "FrameActive" or "Frame"
 			}, true)
-			
-			if not Active then
-				HoverAnimation:Reset()
-			end
 		end
 
 		------// Move events
@@ -4957,14 +4989,14 @@ ReGui:DefineElement("SliderBase", {
 		local function DragBegan(...)
 			if not CanDrag() then return end
 			
-			SetActive(true)
+			SetFocused(true)
 			
 			if not NoClick then
 				DragMovement(...)
 			end
 		end
 		local function DragEnded()
-			SetActive(false)
+			SetFocused(false)
 		end
 		
 		--// Update object state
@@ -5147,16 +5179,16 @@ ReGui:DefineElement("DragInt", {
 			}, true)
 		end
 		
-		local function SetActive(Active: boolean)
-			ReGui:SetAnimationsEnabled(not Active)
-			
-			Canvas:SetColorTags({
-				[Object] = Active and "FrameActive" or "Frame"
-			}, true)
+		local function SetFocused(Focused: boolean)
+			Canvas:SetElementFocused(Object, {
+				Focused = Focused,
+				Animation = HoverAnimation
+			})
 
-			if not Active then
-				HoverAnimation:Reset()
-			end
+			--// Update object colors from a style
+			Canvas:SetColorTags({
+				[Object] = Focused and "FrameActive" or "Frame"
+			}, true)
 		end
 
 		------// Move events
@@ -5168,7 +5200,7 @@ ReGui:DefineElement("DragInt", {
 		end
 		local function DragStart(InputPosition)
 			if not CanDrag() then return end
-			SetActive(true)
+			SetFocused(true)
 
 			InputBeganPosition = InputPosition
 			BeganPercentage = Percentage
@@ -5183,7 +5215,7 @@ ReGui:DefineElement("DragInt", {
 			Config:SetValue(Percentage, true)
 		end
 		local function DragEnded()
-			SetActive(false)
+			SetFocused(false)
 		end
 
 		--// Update object state
@@ -5829,24 +5861,6 @@ function WindowClass:GetTitleBarSizeY(): number
 	return TitleBar.Visible and TitleBar.AbsoluteSize.Y or 0
 end
 
-function WindowClass:GetTabsBarSizeY(): number
-	local TabsBar = self.TabsBar
-	return TabsBar.Visible and TabsBar.AbsoluteSize.Y or 0
-end
-
-function WindowClass:GetHeaderSizeY(): number
-	local TitlebarY = self:GetTitleBarSizeY()
-	local TabsBarY = self:GetTabsBarSizeY()
-
-	return TabsBarY + TitlebarY
-end
-
-function WindowClass:UpdateBody()
-	local HeaderSizeY = self:GetHeaderSizeY()
-	local Body = self.Body
-	Body.Size = UDim2.new(1, 0, 1, -HeaderSizeY)
-end
-
 function WindowClass:SetVisible(Visible: boolean): WindowClass
 	self.Visible = Visible
 	
@@ -6129,6 +6143,18 @@ function WindowClass:UpdateConfig(Config)
 				ContentCanvas.ScrollBarThickness = ScrollBarThickness
 			end
 		end,
+		NoScrolling = function(Value)
+			local NoScroll = self.NoScroll
+			local TabSelector = self.WindowTabSelector
+			local ContentCanvas = self.ContentCanvas
+			
+			if TabSelector then 
+				TabSelector.Body.ScrollingEnabled = not Value
+			end
+			if not NoScroll then
+				ContentCanvas.ScrollingEnabled = not Value
+			end
+		end,
 		NoMove = function(Value)
 			local Drag = self.DragConnection
 			Drag:SetEnabled(not Value)
@@ -6323,22 +6349,23 @@ ReGui:DefineElement("Window", {
 			Body = Body,
 			ContentCanvas = Canvas
 		})
+		
+		--// Connect double click events to the collapse
+		ReGui:ConnectMouseEvent(ContentFrame, {
+			DoubleClick = true,
+			OnlyMouseHovering = TitleBar,
+			Callback = function(...)
+				if not Class.OpenOnDoubleClick then return end
+				if Class.NoCollapse then return end
+
+				Class:ToggleCollapsed()
+			end,
+		})
 
 		--// Create default title bar
 		if not NoTitleButtons then
 			Class:AddDefaultTitleButtons()
 		end
-		
-		--// Connect double click events to the collapse
-		ReGui:ConnectScreenMouseEvent(TitleBar, {
-			DoubleClick = true,
-			Callback = function()
-				if not Class.OpenOnDoubleClick then return end
-				if Class.NoCollapse then return end
-				
-				Class:ToggleCollapsed()
-			end,
-		})
 
 		--// Update window UI
 		Class:SetTitle(Title)
