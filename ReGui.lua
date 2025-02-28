@@ -13,7 +13,7 @@
 
 local ReGui = {
 	--// Package data
-	Version = "1.2.3",
+	Version = "1.2.4",
 	Author = "Depso",
 	License = "MIT",
 	Repository = "https://github.com/depthso/Dear-ReGui/",
@@ -30,6 +30,7 @@ local ReGui = {
 	ActiveWindow = nil,
 
 	--// Classes
+	ThemeConfigs = {},
 	Elements = {},
 	Animation = {
 		DefaultTweenInfo = TweenInfo.new(0.08),
@@ -147,20 +148,22 @@ ReGui.Accent = {
 type ThemeData = {
 	[string]: any
 }
-ReGui.ThemeConfigs = {
-	--// Base theme
-	DarkTheme = {
+-- If you are forking just to edit this, please use ReGui:DefineTheme instead
+local ThemeConfigs = ReGui.ThemeConfigs
+ThemeConfigs.DarkTheme = {
+	Values = {
 		AnimationTweenInfo = TweenInfo.new(0.08),
 		TextFont = Font.fromName("Inconsolata"),
+		TextSize = 13,
 		Text = ReGui.Accent.White,
 		TextDisabled = ReGui.Accent.Gray,
 		ErrorText = ReGui.Accent.Red,
-		
+
 		FrameBg = ReGui.Accent.Dark,
 		FrameBgTransparency = 0.4,
 		FrameBgActive = ReGui.Accent.Light,
 		FrameBgTransparencyActive = 0.4,
-		
+
 		--// Elements
 		SliderGrab = ReGui.Accent.Light,
 		ButtonsBg = ReGui.Accent.Light,
@@ -192,14 +195,14 @@ ReGui.ThemeConfigs = {
 		--// Window
 		ModalWindowDimBg = Color3.fromRGB(230, 230, 230),
 		ModalWindowDimTweenInfo = TweenInfo.new(0.2),
-		
+
 		WindowBg = ReGui.Accent.Black,
 		WindowBgTransparency = 0.05,
-		
+
 		Border = ReGui.Accent.Gray,
 		BorderTransparency = 0.7,
 		BorderTransparencyActive = 0.4,
-		
+
 		Title = ReGui.Accent.White,
 		TitleAlign = Enum.TextXAlignment.Left,
 		TitleBarBg = ReGui.Accent.Black,
@@ -209,16 +212,20 @@ ReGui.ThemeConfigs = {
 		TitleBarTransparencyActive = 0.05,
 		TitleBarBgCollapsed = Color3.fromRGB(0, 0, 0),
 		TitleBarTransparencyCollapsed = 0.6,
-	},
-	LightTheme = {
+	}
+}
+ThemeConfigs.LightTheme = {
+	BaseTheme = ThemeConfigs.DarkTheme,
+	Values = {
 		Text = ReGui.Accent.Black,
 		TextFont = Font.fromName("Ubuntu"),
-		
+		TextSize = 14,
+
 		FrameBg = ReGui.Accent.Gray,
 		FrameBgTransparency = 0.4,
 		FrameBgActive = ReGui.Accent.Gray,
 		FrameBgTransparencyActive = 0,
-		
+
 		SliderGrab = ReGui.Accent.White,
 		ButtonsBg = ReGui.Accent.Gray,
 		CollapsingHeaderBg = ReGui.Accent.Gray,
@@ -235,17 +242,20 @@ ReGui.ThemeConfigs = {
 		WindowBg = ReGui.Accent.White,
 		Border = ReGui.Accent.Gray,
 		ResizeGrab = ReGui.Accent.Gray,
-		
+
 		Title = ReGui.Accent.White,
 		TitleAlign = Enum.TextXAlignment.Center,
 		TitleBarBg = ReGui.Accent.Black,
 		TitleActive = ReGui.Accent.Black,
 		TitleBarBgActive = ReGui.Accent.Gray,
-	},
-	Classic = {
+	}
+}
+ThemeConfigs.Classic = {
+	BaseTheme = ThemeConfigs.DarkTheme,
+	Values = {
 		AnimationTweenInfo = TweenInfo.new(0),
 		Text = Color3.fromRGB(255, 255, 255),
-		
+
 		FrameBg = ReGui.Accent.ImGui.Dark,
 		FrameBgTransparency = 0.4,
 		FrameBgActive = ReGui.Accent.ImGui.Light,
@@ -271,7 +281,7 @@ ReGui.ThemeConfigs = {
 		Border = ReGui.Accent.Gray,
 		BorderTransparency = 0.7,
 		BorderTransparencyActive = 0.4,
-		
+
 		Title = ReGui.Accent.White,
 		TitleBarBg = ReGui.Accent.ImGui.Black,
 		TitleBarTransparency = 0,
@@ -286,6 +296,8 @@ ReGui.ElementColors = {
 	},
 	["Selectable"] = {
 		BackgroundColor3 = "ButtonsBg",
+		FontFace = "TextFont",
+		TextSize = "TextSize",
 	},
 	["Separator"] = {
 		BackgroundColor3 = "Separator",
@@ -298,10 +310,12 @@ ReGui.ElementColors = {
 	["Label"] = {
 		TextColor3 = "Text",
 		FontFace = "TextFont",
+		TextSize = "TextSize",
 	},
 	["LabelDisabled"] = {
 		TextColor3 = "TextDisabled",
 		FontFace = "TextFont",
+		TextSize = "TextSize",
 	},
 	["Plot"] = {
 		BackgroundColor3 = "HistogramBar",
@@ -312,7 +326,8 @@ ReGui.ElementColors = {
 	},
 	["WindowTitle"] = {
 		TextXAlignment = "TitleAlign",
-		FontFace = "TextFont"
+		FontFace = "TextFont",
+		TextSize = "TextSize",
 	},
 	["TitleBar"] = {
 		BackgroundColor3 = "TitleBarBgActive"
@@ -352,6 +367,7 @@ ReGui.ElementColors = {
 		BackgroundTransparency = "FrameBgTransparency",
 		TextColor3 = "Text",
 		FontFace = "TextFont",
+		TextSize = "TextSize",
 	},
 	["FrameActive"] = {
 		BackgroundColor3 = "FrameBgActive",
@@ -364,9 +380,11 @@ ReGui.ElementColors = {
 		BackgroundColor3 = "ButtonsBg",
 		TextColor3 = "Text",
 		FontFace = "TextFont",
+		TextSize = "TextSize",
 	},
 	["CollapsingHeader"] = {
 		FontFace = "TextFont",
+		TextSize = "TextSize",
 		TextColor3 = "CollapsingHeaderText",
 		BackgroundColor3 = "CollapsingHeaderBg",
 	},
@@ -560,7 +578,7 @@ ReGui.ElementFlags = {
 			--// Locate icon element
 			local Icon = Object:FindFirstChild("Icon", true)
 			if not Icon then 
-				return warn("No icon for", Object) 
+				return ReGui:Warn("No icon for", Object) 
 			end 
 
 			local Class = Data.Class
@@ -1015,6 +1033,14 @@ function Animation:HeaderCollapse(Data: HeaderCollapse): Tween
 	return Tween
 end
 
+function GetAndRemove(Key: string, Dict)
+	local Value = Dict[Key]
+	if Value then
+		Dict[Key] = nil
+	end
+	return Value
+end
+
 function Merge(Base, New)
 	for Key, Value in next, New do
 		Base[Key] = Value
@@ -1035,6 +1061,10 @@ end
 function NewClass(Base)
 	Base.__index = Base
 	return setmetatable({}, Base)
+end
+
+function ReGui:Warn(...)
+	warn("[ReGui]::", ...)
 end
 
 function ReGui:IsDoubleClick(TickRange)
@@ -1149,14 +1179,14 @@ function ReGui:ResolveContainerParent(): GuiObject?
 		if not CanParent then continue end
 
 		if Debug then
-			warn(`Step: {Step} was chosen as the parent!: {Parent}`)
+			self:Warn(`Step: {Step} was chosen as the parent!: {Parent}`)
 		end
 
 		return Parent
 	end
 
 	--// Error message
-	warn("The ReGui container does not have a parent defined")
+	self:Warn("The ReGui container does not have a parent defined")
 
 	return nil
 end
@@ -1841,17 +1871,13 @@ function ReGui:UpdateColors(Config)
 	local ElementColors = self.ElementColors
 	local Themes = self.ThemeConfigs
 	local Debug = self.Debug
-
-	local BaseTheme = Themes.DarkTheme
-
+	
 	--// Unpack config
 	local Object = Config.Object
 	local Tag = Config.Tag
 	local NoAnimation = Config.NoAnimation
 	local Elements = Config.TagsList
-	local SelectedTheme = Config.Theme
-
-	local Theme = Themes[SelectedTheme] or BaseTheme
+	local Theme = Config.Theme
 
 	local Coloring = ElementColors[Tag]
 
@@ -1870,13 +1896,13 @@ function ReGui:UpdateColors(Config)
 	--// Add coloring data to properties
 	local Properties = {}
 	for Key: string, Name: string in next, Coloring do
-		local Color = Theme[Name] or BaseTheme[Name]
+		local Color = self:GetThemeKey(Theme, Name)
 
 		if not Color then 
 			if Debug then
-				warn(`Color: '{Name}' does not exist!`)
+				self:Warn(`Color: '{Name}' does not exist!`)
 			end
-			continue 
+			continue
 		end
 
 		Properties[Key] = Color
@@ -1922,7 +1948,7 @@ function ReGui:MergeMetatables(Class, Object: GuiObject)
 	local Debug = self.Debug
 	local Metadata = {}
 
-	Metadata.__index = function(self, Key: string)
+	Metadata.__index = function(_, Key: string)
 		--// Fetch value from class
 		local Value = Class[Key]
 
@@ -1947,7 +1973,7 @@ function ReGui:MergeMetatables(Class, Object: GuiObject)
 		return nil
 	end
 
-	Metadata.__newindex = function(self, Key: string, Value)
+	Metadata.__newindex = function(_, Key: string, Value)
 		local IsClassValue = Class[Key] ~= nil or typeof(Value) == "function"
 
 		if IsClassValue then
@@ -1959,7 +1985,7 @@ function ReGui:MergeMetatables(Class, Object: GuiObject)
 			Object[Key] = Value
 		end, function(err)
 			if Debug then
-				warn(`Newindex Error: {Object}.{Key} = {Value}\n{err}`)
+				self:Warn(`Newindex Error: {Object}.{Key} = {Value}\n{err}`)
 			end
 
 			Class[Key] = Value
@@ -2121,7 +2147,7 @@ function ReGui:MakeCanvas(Config: MakeCanvas)
 
 	--// Debug report
 	if not WindowClass and Debug then
-		warn(`No WindowClass for {Element}`)
+		self:Warn(`No WindowClass for {Element}`)
 		print(Config)
 	end
 
@@ -2220,7 +2246,7 @@ function ReGui:WrapGeneration(Function, Data: WrapGeneration)
 				})
 			end
 
-			warn("Class:", Class)
+			self:Warn("Class:", Class)
 			error(debug.traceback())
 		end
 
@@ -2310,7 +2336,22 @@ end
 
 function ReGui:DefineTheme(Name: string, ThemeData: ThemeData)
 	local Themes = self.ThemeConfigs
-	Themes[Name] = ThemeData
+	
+	--// Check theme configuration for missing data
+	self:CheckConfig(ThemeData, {
+		BaseTheme = Themes.DarkTheme
+	})
+	
+	local BaseTheme = GetAndRemove("BaseTheme", ThemeData)
+	local Theme = {
+		BaseTheme = BaseTheme,
+		Values = ThemeData
+	}
+	
+	--// Push theme into the ThemeConfigs dict
+	Themes[Name] = Theme
+	
+	return Theme
 end
 
 function ReGui:GetMouseLocation()
@@ -2423,6 +2464,28 @@ function ReGui:CheckFlags(Flags, Config)
 	end
 end
 
+function ReGui:GetThemeKey(Theme: (string|table), Key: string)
+	local Themes = self.ThemeConfigs
+
+	local BaseTheme = Themes.DarkTheme
+	Theme = Theme or BaseTheme
+	
+	--// Fetch theme data from the name
+	if typeof(Theme) == "string" then
+		Theme = Themes[Theme]
+	end
+	
+	local BaseTheme = Theme.BaseTheme
+	local Values = Theme.Values
+	
+	--// Test for a direct value
+	local Value = Values[Key]
+	if Value then return Value end
+	
+	--// Fetch value from the base theme
+	return self:GetThemeKey(BaseTheme, Key)
+end
+
 --// Container class
 local Elements = ReGui.Elements
 Elements.__index = Elements
@@ -2439,16 +2502,14 @@ function Elements:TagElements(Objects)
 	end
 end
 
-function Elements:GetThemeKey(Tag: string)
+function Elements:GetThemeKey(Key: string)
 	local WindowClass = self.WindowClass
-	local Themes = ReGui.ThemeConfigs
-	local BaseTheme = Themes.DarkTheme
-
+	
 	if WindowClass then 
-		return WindowClass:GetThemeKey(Tag)
+		return WindowClass:GetThemeKey(Key)
 	end
 	
-	return BaseTheme[Tag]
+	return ReGui:GetThemeKey(nil, Key)
 end
 
 function Elements:SetColorTags(Objects, Animate)
@@ -5749,7 +5810,7 @@ function WindowClass:TagElements(Objects)
 
 	if not WindowClass then 	
 		if Debug then
-			warn("No WindowClass for objects registor:", Objects)
+			ReGui:Warn("No WindowClass for objects registor:", Objects)
 		end
 		return 
 	end
@@ -6008,13 +6069,8 @@ function WindowClass:SetFocused(Focused: true)
 	})
 end
 
-function WindowClass:GetThemeKey(Tag: string)
-	local Themes = ReGui.ThemeConfigs
-
-	local BaseTheme = Themes.DarkTheme
-	local Theme = Themes[self.Theme] or BaseTheme
-
-	return Theme[Tag] or BaseTheme[Tag]
+function WindowClass:GetThemeKey(Key: string)
+	return ReGui:GetThemeKey(self.Theme, Key)
 end
 
 function WindowClass:ResetColors(): WindowClass
