@@ -37,6 +37,7 @@ local ReGui = {
 	},
 	
 	--// Collections
+	_FlagCache = {},
 	Windows = {},
 	AnimationConnections = {},
 	MouseEvents = {
@@ -1078,13 +1079,18 @@ function ReGui:IsDoubleClick(TickRange)
 end
 
 function ReGui:Init(Overwrites)
+	Overwrites = Overwrites or {}
+	
 	--// Check if the library has already initalised
-	if self.AlreadyRan then return end
-	self.AlreadyRan = true
+	if self.Initialised then return end
 
 	--// Merge overwrites
-	Overwrites = Overwrites or {}
 	Merge(self, Overwrites)
+	Merge(self, {
+		Initialised = true,
+		HasGamepad = self:IsConsoleDevice(),
+		HasTouchScreen = self:IsMobileDevice(),
+	})
 
 	--// Fetch folders
 	self:CheckConfig(self, {
@@ -1129,6 +1135,14 @@ end
 
 function ReGui:GetVersion(): string
 	return self.Version
+end
+
+function ReGui:IsMobileDevice(): boolean
+	return UserInputService.TouchEnabled
+end
+
+function ReGui:IsConsoleDevice(): boolean
+	return UserInputService.GamepadEnabled
 end
 
 function ReGui:LoadPrefabs(): Folder?
@@ -1871,6 +1885,7 @@ function ReGui:UpdateColors(Config)
 	local ElementColors = self.ElementColors
 	local Themes = self.ThemeConfigs
 	local Debug = self.Debug
+	local Cache = self._FlagCache
 	
 	--// Unpack config
 	local Object = Config.Object
@@ -1880,14 +1895,13 @@ function ReGui:UpdateColors(Config)
 	local Theme = Config.Theme
 
 	local Coloring = ElementColors[Tag]
-
-	--// Add element to the Element tag list
-	if Elements then
-		Elements[Object] = Tag
-	end
+	local Flags = Cache[Object]
 
 	if typeof(Tag) == "table" then
 		Coloring = Tag
+	elseif Elements then
+		--// Update the element's tag in the dict
+		Elements[Object] = Tag
 	end
 
 	--// Check if coloring data exists
@@ -1898,6 +1912,12 @@ function ReGui:UpdateColors(Config)
 	for Key: string, Name: string in next, Coloring do
 		local Color = self:GetThemeKey(Theme, Name)
 
+		--// Ignore if flags has a overwrite
+		if Flags and Flags[Key] then 
+			continue 
+		end
+		
+		--// Color not found debug
 		if not Color then 
 			if Debug then
 				self:Warn(`Color: '{Name}' does not exist!`)
@@ -2102,7 +2122,7 @@ function ReGui:GetContentSize(Object: GuiObject, IngoreUIList: boolean?): Vector
 	local UIPadding = Object:FindFirstChildOfClass("UIPadding")
 	local UIStroke = Object:FindFirstChildOfClass("UIStroke")
 	
-	local ContentSize
+	local ContentSize: Vector2
 
 	--// Fetch absolute size
 	if UIListLayout and not IngoreUIList then
@@ -2115,7 +2135,6 @@ function ReGui:GetContentSize(Object: GuiObject, IngoreUIList: boolean?): Vector
 	if UIPadding then
 		local Top = UIPadding.PaddingTop.Offset
 		local Bottom = UIPadding.PaddingBottom.Offset
-
 		local Left = UIPadding.PaddingLeft.Offset
 		local Right = UIPadding.PaddingRight.Offset
 
@@ -2203,6 +2222,7 @@ type WrapGeneration = {
 }
 function ReGui:WrapGeneration(Function, Data: WrapGeneration)
 	local Base = Data.Base
+	local Cache = self._FlagCache
 
 	return function(Canvas, Flags, ...)
 		Flags = Flags or {}
@@ -2233,8 +2253,12 @@ function ReGui:WrapGeneration(Function, Data: WrapGeneration)
 		end
 
 		--// Create element and apply properties
-		--local Class, Element = Function(Canvas, Flags, ...)
-		local Success, Class, Element = pcall(Function, Canvas, Flags, ...)
+		local Class, Element = Function(Canvas, Flags, ...)
+		--local Success, Class, Element = pcall(Function, Canvas, Flags, ...)
+		
+		local NoAutoTag = Flags.NoAutoTag
+		local NoAutoFlags = Flags.NoAutoFlags
+		local ColorTag = Flags.ColorTag
 
 		--// Check for errors
 		if Success == false then
@@ -2254,10 +2278,11 @@ function ReGui:WrapGeneration(Function, Data: WrapGeneration)
 		if Element == nil then
 			Element = Class
 		end
-
-		local NoAutoTag = Flags.NoAutoTag
-		local NoAutoFlags = Flags.NoAutoFlags
-		local ColorTag = Flags.ColorTag
+		
+		--// Add element into the flag Cache
+		if Element then
+			Cache[Element] = Flags
+		end
 
 		--// Load element into theme
 		if Element then
@@ -2277,7 +2302,7 @@ function ReGui:WrapGeneration(Function, Data: WrapGeneration)
 				})
 			end
 		end
-
+		
 		return Class, Element
 	end
 end
@@ -2483,7 +2508,9 @@ function ReGui:GetThemeKey(Theme: (string|table), Key: string)
 	if Value then return Value end
 	
 	--// Fetch value from the base theme
-	return self:GetThemeKey(BaseTheme, Key)
+	if BaseTheme then
+		return self:GetThemeKey(BaseTheme, Key)
+	end
 end
 
 --// Container class
@@ -2529,6 +2556,7 @@ end
 
 function Elements:SetElementFocused(Object: GuiObject, Data)
 	local WindowClass = self.WindowClass
+	local IsMobileDevice = ReGui.HasTouchScreen
 	
 	local Focused = Data.Focused
 	local Animation = Data.Animation
@@ -2543,9 +2571,10 @@ function Elements:SetElementFocused(Object: GuiObject, Data)
 	
 	--// Window modification
 	if not WindowClass then return end
+	if not IsMobileDevice then return end
 	local ContentCanvas = WindowClass.ContentCanvas
 
-	--// Disable interaction with other elements
+	--// Disable interaction with other elements for touchscreens
 	ContentCanvas.Interactable = not Focused
 end
 
@@ -3024,15 +3053,14 @@ export type Label = {
 }
 ReGui:DefineElement("Label", {
 	Base = {
-		Bold = false,
-		Italic = false,
 		Font = "Inconsolata"
 	},
 	Create = function(self, Config: Label): TextLabel
 		--// Unpack config
 		local IsBold = Config.Bold
 		local IsItalic = Config.Italic
-		local Name = Config.Font
+		local FontName = Config.Font
+		local FontFace = Config.FontFace
 
 		--// Weghts
 		local Medium = Enum.FontWeight.Medium
@@ -3044,9 +3072,10 @@ ReGui:DefineElement("Label", {
 
 		local Weight = IsBold and Bold or Medium
 		local Style = IsItalic and Italic or Normal
+		local AddFlag = IsBold or IsItalic
 
-		if not Config.FontFace then
-			Config.FontFace = Font.fromName(Name, Weight, Style)
+		if not FontFace and AddFlag then
+			Config.FontFace = Font.fromName(FontName, Weight, Style)
 		end
 
 		--// Create label
@@ -4318,7 +4347,7 @@ ReGui:DefineElement("Table", {
 	Base = {
 		VerticalAlignment = Enum.VerticalAlignment.Top,
 		RowBackground = false,
-		RowBgTransparency = 0.9,
+		RowBgTransparency = 0.87,
 		Border = false,
 	},
 	Create = function(Canvas, Config: Table): Table
@@ -4334,9 +4363,8 @@ ReGui:DefineElement("Table", {
 		--// Create table object
 		local Object = ReGui:InsertPrefab("Table", Config)
 		local Class = ReGui:MergeMetatables(Config, Object)
-
+		
 		local RowTemplate = Object.RowTemp
-
 		local RowsCount = 0
 		local Rows = {}
 		
@@ -4546,7 +4574,6 @@ ReGui:DefineElement("CollapsingHeader", {
 			Size = UDim2.fromScale(1, 0),
 			AutomaticSize = Enum.AutomaticSize.None,
 			PaddingTop = UDim.new(0, 4),
-			PaddingBottom = UDim.new(0, 2),
 			UsePropertiesList = true,
 		})
 
@@ -4570,7 +4597,7 @@ ReGui:DefineElement("CollapsingHeader", {
 
 				--// Sizes
 				ClosedSize = ClosedSize,
-				OpenSize = OpenSize ,
+				OpenSize = OpenSize,
 			})
 
 			return self
@@ -4617,8 +4644,7 @@ ReGui:DefineElement("TreeNode", {
 	Base = {
 		Offset = 21,
 		TitleBarProperties = {
-			Size = UDim2.new(1, 0, 0, 15),
-			IconSize = UDim2.fromOffset(11,11),
+			Size = UDim2.new(1, 0, 0, 14)
 		}
 	},
 	Create = function(self, Config)
@@ -5630,7 +5656,7 @@ ReGui:DefineElement("Combo", {
 			Parent = Combo,
 			Ratio = 1,
 			Interactable = false,
-			Size = UDim2.fromScale(1, 1),
+			Size = UDim2.fromScale(0, 0),
 			LayoutOrder = 2,
 		})
 
@@ -5865,6 +5891,8 @@ function WindowClass:AddDefaultTitleButtons()
 			IconSize = Toggle.IconSize,
 			Rotation = IsOpen and 90 or 0,
 			LayoutOrder = 1,
+			Ratio = 1,
+			Size = UDim2.new(0, 0),
 
 			Callback = function()
 				self:ToggleCollapsed()
@@ -5874,20 +5902,20 @@ function WindowClass:AddDefaultTitleButtons()
 			Icon = Close.Image,
 			IconSize = Close.IconSize,
 			LayoutOrder = 3,
+			Ratio = 1,
+			Size = UDim2.new(0, 0),
 
 			Callback = function()
 				self:Close()
 			end,
 		}),
 		TitleLabel = Canvas:Label({
-			Text = "ReGui by depso",
 			ColorTag = "Title",
 			LayoutOrder = 2,
-			TextSize = 14,
 			Size = UDim2.new(1, 0),
 			Active = false,
 			Fill = true,
-			AutomaticSize = Enum.AutomaticSize.Y
+			AutomaticSize = Enum.AutomaticSize.XY
 		})
 	})
 
@@ -5916,17 +5944,18 @@ end
 
 function WindowClass:GetTitleBarSizeY(): number
 	local TitleBar = self.TitleBar
-	return TitleBar.Visible and TitleBar.AbsoluteSize.Y or 0
+	if not TitleBar.Visible then return 0 end
+	
+	return ReGui:GetContentSize(TitleBar, true).Y
 end
 
 function WindowClass:SetVisible(Visible: boolean): WindowClass
-	self.Visible = Visible
-	
 	local Window = self.WindowFrame
 	local NoFocusOnAppearing = self.NoFocusOnAppearing
 	
+	self.Visible = Visible
 	Window.Visible = Visible
-
+	
 	--// Update window focus
 	if Visible and not NoFocusOnAppearing then
 		ReGui:SetFocusedWindow(self)
@@ -6022,13 +6051,13 @@ function WindowClass:SetFocused(Focused: true)
 	end
 
 	--// Unpack elements
-	local Window = self.WindowFrame
+	local ContentFrame = self.ContentFrame
 	local TitleBar = self.TitleBar
 	local Theme = self.Theme
 	local TitleLabel = self.TitleLabel
 	local Collapsed = self.Collapsed
 
-	local Border = Window:FindFirstChildOfClass("UIStroke")
+	local Border = ContentFrame:FindFirstChildOfClass("UIStroke")
 
 	--// Color tags
 	local Tags = {
@@ -6226,7 +6255,7 @@ function WindowClass:UpdateConfig(Config)
 	--// Update class data
 	Merge(self, Config)
 
-	--// Update options
+	--// Invoke functions connected to flags
 	for Key, Value in Config do
 		local Func = Flags[Key]
 		if Func then

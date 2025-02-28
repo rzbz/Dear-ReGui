@@ -49,7 +49,7 @@ end)
 
 --// Demo 
 local Window = ReGui:Window({
-	Title = "ReGui Demo",
+	Title = "Dear ReGui Demo",
 	Size = UDim2.new(0, 400, 0, 300),
 }):Center()
 
@@ -226,7 +226,6 @@ local WidgetDemos = {
 			local Hue = i / 7.0
 			ButtonsRow:Button({
 				Text = "Click",
-				ColorTag = "",
 				BackgroundColor3 = Color3.fromHSV(Hue, 0.6, 0.6)
 			})
 		end
@@ -897,7 +896,7 @@ local ChildWindow = ChildWindows:Window({
 ChildWindow:Label({Text="Hello, world!"})
 ChildWindow:Button({Text = "Save"})
 ChildWindow:InputText({Label="string"})
-ChildWindow:SliderInt({Label="float", Format="%.1f/%s", Minimum=0, Maximum=1})
+ChildWindow:SliderFloat({Label = "float", Minimum = 0.0, Maximum = 1.0})
 
 --// Modals
 local Modals = Windows:TreeNode({Title="Modals"})
@@ -1034,7 +1033,7 @@ local Headers = TablesNColumns:TreeNode({
 	Title = "With headers"
 })
 
-local BasicTable = Headers:Table({
+local HeadersTable = Headers:Table({
 	Border = true,
 	RowBackground = true,
 	MaxColumns = 3 -- Per row
@@ -1042,13 +1041,13 @@ local BasicTable = Headers:Table({
 
 local Rows = {"One", "Two", "Three"}
 
-local HeaderRow = BasicTable:HeaderRow()
-local Row = BasicTable:NextRow()
+local HeaderRow = HeadersTable:HeaderRow()
+local Row = HeadersTable:Row()
 
 for Count, RowHeader in Rows do
-	HeaderRow:NextColumn():Label({Text=RowHeader})
+	HeaderRow:Column():Label({Text=RowHeader})
 
-	local Column = Row:NextColumn()
+	local Column = Row:Column()
 	for Line = 1, 6 do
 		Column:Label({Text=`Hello {Count},{Line}`})
 	end
