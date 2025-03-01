@@ -13,7 +13,7 @@
 
 local ReGui = {
 	--// Package data
-	Version = "1.3.0",
+	Version = "1.3.1",
 	Author = "Depso",
 	License = "MIT",
 	Repository = "https://github.com/depthso/Dear-ReGui/",
@@ -1148,6 +1148,10 @@ end
 
 function ReGui:IsConsoleDevice(): boolean
 	return UserInputService.GamepadEnabled
+end
+
+function ReGui:GetScreenSize()
+	return workspace.CurrentCamera.ViewportSize
 end
 
 function ReGui:LoadPrefabs(): Folder?
@@ -2651,7 +2655,7 @@ ReGui:DefineElement("Dropdown", {
 			Position.X - Relative.X + Padding, 
 			Position.Y - Relative.Y + Size.Y
 		)
-
+		
 		--// Append items
 		for A, B in Items do
 			local Value = typeof(A) ~= "number" and A or B
@@ -3894,6 +3898,7 @@ ReGui:DefineElement("Viewport", {
 
 		if not Camera then
 			Camera = ReGui:CreateInstance("Camera", Viewport)
+			Camera.CFrame = CFrame.new(0,0,0)
 		end
 
 		Merge(Config, {
@@ -3903,9 +3908,7 @@ ReGui:DefineElement("Viewport", {
 		})
 
 		function Config:SetCamera(Camera)
-			Camera.CFrame = CFrame.new(0,0,0)
 			Viewport.CurrentCamera = Camera
-
 			self.Camera = Camera
 			return self
 		end
@@ -4914,7 +4917,7 @@ export type SliderIntFlags = {
 }
 ReGui:DefineElement("SliderBase", {
 	Base = {
-		Format = "%.f/%s",
+		Format = "%.f", -- "%.f/%s",
 		Label = "",
 		Type = "Slider",
 		Callback = EmptyFunction,
@@ -5180,7 +5183,7 @@ ReGui:DefineElement("SliderInt", {
 ReGui:DefineElement("SliderFloat", {
 	Base = {
 		Label = "Slider Float",
-		Format = "%.3f/%s",
+		Format = "%.3f", --"%.3f/%s",
 		ColorTag = "Frame",
 	},
 	Create = Elements.SliderBase,
@@ -5333,22 +5336,22 @@ ReGui:DefineElement("DragInt", {
 
 ReGui:DefineElement("DragFloat", {
 	Base = {
-		Format = "%.3f/%s",
+		Format = "%.3f", --"%.3f/%s",
 		Label = "Drag Float",
 		ColorTag = "Frame"
 	},
 	Create = Elements.DragInt,
 })
 
-ReGui:DefineElement("MultiInput", {
+ReGui:DefineElement("MultiElement", {
 	Base = {
 		Callback = EmptyFunction,
-		Value = ReGui.Accent.Light,
 		InputType = "DragInt",
 		Label = "",
 		Disabled = false,
 		BaseInputConfig = {},
 		InputConfigs = {},
+		Value = {},
 		MultiCallback = EmptyFunction,
 	},
 	Create = function(Canvas, Config)
@@ -5357,72 +5360,85 @@ ReGui:DefineElement("MultiInput", {
 		local BaseInputConfig = Config.BaseInputConfig
 		local InputConfigs = Config.InputConfigs
 		local InputType = Config.InputType
-		
+		local Disabled = Config.Disabled
+
 		--// Create container row
 		local ContainerRow = Canvas:Row({
 			Spacing = 5
 		})
-		
+		local Row = ContainerRow:Row({
+			Size = UDim2.fromScale(0.65, 0),
+			Expanded = true,
+		})
+
 		local Label = ContainerRow:Label({
 			Size = UDim2.fromScale(0.35, 0),
 			LayoutOrder = 2,
 			Text = LabelText
 		})
 
-		--// Create row for sliders and preview frame
-		local Row = ContainerRow:Row({
-			Size = UDim2.fromScale(0.65, 0),
-			Expanded = true,
-		})
+		local Class = ReGui:MergeMetatables(Config, ContainerRow)
 		
 		local Inputs = {}
-		local function Callback()
-			local Callback = Config.MultiCallback
+		local function GetValue()
 			local Value = {}
-			
-			if #Inputs ~= #InputConfigs then return end
-			
 			for Index, Input in Inputs do
 				Value[Index] = Input:GetValue()
 			end
 			
-			Callback(Value)
+			Config.Value = Value
+			return Value
 		end
 		
-		BaseInputConfig = Copy(BaseInputConfig, {
-			Size = UDim2.new(1, 0, 0, 19),
-			Callback = Callback,
-			Label = ""
-		})
+		local function InvokeCallback()
+			local Callback = Config.MultiCallback
 
-		--// Create DragInt elements
-		for _, Config in InputConfigs do
-			local Input = Row[InputType](Row, Copy(BaseInputConfig, Config))
-			table.insert(Inputs, Input)
+			--// +1 function is called before it is added into the Inputs
+			if #Inputs ~= #InputConfigs then return end
+
+			local Value = GetValue()
+			Callback(Value)
 		end
 		
 		function Config:SetDisabled(Disabled: boolean)
 			self.Disabled = Disabled
-			
+
 			--// Chaneg the tag of the Label
 			Canvas:SetColorTags({
 				[Label] = Disabled and "LabelDisabled" or "Label"
 			}, true)
-			
+
 			--// Set state of each Drag element
 			for _, Input in Inputs do
 				Input:SetDisabled(Disabled)
 			end
 		end
-		
+
 		function Config:SetMultiValue(Values)
 			for Index, Value in Values do
 				local Input = Inputs[Index]
 				assert(Input, `No input object for index: {Index}`)
-				
+
 				Input:SetValue(Value)
 			end
 		end
+		
+		BaseInputConfig = Copy(BaseInputConfig, {
+			Size = UDim2.new(1, 0, 0, 19),
+			Label = "",
+			Callback = InvokeCallback,
+		})
+
+		--// Create DragInt elements
+		for _, Overwrites in InputConfigs do
+			local Config = Copy(BaseInputConfig, Overwrites)
+			local Input = Row[InputType](Row, Config)
+			
+			table.insert(Inputs, Input)
+		end
+		
+		--// Invoke the callback once the elements have loaded
+		InvokeCallback()
 		
 		--// Merge properties into the configuration
 		Merge(Config, {
@@ -5430,29 +5446,66 @@ ReGui:DefineElement("MultiInput", {
 			Inputs = Inputs
 		})
 		
-		local Class = ReGui:MergeMetatables(Config, ContainerRow)
+		--// Update object states
+		Config:SetDisabled(Disabled)
+		
 		return Class, ContainerRow
 	end,
 })
 
---ReGui:DefineElement("SliderInt2", {
---	Base = {
---		Label = "SliderInt2",
---		InputType = "SliderInt",
---		Minimum = -100,
---		Maximum = 100,
---		BaseInputConfig = {},
---	},
---	Create = function(self, Config)
---		local BaseInputConfig = Config.BaseInputConfig
---		ReGui:CheckConfig(BaseInputConfig, {
---			Maximum = Config.Maximum,
---			Minimum = Config.Minimum
---		})
+ReGui:DefineElement("MultiInputBase", {
+	Base = {
+		Label = "SliderInt2",
+		InputType = "SliderInt",
+		Minimum = 0,
+		Maximum = 100,
+		BaseInputConfig = {},
+		InputConfigs = {{}, {}},
+		Callback = EmptyFunction,
+	},
+	Create = function(self, Config)
+		local BaseInputConfig = Config.BaseInputConfig	
 		
---		return self:MultiInput(Config)
---	end,
---})
+		ReGui:CheckConfig(BaseInputConfig, {
+			ReadOnly = Config.ReadOnly,
+			Maximum = Config.Maximum,
+			Minimum = Config.Minimum,
+			Value = Config.Value,
+			Format = Config.Format,
+		})
+		
+		Config.MultiCallback = function(...)
+			local Callback = Config.Callback
+			Callback(...)
+		end
+		
+		return self:MultiElement(Config)
+	end,
+})
+
+local function GenerateMultiInput(Name: string, Class: string, InputCount: number)
+	ReGui:DefineElement(Name, {
+		Base = {
+			Label = Name,
+			InputType = Class,
+			InputConfigs = table.create(InputCount, {})
+		},
+		Create = Elements.MultiInputBase
+	})
+end
+
+GenerateMultiInput("SliderInt2", "SliderInt", 2)
+GenerateMultiInput("SliderInt3", "SliderInt", 3)
+GenerateMultiInput("SliderInt4", "SliderInt", 4)
+GenerateMultiInput("SliderFloat2", "SliderFloat", 2)
+GenerateMultiInput("SliderFloat3", "SliderFloat", 3)
+GenerateMultiInput("SliderFloat4", "SliderFloat", 4)
+GenerateMultiInput("DragInt2", "DragInt", 2)
+GenerateMultiInput("DragInt3", "DragInt", 3)
+GenerateMultiInput("DragInt4", "DragInt", 4)
+GenerateMultiInput("DragFloat2", "DragFloat", 2)
+GenerateMultiInput("DragFloat3", "DragFloat", 3)
+GenerateMultiInput("DragFloat4", "DragFloat", 4)
 
 export type InputColor3Flags = {
 	Label: string?,
@@ -5491,11 +5544,11 @@ ReGui:DefineElement("InputColor3", {
 		end
 		
 		--// Create Object
-		local MultiInput = self:MultiInput(Config)
-		local Class = ReGui:MergeMetatables(Config, MultiInput)
+		local MultiElement = self:MultiElement(Config)
+		local Class = ReGui:MergeMetatables(Config, MultiElement)
 		
-		local Row = MultiInput.Row
-		local Inputs = MultiInput.Inputs
+		local Row = MultiElement.Row
+		local Inputs = MultiElement.Inputs
 		
 		--// Preview frame
 		local Preview = Row:Button({
@@ -5531,7 +5584,7 @@ ReGui:DefineElement("InputColor3", {
 			SetPreview(Color)
 			
 			--// Update Drag elements
-			MultiInput:SetMultiValue({
+			MultiElement:SetMultiValue({
 				Color.R*255,
 				Color.G*255,
 				Color.B*255
@@ -5542,7 +5595,7 @@ ReGui:DefineElement("InputColor3", {
 		Config:SetValue(Value)
 		Config:SetDisabled(Disabled)
 
-		return MultiInput, Row
+		return MultiElement, Row
 	end,
 })
 
@@ -5596,11 +5649,11 @@ ReGui:DefineElement("InputCFrame", {
 		end
 
 		--// Create Object
-		local MultiInput = self:MultiInput(Config)
-		local Class = ReGui:MergeMetatables(Config, MultiInput)
+		local MultiElement = self:MultiElement(Config)
+		local Class = ReGui:MergeMetatables(Config, MultiElement)
 
-		local Row = MultiInput.Row
-		local Inputs = MultiInput.Inputs
+		local Row = MultiElement.Row
+		local Inputs = MultiElement.Inputs
 		
 		local function Callback(...)
 			local func = Config.Callback
@@ -5619,7 +5672,7 @@ ReGui:DefineElement("InputCFrame", {
 			self.Value = Value
 
 			--// Update Drag elements
-			MultiInput:SetMultiValue({
+			MultiElement:SetMultiValue({
 				Value.X,
 				Value.Y,
 				Value.Z,
@@ -5630,7 +5683,7 @@ ReGui:DefineElement("InputCFrame", {
 		Config:SetValue(Value)
 		Config:SetDisabled(Disabled)
 
-		return MultiInput, Row
+		return MultiElement, Row
 	end,
 })
 

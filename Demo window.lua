@@ -184,7 +184,7 @@ local DemosOrder = {
 	"Combo", 
 	"Tabs", 
 	"Plot widgets", 
-	--"Multi-component Widgets",
+	"Multi-component Widgets",
 	"Progress Bars",
 	"Console",
 	"List",
@@ -193,8 +193,7 @@ local DemosOrder = {
 	"Indent", 
 	"Viewport", 
 	"Keybinds", 
-	"Input", 
-	"MultiInput", 
+	"Input",
 	"Text Input", 
 }
 
@@ -350,7 +349,7 @@ local WidgetDemos = {
 			Value = CFrame.new(1,1,1),
 			Minimum = -200,
 			Maximum = 200,
-			Label = "CFrame 1"
+			Label = "CFrame 1",
 			--Callback = print
 		})
 		
@@ -658,9 +657,30 @@ local WidgetDemos = {
 			end,
 		})
 	end,
-	--["Multi-component Widgets"] = function(Header)
-	--	print(Header:SliderInt2())
-	--end,
+	["Multi-component Widgets"] = function(Header)
+		Header:Separator({Text="2-wide"})
+		
+		Header:SliderInt2()
+		Header:SliderFloat2()
+		Header:DragInt2()
+		Header:DragFloat2()
+
+		Header:Separator({Text="3-wide"})
+		
+		Header:SliderInt3()
+		Header:SliderFloat3()
+		Header:DragInt3()
+		Header:DragFloat3()
+		
+		Header:Separator({Text="4-wide"})
+		
+		Header:SliderInt4({
+			Callback = print
+		})
+		Header:SliderFloat4()
+		Header:DragInt4()
+		Header:DragFloat4()
+	end,
 	["Progress Bars"] = function(Header)
 		local ProgressBar = Header:ProgressBar({
 			Label = "Loading...",
