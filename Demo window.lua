@@ -186,6 +186,7 @@ local DemosOrder = {
 	"Plot widgets", 
 	"Multi-component Widgets",
 	"Progress Bars",
+	"Picker Widgets",
 	"Console",
 	"List",
 	--"Selectable", 
@@ -347,16 +348,16 @@ local WidgetDemos = {
 
 		Header:InputCFrame({
 			Value = CFrame.new(1,1,1),
-			Minimum = -200,
-			Maximum = 200,
+			Minimum = CFrame.new(0,0,0),
+			Maximum = CFrame.new(200, 100, 50),
 			Label = "CFrame 1",
 			--Callback = print
 		})
 		
 		Header:SliderCFrame({
 			Value = CFrame.new(1,1,1),
-			Minimum = -200,
-			Maximum = 200,
+			Minimum = CFrame.new(0,0,0),
+			Maximum = CFrame.new(200, 100, 50),
 			Label = "CFrame 2"
 		})
 
@@ -660,6 +661,11 @@ local WidgetDemos = {
 	["Multi-component Widgets"] = function(Header)
 		Header:Separator({Text="2-wide"})
 		
+		Header:InputInt2({
+			Value = {10, 50},
+			Minimum = {0,0},
+			Maximum = {20,100},
+		})
 		Header:SliderInt2()
 		Header:SliderFloat2()
 		Header:DragInt2()
@@ -667,6 +673,7 @@ local WidgetDemos = {
 
 		Header:Separator({Text="3-wide"})
 		
+		Header:InputInt3()
 		Header:SliderInt3()
 		Header:SliderFloat3()
 		Header:DragInt3()
@@ -674,6 +681,7 @@ local WidgetDemos = {
 		
 		Header:Separator({Text="4-wide"})
 		
+		Header:InputInt4()
 		Header:SliderInt4({
 			Callback = print
 		})
@@ -694,6 +702,29 @@ local WidgetDemos = {
 				ProgressBar:SetPercentage(Percentage % 100)
 			end
 		end)
+	end,
+	["Picker Widgets"] = function(Header)
+		--// Color pickers
+		Header:Separator({Text="Color pickers"})
+		Header:DragColor3({
+			Value = ReGui.Accent.Light
+		})
+		Header:SliderColor3({
+			Value = ReGui.Accent.Red
+		})
+		Header:DragColor3({
+			Value = ReGui.Accent.Green
+		})
+		
+		--// CFrame pickers
+		Header:Separator({Text="CFrame pickers"})
+		Header:DragCFrame({
+			Value = CFrame.new(1,1,1),
+			Minimum = CFrame.new(0,0,0),
+			Maximum = CFrame.new(200, 100, 50),
+		})
+		Header:SliderCFrame()
+		Header:InputCFrame()
 	end,
 	["Console"] = function(Header)
 		--// Basic

@@ -13,7 +13,7 @@
 
 local ReGui = {
 	--// Package data
-	Version = "1.3.1",
+	Version = "1.3.2",
 	Author = "Depso",
 	License = "MIT",
 	Repository = "https://github.com/depthso/Dear-ReGui/",
@@ -2260,8 +2260,8 @@ function ReGui:WrapGeneration(Function, Data: WrapGeneration)
 		end
 
 		--// Create element and apply properties
-		--local Class, Element = Function(Canvas, Flags, ...)
-		local Success, Class, Element = pcall(Function, Canvas, Flags, ...)
+		local Class, Element = Function(Canvas, Flags, ...)
+		--local Success, Class, Element = pcall(Function, Canvas, Flags, ...)
 		
 		local NoAutoTag = Flags.NoAutoTag
 		local NoAutoFlags = Flags.NoAutoFlags
@@ -3972,6 +3972,7 @@ ReGui:DefineElement("InputText", {
 			Text = Label,
 			AutomaticSize = Enum.AutomaticSize.X,
 			Size = UDim2.fromOffset(0, 19),
+			Position = UDim2.new(1, 5),
 			LayoutOrder = 2
 		})
 
@@ -4031,6 +4032,7 @@ export type InputInt = {
 	Minimum: number?,
 	Placeholder: string?,
 	MultiLine: boolean?,
+	NoButtons: boolean?,
 	Label: string?,
 	Increment: number?,
 	Callback: ((string, ...any) -> unknown)?,
@@ -4046,11 +4048,13 @@ ReGui:DefineElement("InputInt", {
 		Label = "Input Int",
 		Callback = EmptyFunction,
 	},
-	Create = function(self, Config: InputInt): InputInt
+	Create = function(Canvas, Config: InputInt): InputInt
 		--// Unpack configuration
 		local Value = Config.Value
 		local Placeholder = Config.Placeholder
-		local Label = Config.Label
+		local LabelText = Config.Label
+		local Disabled = Config.Disabled
+		local NoButtons = Config.NoButtons
 
 		--// Create Text input object
 		local Object = ReGui:InsertPrefab("InputBox", Config)
@@ -4061,7 +4065,7 @@ ReGui:DefineElement("InputInt", {
 		TextBox.PlaceholderText = Placeholder
 
 		--// Decrease
-		local Decrease = self:Button({
+		local Decrease = Canvas:Button({
 			Text = "-",
 			Parent = Frame,
 			LayoutOrder = 2,
@@ -4069,13 +4073,14 @@ ReGui:DefineElement("InputInt", {
 			AutomaticSize = Enum.AutomaticSize.None,
 			FlexMode = Enum.UIFlexMode.None,
 			Size = UDim2.fromScale(1,1),
+			Visible = not NoButtons,
 			Callback = function()
 				Config:Decrease()
 			end,
 		})
 
 		--// Increase
-		local Increase = self:Button({
+		local Increase = Canvas:Button({
 			Text = "+",
 			Parent = Frame,
 			LayoutOrder = 3,
@@ -4083,16 +4088,18 @@ ReGui:DefineElement("InputInt", {
 			AutomaticSize = Enum.AutomaticSize.None,
 			FlexMode = Enum.UIFlexMode.None,
 			Size = UDim2.fromScale(1,1),
+			Visible = not NoButtons,
 			Callback = function()
 				Config:Increase()
 			end,
 		})
 
-		self:Label({
+		local Label = Canvas:Label({
 			Parent = Object,
-			Text = Label,
+			Text = LabelText,
 			AutomaticSize = Enum.AutomaticSize.X,
 			Size = UDim2.fromOffset(0, 19),
+			Position = UDim2.new(1, 5),
 			LayoutOrder = 4
 		})
 
@@ -4111,6 +4118,14 @@ ReGui:DefineElement("InputInt", {
 			local Value = self.Value
 			local Increment = self.Increment
 			Config:SetValue(Value - Increment)
+		end
+		
+		function Config:SetDisabled(Disabled: boolean)
+			self.Disabled = Disabled
+			Object.Interactable = not Disabled
+			Canvas:SetColorTags({
+				[Label] = Disabled and "LabelDisabled" or "Label"
+			}, true)
 		end
 
 		function Config:SetValue(Value: number?)
@@ -4146,12 +4161,13 @@ ReGui:DefineElement("InputInt", {
 
 		--// Update object state
 		Config:SetValue(Value)
+		Config:SetDisabled(Disabled)
 
 		--// Connect events
 		TextBox.FocusLost:Connect(TextChanged)
 
 		--// Register elements
-		self:TagElements({
+		Canvas:TagElements({
 			[Increase] = "Button",
 			[Decrease] = "Button",
 			[TextBox] = "Frame",
@@ -5343,6 +5359,8 @@ ReGui:DefineElement("MultiElement", {
 		BaseInputConfig = {},
 		InputConfigs = {},
 		Value = {},
+		Minimum = {},
+		Maximum = {},
 		MultiCallback = EmptyFunction,
 	},
 	Create = function(Canvas, Config)
@@ -5352,6 +5370,9 @@ ReGui:DefineElement("MultiElement", {
 		local InputConfigs = Config.InputConfigs
 		local InputType = Config.InputType
 		local Disabled = Config.Disabled
+		local Value = Config.Value
+		local Minimum = Config.Minimum
+		local Maximum = Config.Maximum
 
 		--// Create container row
 		local ContainerRow = Canvas:Row({
@@ -5405,7 +5426,7 @@ ReGui:DefineElement("MultiElement", {
 			end
 		end
 
-		function Config:SetMultiValue(Values)
+		function Config:SetValue(Values)
 			for Index, Value in Values do
 				local Input = Inputs[Index]
 				assert(Input, `No input object for index: {Index}`)
@@ -5421,7 +5442,12 @@ ReGui:DefineElement("MultiElement", {
 		})
 
 		--// Create DragInt elements
-		for _, Overwrites in InputConfigs do
+		for Index, Overwrites in InputConfigs do
+			ReGui:CheckConfig(Overwrites, {
+				Minimum = Minimum[Index],
+				Maximum = Maximum[Index],
+			})
+			
 			local Config = Copy(BaseInputConfig, Overwrites)
 			local Input = Row[InputType](Row, Config)
 			
@@ -5439,53 +5465,211 @@ ReGui:DefineElement("MultiElement", {
 		
 		--// Update object states
 		Config:SetDisabled(Disabled)
+		Config:SetValue(Value)
 		
 		return Class, ContainerRow
 	end,
 })
 
-ReGui:DefineElement("MultiInputBase", {
-	Base = {
-		Label = "SliderInt2",
-		InputType = "SliderInt",
-		Minimum = 0,
-		Maximum = 100,
-		BaseInputConfig = {},
-		InputConfigs = {{}, {}},
-		Callback = EmptyFunction,
-	},
-	Create = function(self, Config)
-		local BaseInputConfig = Config.BaseInputConfig
-		local Object = nil
-		
-		ReGui:CheckConfig(BaseInputConfig, {
-			ReadOnly = Config.ReadOnly,
-			Maximum = Config.Maximum,
-			Minimum = Config.Minimum,
-			Value = Config.Value,
-			Format = Config.Format,
-		})
-		
-		Config.MultiCallback = function(...)
-			local Callback = Config.Callback
-			Callback(...)
-		end
-		
-		return self:MultiElement(Config)
-	end,
-})
-
-local function GenerateMultiInput(Name: string, Class: string, InputCount: number)
+local function GenerateMultiInput(Name: string, Class: string, InputCount: number, Extra)
 	ReGui:DefineElement(Name, {
 		Base = {
 			Label = Name,
+			Callback = EmptyFunction,
 			InputType = Class,
-			InputConfigs = table.create(InputCount, {})
+			InputConfigs = table.create(InputCount, {}),
+			BaseInputConfig = {},
 		},
-		Create = Elements.MultiInputBase
+		Create = function(self, Config)
+			local BaseInputConfig = Config.BaseInputConfig
+			local Object = nil
+			
+			if Extra then
+				Merge(BaseInputConfig, Extra)
+			end
+
+			ReGui:CheckConfig(BaseInputConfig, {
+				ReadOnly = Config.ReadOnly,
+				Format = Config.Format,
+			})
+
+			Config.MultiCallback = function(...)
+				local Callback = Config.Callback
+				Callback(...)
+			end
+
+			return self:MultiElement(Config)
+		end,
 	})
 end
 
+export type InputColor3Flags = {
+	Label: string?,
+	Value: Color3?,
+	Callback: (InputColor3Flags, Value: Color3) -> any,
+
+	ValueChanged: (InputColor3Flags) -> nil,
+	SetValue: (InputColor3Flags, Value: Color3) -> InputColor3Flags,
+}
+local function GenerateColor3Input(Name: string, InputType: string, InputCount: number, Extra)
+	ReGui:DefineElement(Name, {
+		Base = {
+			Label = Name,
+			Callback = EmptyFunction,
+			Value = ReGui.Accent.Light,
+			Disabled = false,
+			Minimum = {0,0,0},
+			Maximum = {255,255,255},
+			BaseInputConfig = {},
+			InputConfigs = {
+				[1] = {Format = "R: %.f"},
+				[2] = {Format = "G: %.f"},
+				[3] = {Format = "B: %.f"},
+			}
+		},
+		Create = function(self, Config: InputColor3Flags)
+			--// Unpack configuration
+			local BaseInputConfig = Config.BaseInputConfig
+			local Value = Config.Value
+			local Disabled = Config.Disabled
+
+			--// Create Object
+			local InputConfig = Copy(Config, {
+				Value = {1,1,1},
+				Callback = function(self, ...)
+					if Config.ValueChanged then
+						Config:ValueChanged(...)
+					end
+				end,
+			})
+			
+			local Object = self[InputType](self, InputConfig)
+			local Class = ReGui:MergeMetatables(Config, Object)
+			local Row = Object.Row
+
+			--// Preview frame
+			local Preview = Row:Button({
+				BackgroundTransparency = 0,
+				Size = UDim2.fromOffset(19, 19),
+				UiPadding = 0,
+				Text = "",
+				Ratio = 1,
+				ColorTag = "",
+				ElementStyle = ""
+			})
+
+			local function Callback(...)
+				local func = Config.Callback
+				return func(Class, ...)
+			end
+
+			local function SetPreview(Color: Color3)
+				Preview.BackgroundColor3 = Color
+				Callback(Color)
+			end
+
+			function Config:ValueChanged(Value)
+				local R, G, B = Value[1], Value[2], Value[3]
+				local Color = Color3.fromRGB(R, G, B)
+
+				self.Value = Color
+				SetPreview(Color)
+			end
+
+			function Config:SetValue(Color: Color3)
+				self.Value = Color
+				SetPreview(Color)
+
+				--// Update Drag elements
+				Object:SetValue({
+					math.round(Color.R*255),
+					math.round(Color.G*255),
+					math.round(Color.B*255)
+				})
+			end
+
+			--// Update object state
+			Config:SetValue(Value)
+
+			return Class, Row
+		end,
+	})
+end
+
+local function GenerateCFrameInput(Name: string, InputType: string, InputCount: number, Extra)
+	ReGui:DefineElement(Name, {
+		Base = {
+			Label = Name,
+			Callback = EmptyFunction,
+			Disabled = false,
+			Value = CFrame.new(1,1,1),
+			Minimum = CFrame.new(0,0,0),
+			Maximum = CFrame.new(1,1,1),
+			BaseInputConfig = {},
+			InputConfigs = {
+				[1] = {Format = "X: %.f"},
+				[2] = {Format = "Y: %.f"},
+				[3] = {Format = "Z: %.f"},
+			}
+		},
+		Create = function(self, Config: InputColor3Flags)
+			--// Unpack configuration
+			local BaseInputConfig = Config.BaseInputConfig
+			local Value = Config.Value
+			local Disabled = Config.Disabled
+			local Maximum = Config.Maximum
+			local Minimum = Config.Minimum
+			
+			local InputConfig = Copy(Config, {
+				Maximum = {Maximum.X,Maximum.Y,Maximum.Z},
+				Minimum = {Minimum.X,Minimum.Y,Minimum.Z},
+				Value = {Value.X,Value.Y,Value.Z},
+				Callback = function(self, ...)
+					if Config.ValueChanged then
+						Config:ValueChanged(...)
+					end
+				end,
+			})
+			
+			--// Create Object
+			local Object = self[InputType](self, InputConfig)
+			local Class = ReGui:MergeMetatables(Config, Object)
+			local Row = Object.Row
+
+			local function Callback(...)
+				local func = Config.Callback
+				return func(Class, ...)
+			end
+			
+			function Config:ValueChanged(Values)
+				local X, Y, Z = Values[1], Values[2], Values[3]
+				local Value = CFrame.new(X, Y, Z)
+				self.Value = Value
+				Callback(Value)
+			end
+
+			function Config:SetValue(Value: CFrame)
+				self.Value = Value
+
+				--// Update Drag elements
+				Object:SetValue({
+					math.round(Value.X),
+					math.round(Value.Y),
+					math.round(Value.Z)
+				})
+			end
+
+			--// Update object state
+			Config:SetValue(Value)
+
+			return Class, Row
+		end,
+	})
+end
+
+GenerateMultiInput("InputInt2", "InputInt", 2, {NoButtons=true})
+GenerateMultiInput("InputInt3", "InputInt", 3, {NoButtons=true})
+GenerateMultiInput("InputInt4", "InputInt", 4, {NoButtons=true})
 GenerateMultiInput("SliderInt2", "SliderInt", 2)
 GenerateMultiInput("SliderInt3", "SliderInt", 3)
 GenerateMultiInput("SliderInt4", "SliderInt", 4)
@@ -5499,104 +5683,13 @@ GenerateMultiInput("DragFloat2", "DragFloat", 2)
 GenerateMultiInput("DragFloat3", "DragFloat", 3)
 GenerateMultiInput("DragFloat4", "DragFloat", 4)
 
-export type InputColor3Flags = {
-	Label: string?,
-	Value: Color3?,
-	Callback: (InputColor3Flags, Value: Color3) -> any,
+GenerateColor3Input("InputColor3", "InputInt3")
+GenerateColor3Input("SliderColor3", "SliderInt3")
+GenerateColor3Input("DragColor3", "DragInt3")
 
-	ValueChanged: (InputColor3Flags) -> nil,
-	SetValue: (InputColor3Flags, Value: Color3) -> InputColor3Flags,
-}
-ReGui:DefineElement("InputColor3", {
-	Base = {
-		Callback = EmptyFunction,
-		Value = ReGui.Accent.Light,
-		Label = "Input Color3",
-		Disabled = false,
-		BaseInputConfig = {
-			Minimum = 0,
-			Maximum = 255
-		},
-		InputConfigs = {
-			[1] = {Format = "R: %.f"},
-			[2] = {Format = "G: %.f"},
-			[3] = {Format = "B: %.f"},
-		}
-	},
-	Create = function(self, Config: InputColor3Flags)
-		--// Unpack configuration
-		local BaseInputConfig = Config.BaseInputConfig
-		local Value = Config.Value
-		local Disabled = Config.Disabled
-		
-		Config.MultiCallback = function(self, ...)
-			if Config.ValueChanged then
-				Config:ValueChanged(...)
-			end
-		end
-		
-		--// Create Object
-		local MultiElement = self:MultiElement(Config)
-		local Class = ReGui:MergeMetatables(Config, MultiElement)
-		
-		local Row = MultiElement.Row
-		local Inputs = MultiElement.Inputs
-		
-		--// Preview frame
-		local Preview = Row:Button({
-			BackgroundTransparency = 0,
-			Size = UDim2.fromOffset(19, 19),
-			UiPadding = 0,
-			Text = "",
-			Ratio = 1,
-			ColorTag = "",
-			ElementStyle = ""
-		})
-		
-		local function Callback(...)
-			local func = Config.Callback
-			return func(Class, ...)
-		end
-
-		local function SetPreview(Color: Color3)
-			Preview.BackgroundColor3 = Color
-			Callback(Color)
-		end
-
-		function Config:ValueChanged(Value)
-			local R, G, B = Value[1], Value[2], Value[3]
-			local Color = Color3.fromRGB(R, G, B)
-			
-			self.Value = Color
-			SetPreview(Color)
-		end
-
-		function Config:SetValue(Color: Color3)
-			self.Value = Color
-			SetPreview(Color)
-			
-			--// Update Drag elements
-			MultiElement:SetMultiValue({
-				Color.R*255,
-				Color.G*255,
-				Color.B*255
-			})
-		end
-
-		--// Update object state
-		Config:SetValue(Value)
-		Config:SetDisabled(Disabled)
-
-		return MultiElement, Row
-	end,
-})
-
-ReGui:DefineElement("SliderColor3", {
-	Base = {
-		InputType = "SliderInt"
-	},
-	Create = Elements.InputColor3
-})
+GenerateCFrameInput("InputCFrame", "InputInt3")
+GenerateCFrameInput("SliderCFrame", "SliderInt3")
+GenerateCFrameInput("DragCFrame", "DragInt3")
 
 export type InputCFrameFlags = {
 	Label: string?,
@@ -5606,78 +5699,7 @@ export type InputCFrameFlags = {
 	ValueChanged: (InputCFrameFlags) -> nil,
 	SetValue: (InputCFrameFlags, Value: CFrame) -> InputCFrameFlags,
 }
-ReGui:DefineElement("InputCFrame", {
-	Base = {
-		Callback = EmptyFunction,
-		Value = CFrame.new(1,1,1),
-		Label = "Input CFrame",
-		Disabled = false,
-		Minimum = -100,
-		Maximum = 100,
-		BaseInputConfig = {},
-		InputConfigs = {
-			[1] = {Format = "X: %.f"},
-			[2] = {Format = "Y: %.f"},
-			[3] = {Format = "Z: %.f"},
-		}
-	},
-	Create = function(self, Config: InputCFrameFlags)
-		--// Unpack configuration
-		local BaseInputConfig = Config.BaseInputConfig
-		local Value = Config.Value
-		local Disabled = Config.Disabled
-		local Maximum = Config.Maximum
-		local Minimum = Config.Minimum
-		
-		ReGui:CheckConfig(BaseInputConfig, {
-			Maximum = Maximum,
-			Minimum = Minimum
-		})
 
-		Config.MultiCallback = function(self, ...)
-			if Config.ValueChanged then
-				Config:ValueChanged(...)
-			end
-		end
-
-		--// Create Object
-		local MultiElement = self:MultiElement(Config)
-		local Class = ReGui:MergeMetatables(Config, MultiElement)
-
-		local Row = MultiElement.Row
-		local Inputs = MultiElement.Inputs
-		
-		local function Callback(...)
-			local func = Config.Callback
-			return func(Class, ...)
-		end
-
-		function Config:ValueChanged(Value)
-			local X, Y, Z = Value[1], Value[2], Value[3]
-			local Value = CFrame.new(X, Y, Z)
-
-			self.Value = Value
-			Callback(Value)
-		end
-
-		function Config:SetValue(Value: CFrame)
-			self.Value = Value
-
-			--// Update Drag elements
-			MultiElement:SetMultiValue({
-				Value.X,
-				Value.Y,
-				Value.Z,
-			})
-		end
-
-		--// Update object state
-		Config:SetValue(Value)
-		Config:SetDisabled(Disabled)
-
-		return MultiElement, Row
-	end,
-})
 
 ReGui:DefineElement("SliderCFrame", {
 	Base = {
