@@ -2208,15 +2208,6 @@ function ReGui:MakeCanvas(Config: MakeCanvas)
 
 			--// Fetch value from Element
 			return Element[Key]
-			--local Success, ElementValue = pcall(function()
-			--	return Element[Key]
-			--end)
-
-			--if Success then
-			--	return ElementValue
-			--end
-
-			--return nil
 		end,
 		__newindex = function(self, Key: string, Value)
 			local IsClassValue = Class[Key] ~= nil
@@ -2269,8 +2260,8 @@ function ReGui:WrapGeneration(Function, Data: WrapGeneration)
 		end
 
 		--// Create element and apply properties
-		local Class, Element = Function(Canvas, Flags, ...)
-		--local Success, Class, Element = pcall(Function, Canvas, Flags, ...)
+		--local Class, Element = Function(Canvas, Flags, ...)
+		local Success, Class, Element = pcall(Function, Canvas, Flags, ...)
 		
 		local NoAutoTag = Flags.NoAutoTag
 		local NoAutoFlags = Flags.NoAutoFlags
@@ -5397,7 +5388,7 @@ ReGui:DefineElement("MultiElement", {
 			if #Inputs ~= #InputConfigs then return end
 
 			local Value = GetValue()
-			Callback(Value)
+			Callback(Class, Value)
 		end
 		
 		function Config:SetDisabled(Disabled: boolean)
@@ -5464,7 +5455,8 @@ ReGui:DefineElement("MultiInputBase", {
 		Callback = EmptyFunction,
 	},
 	Create = function(self, Config)
-		local BaseInputConfig = Config.BaseInputConfig	
+		local BaseInputConfig = Config.BaseInputConfig
+		local Object = nil
 		
 		ReGui:CheckConfig(BaseInputConfig, {
 			ReadOnly = Config.ReadOnly,
@@ -5537,7 +5529,7 @@ ReGui:DefineElement("InputColor3", {
 		local Value = Config.Value
 		local Disabled = Config.Disabled
 		
-		Config.MultiCallback = function(...)
+		Config.MultiCallback = function(self, ...)
 			if Config.ValueChanged then
 				Config:ValueChanged(...)
 			end
@@ -5642,7 +5634,7 @@ ReGui:DefineElement("InputCFrame", {
 			Minimum = Minimum
 		})
 
-		Config.MultiCallback = function(...)
+		Config.MultiCallback = function(self, ...)
 			if Config.ValueChanged then
 				Config:ValueChanged(...)
 			end
