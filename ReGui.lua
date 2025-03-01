@@ -13,7 +13,7 @@
 
 local ReGui = {
 	--// Package data
-	Version = "1.2.4",
+	Version = "1.3.0",
 	Author = "Depso",
 	License = "MIT",
 	Repository = "https://github.com/depthso/Dear-ReGui/",
@@ -309,6 +309,11 @@ ReGui.ElementColors = {
 		BackgroundTransparency = "RegionBgTransparency",
 	},
 	["Label"] = {
+		TextColor3 = "Text",
+		FontFace = "TextFont",
+		TextSize = "TextSize",
+	},
+	["ConsoleText"] = {
 		TextColor3 = "Text",
 		FontFace = "TextFont",
 		TextSize = "TextSize",
@@ -1367,6 +1372,7 @@ function ReGui:SetAnimation(Object: GuiObject, Reference: string, Listener: GuiO
 	--// Connect signals
 	local InitFunc = nil
 	local AnimationEnabled = true
+	local CurrentSignal = nil
 	local Signals = {}
 	
 	--// Interface for the animation
@@ -1379,12 +1385,18 @@ function ReGui:SetAnimation(Object: GuiObject, Reference: string, Listener: GuiO
 	function Module:FireSignal(Enabled: boolean)
 		AnimationEnabled = Enabled
 	end
+	function Module:Refresh(NoAnimation: boolean?)
+		if not CurrentSignal then return end
+		Signals[CurrentSignal](NoAnimation)
+	end
 	function Module:SetEnabled(Enabled: boolean)
 		AnimationEnabled = Enabled
 	end
 	
 	for SignalName: string, Properties in next, Connections do
 		local function OnSignal(NoAnim: boolean?)
+			CurrentSignal = SignalName
+			
 			--// Check if animations are enabled
 			local NoAnimations = self.NoAnimations
 			if NoAnimations then return end
@@ -2566,7 +2578,7 @@ function Elements:SetElementFocused(Object: GuiObject, Data)
 	
 	--// Reset animation state
 	if not Focused and Animation then
-		Animation:Reset()
+		Animation:Refresh()
 	end
 	
 	--// Window modification
@@ -4323,6 +4335,10 @@ ReGui:DefineElement("Console", {
 
 		--// Update element
 		Config:SetValue(Value)
+		
+		self:TagElements({
+			[Source] = "ConsoleText"
+		})
 
 		--// Connect events
 		Source:GetPropertyChangedSignal("Text"):Connect(Changed)
@@ -4558,6 +4574,7 @@ ReGui:DefineElement("CollapsingHeader", {
 
 		local Titlebar = Object.TitleBar
 		local ToggleButton = Titlebar.Toggle.Icon
+		ToggleButton.Image = Icon
 
 		local TitleText = Canvas:Label({
 			ColorTag = "CollapsingHeader",
@@ -4615,12 +4632,6 @@ ReGui:DefineElement("CollapsingHeader", {
 			})
 		end
 
-		TitleText.Text = Title
-		ToggleButton.Image = Icon
-		
-		--// Update object state
-		Config:SetCollapsed(Collapsed)
-
 		--// Connect events
 		if not OpenOnArrow then
 			ReGui:ConnectMouseEvent(Titlebar, {
@@ -4629,6 +4640,9 @@ ReGui:DefineElement("CollapsingHeader", {
 			})
 		end
 		ToggleButton.Activated:Connect(Toggle)
+		
+		--// Update object state
+		Config:SetCollapsed(Collapsed)
 
 		--// Style elements
 		ReGui:ApplyStyle(Titlebar, Style)
@@ -4940,7 +4954,7 @@ ReGui:DefineElement("SliderBase", {
 		local Label = Canvas:Label({
 			Parent = Object, 
 			Text = LabelText,
-			Position = UDim2.new(1, 7),
+			Position = UDim2.new(1, 5),
 			Size = UDim2.fromScale(0, 1)
 		})
 
@@ -5026,7 +5040,7 @@ ReGui:DefineElement("SliderBase", {
 			})
 
 			--// Update object state
-			Config.Value = Value
+			self.Value = Value
 			self:SetValueText(Format:format(Value, Maximum))
 
 			--// Fire callback
@@ -5036,15 +5050,15 @@ ReGui:DefineElement("SliderBase", {
 		end
 		
 		local function SetFocused(Focused: boolean)
-			Canvas:SetElementFocused(Object, {
-				Focused = Focused,
-				Animation = HoverAnimation
-			})
-			
 			--// Update object colors from a style
 			Canvas:SetColorTags({
 				[Object] = Focused and "FrameActive" or "Frame"
 			}, true)
+			
+			Canvas:SetElementFocused(Object, {
+				Focused = Focused,
+				Animation = HoverAnimation
+			})
 		end
 
 		------// Move events
@@ -5264,15 +5278,15 @@ ReGui:DefineElement("DragInt", {
 		end
 		
 		local function SetFocused(Focused: boolean)
-			Canvas:SetElementFocused(Object, {
-				Focused = Focused,
-				Animation = HoverAnimation
-			})
-
 			--// Update object colors from a style
 			Canvas:SetColorTags({
 				[Object] = Focused and "FrameActive" or "Frame"
 			}, true)
+			
+			Canvas:SetElementFocused(Object, {
+				Focused = Focused,
+				Animation = HoverAnimation
+			})
 		end
 
 		------// Move events
@@ -5326,32 +5340,29 @@ ReGui:DefineElement("DragFloat", {
 	Create = Elements.DragInt,
 })
 
-ReGui:DefineElement("MultiDrag", {
+ReGui:DefineElement("MultiInput", {
 	Base = {
 		Callback = EmptyFunction,
 		Value = ReGui.Accent.Light,
+		InputType = "DragInt",
 		Label = "",
 		Disabled = false,
-		BaseDragIntConfig = {},
-		DragIntsConfig = {}
+		BaseInputConfig = {},
+		InputConfigs = {},
+		MultiCallback = EmptyFunction,
 	},
 	Create = function(Canvas, Config)
 		--// Unpack configuration
 		local LabelText = Config.Label
-		local BaseDragConfig = Config.BaseDragIntConfig
-		local DragIntsConfig = Config.DragIntsConfig
-		
-		ReGui:CheckConfig(BaseDragConfig, {
-			Size = UDim2.new(1, 0, 0, 19),
-			Label = ""
-		})
+		local BaseInputConfig = Config.BaseInputConfig
+		local InputConfigs = Config.InputConfigs
+		local InputType = Config.InputType
 		
 		--// Create container row
 		local ContainerRow = Canvas:Row({
-			Spacing = 4,
+			Spacing = 5
 		})
-		local Class = ReGui:MergeMetatables(Config, ContainerRow)
-
+		
 		local Label = ContainerRow:Label({
 			Size = UDim2.fromScale(0.35, 0),
 			LayoutOrder = 2,
@@ -5361,16 +5372,33 @@ ReGui:DefineElement("MultiDrag", {
 		--// Create row for sliders and preview frame
 		local Row = ContainerRow:Row({
 			Size = UDim2.fromScale(0.65, 0),
+			Expanded = true,
 		})
 		
-		--// Expand row
-		Row:Expand()
+		local Inputs = {}
+		local function Callback()
+			local Callback = Config.MultiCallback
+			local Value = {}
+			
+			if #Inputs ~= #InputConfigs then return end
+			
+			for Index, Input in Inputs do
+				Value[Index] = Input:GetValue()
+			end
+			
+			Callback(Value)
+		end
+		
+		BaseInputConfig = Copy(BaseInputConfig, {
+			Size = UDim2.new(1, 0, 0, 19),
+			Callback = Callback,
+			Label = ""
+		})
 
 		--// Create DragInt elements
-		local Drags = {}
-		for _, DragConfig in DragIntsConfig do
-			local Drag = Row:DragInt(Copy(BaseDragConfig, DragConfig))
-			table.insert(Drags, Drag)
+		for _, Config in InputConfigs do
+			local Input = Row[InputType](Row, Copy(BaseInputConfig, Config))
+			table.insert(Inputs, Input)
 		end
 		
 		function Config:SetDisabled(Disabled: boolean)
@@ -5382,20 +5410,49 @@ ReGui:DefineElement("MultiDrag", {
 			}, true)
 			
 			--// Set state of each Drag element
-			for _, Drag in Drags do
-				Drag:SetDisabled(Disabled)
+			for _, Input in Inputs do
+				Input:SetDisabled(Disabled)
+			end
+		end
+		
+		function Config:SetMultiValue(Values)
+			for Index, Value in Values do
+				local Input = Inputs[Index]
+				assert(Input, `No input object for index: {Index}`)
+				
+				Input:SetValue(Value)
 			end
 		end
 		
 		--// Merge properties into the configuration
 		Merge(Config, {
 			Row = Row,
-			Drags = Drags
+			Inputs = Inputs
 		})
 		
-		return Config, ContainerRow
+		local Class = ReGui:MergeMetatables(Config, ContainerRow)
+		return Class, ContainerRow
 	end,
 })
+
+--ReGui:DefineElement("SliderInt2", {
+--	Base = {
+--		Label = "SliderInt2",
+--		InputType = "SliderInt",
+--		Minimum = -100,
+--		Maximum = 100,
+--		BaseInputConfig = {},
+--	},
+--	Create = function(self, Config)
+--		local BaseInputConfig = Config.BaseInputConfig
+--		ReGui:CheckConfig(BaseInputConfig, {
+--			Maximum = Config.Maximum,
+--			Minimum = Config.Minimum
+--		})
+		
+--		return self:MultiInput(Config)
+--	end,
+--})
 
 export type InputColor3Flags = {
 	Label: string?,
@@ -5411,34 +5468,34 @@ ReGui:DefineElement("InputColor3", {
 		Value = ReGui.Accent.Light,
 		Label = "Input Color3",
 		Disabled = false,
-		BaseDragIntConfig = {
+		BaseInputConfig = {
 			Minimum = 0,
 			Maximum = 255
 		},
-		DragIntsConfig = {
+		InputConfigs = {
 			[1] = {Format = "R: %.f"},
-			[2] = {Format = "R: %.f"},
-			[3] = {Format = "R: %.f"},
+			[2] = {Format = "G: %.f"},
+			[3] = {Format = "B: %.f"},
 		}
 	},
 	Create = function(self, Config: InputColor3Flags)
 		--// Unpack configuration
-		local DragIntConfig = Config.BaseDragIntConfig
+		local BaseInputConfig = Config.BaseInputConfig
 		local Value = Config.Value
 		local Disabled = Config.Disabled
 		
-		DragIntConfig.Callback = function()
+		Config.MultiCallback = function(...)
 			if Config.ValueChanged then
-				Config:ValueChanged()
+				Config:ValueChanged(...)
 			end
 		end
 		
 		--// Create Object
-		local MultiInput = self:MultiDrag(Config)
+		local MultiInput = self:MultiInput(Config)
 		local Class = ReGui:MergeMetatables(Config, MultiInput)
 		
 		local Row = MultiInput.Row
-		local Drags = MultiInput.Drags
+		local Inputs = MultiInput.Inputs
 		
 		--// Preview frame
 		local Preview = Row:Button({
@@ -5461,9 +5518,9 @@ ReGui:DefineElement("InputColor3", {
 			Callback(Color)
 		end
 
-		function Config:ValueChanged()
-			local R, B, G = Drags[1], Drags[2], Drags[3]
-			local Color = Color3.fromRGB(R.Value, G.Value, B.Value)
+		function Config:ValueChanged(Value)
+			local R, G, B = Value[1], Value[2], Value[3]
+			local Color = Color3.fromRGB(R, G, B)
 			
 			self.Value = Color
 			SetPreview(Color)
@@ -5474,10 +5531,11 @@ ReGui:DefineElement("InputColor3", {
 			SetPreview(Color)
 			
 			--// Update Drag elements
-			local R, B, G = Drags[1], Drags[2], Drags[3]
-			R:SetValue(Color.R*255)
-			B:SetValue(Color.B*255)
-			G:SetValue(Color.G*255)
+			MultiInput:SetMultiValue({
+				Color.R*255,
+				Color.G*255,
+				Color.B*255
+			})
 		end
 
 		--// Update object state
@@ -5486,6 +5544,13 @@ ReGui:DefineElement("InputColor3", {
 
 		return MultiInput, Row
 	end,
+})
+
+ReGui:DefineElement("SliderColor3", {
+	Base = {
+		InputType = "SliderInt"
+	},
+	Create = Elements.InputColor3
 })
 
 export type InputCFrameFlags = {
@@ -5504,8 +5569,8 @@ ReGui:DefineElement("InputCFrame", {
 		Disabled = false,
 		Minimum = -100,
 		Maximum = 100,
-		BaseDragIntConfig = {},
-		DragIntsConfig = {
+		BaseInputConfig = {},
+		InputConfigs = {
 			[1] = {Format = "X: %.f"},
 			[2] = {Format = "Y: %.f"},
 			[3] = {Format = "Z: %.f"},
@@ -5513,51 +5578,52 @@ ReGui:DefineElement("InputCFrame", {
 	},
 	Create = function(self, Config: InputCFrameFlags)
 		--// Unpack configuration
-		local DragIntConfig = Config.BaseDragIntConfig
+		local BaseInputConfig = Config.BaseInputConfig
 		local Value = Config.Value
 		local Disabled = Config.Disabled
 		local Maximum = Config.Maximum
 		local Minimum = Config.Minimum
 		
-		ReGui:CheckConfig(DragIntConfig, {
+		ReGui:CheckConfig(BaseInputConfig, {
 			Maximum = Maximum,
 			Minimum = Minimum
 		})
 
-		DragIntConfig.Callback = function()
+		Config.MultiCallback = function(...)
 			if Config.ValueChanged then
-				Config:ValueChanged()
+				Config:ValueChanged(...)
 			end
 		end
 
 		--// Create Object
-		local MultiInput = self:MultiDrag(Config)
+		local MultiInput = self:MultiInput(Config)
 		local Class = ReGui:MergeMetatables(Config, MultiInput)
 
 		local Row = MultiInput.Row
-		local Drags = MultiInput.Drags
+		local Inputs = MultiInput.Inputs
 		
 		local function Callback(...)
 			local func = Config.Callback
 			return func(Class, ...)
 		end
 
-		function Config:ValueChanged()
-			local X, Y, Z = Drags[1], Drags[2], Drags[3]
-			local _CFrame = CFrame.new(X.Value, Y.Value, Z.Value)
+		function Config:ValueChanged(Value)
+			local X, Y, Z = Value[1], Value[2], Value[3]
+			local Value = CFrame.new(X, Y, Z)
 
-			self.Value = _CFrame
-			Callback(_CFrame)
+			self.Value = Value
+			Callback(Value)
 		end
 
-		function Config:SetValue(_CFrame: CFrame)
-			self.Value = _CFrame
+		function Config:SetValue(Value: CFrame)
+			self.Value = Value
 
 			--// Update Drag elements
-			local X, Y, Z = Drags[1], Drags[2], Drags[3]
-			X:SetValue(_CFrame.X)
-			Y:SetValue(_CFrame.Y)
-			Z:SetValue(_CFrame.Z)
+			MultiInput:SetMultiValue({
+				Value.X,
+				Value.Y,
+				Value.Z,
+			})
 		end
 
 		--// Update object state
@@ -5566,6 +5632,13 @@ ReGui:DefineElement("InputCFrame", {
 
 		return MultiInput, Row
 	end,
+})
+
+ReGui:DefineElement("SliderCFrame", {
+	Base = {
+		InputType = "SliderInt"
+	},
+	Create = Elements.InputCFrame
 })
 
 ReGui:DefineElement("SliderProgress", {
@@ -5624,7 +5697,7 @@ ReGui:DefineElement("Combo", {
 		Items = {},
 		Disabled = false,
 		WidthFitPreview = false,
-		--NoPreview = false,
+		Label = "Combo"
 	},
 	Create = function(Canvas, Config)
 		--// Unpack configuration
@@ -5872,7 +5945,6 @@ end
 
 function WindowClass:AddDefaultTitleButtons()
 	local Config = self.TileBarConfig
-	local IsOpen = self.Open
 	local TitleBar = self.TitleBar
 
 	local Toggle = Config.Collapse
@@ -5889,7 +5961,6 @@ function WindowClass:AddDefaultTitleButtons()
 		Toggle = Canvas:RadioButton({
 			Icon = Toggle.Image,
 			IconSize = Toggle.IconSize,
-			Rotation = IsOpen and 90 or 0,
 			LayoutOrder = 1,
 			Ratio = 1,
 			Size = UDim2.new(0, 0),
@@ -6276,7 +6347,6 @@ export type WindowFlags = {
 	Title: string?,
 	NoTabs: boolean?,
 	NoMove: boolean?,
-	NoGradients: boolean?,
 	NoResize: boolean?,
 	NoTitleBar: boolean?,
 	NoClose: boolean?,

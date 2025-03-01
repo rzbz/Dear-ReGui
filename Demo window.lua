@@ -183,7 +183,8 @@ local DemosOrder = {
 	"Videos",
 	"Combo", 
 	"Tabs", 
-	"Plotting", 
+	"Plot widgets", 
+	--"Multi-component Widgets",
 	"Progress Bars",
 	"Console",
 	"List",
@@ -339,16 +340,25 @@ local WidgetDemos = {
 			Label = "Color 1",
 			--Callback = print
 		})
-		--Header:InputColor4({
-		--	Value = ReGui.Accent.Light,
-		--	Label = "Color 2"
-		--})
+		
+		Header:SliderColor3({
+			Value = ReGui.Accent.Light,
+			Label = "Color 2"
+		})
 
 		Header:InputCFrame({
 			Value = CFrame.new(1,1,1),
 			Minimum = -200,
 			Maximum = 200,
+			Label = "CFrame 1"
 			--Callback = print
+		})
+		
+		Header:SliderCFrame({
+			Value = CFrame.new(1,1,1),
+			Minimum = -200,
+			Maximum = 200,
+			Label = "CFrame 2"
 		})
 
 		Header:Combo({
@@ -524,7 +534,6 @@ local WidgetDemos = {
 
 		local Wrapping = Header:TreeNode({Title="Word Wrapping"})
 		Wrapping:Label({
-			TextColor3 = Color3.fromRGB(255, 0, 255),
 			Text = [[This text should automatically wrap on the edge of the window. The current implementation for text wrapping follows simple rules suitable for English and possibly other languages.]],
 			TextWrapped = true
 		})
@@ -631,7 +640,7 @@ local WidgetDemos = {
 			end,
 		})
 	end,
-	["Plotting"] = function(Header)
+	["Plot widgets"] = function(Header)
 		local Graph = Header:PlotHistogram({
 			Points = {0.6, 0.1, 1.0, 0.5, 0.92, 0.1, 0.2}
 		})
@@ -649,6 +658,9 @@ local WidgetDemos = {
 			end,
 		})
 	end,
+	--["Multi-component Widgets"] = function(Header)
+	--	print(Header:SliderInt2())
+	--end,
 	["Progress Bars"] = function(Header)
 		local ProgressBar = Header:ProgressBar({
 			Label = "Loading...",
