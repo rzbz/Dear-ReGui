@@ -5353,7 +5353,6 @@ ReGui:DefineElement("DragFloat", {
 ReGui:DefineElement("MultiElement", {
 	Base = {
 		Callback = EmptyFunction,
-		InputType = "DragInt",
 		Label = "",
 		Disabled = false,
 		BaseInputConfig = {},
@@ -5373,6 +5372,8 @@ ReGui:DefineElement("MultiElement", {
 		local Value = Config.Value
 		local Minimum = Config.Minimum
 		local Maximum = Config.Maximum
+		
+		assert(InputType, "No input type provided for MultiElement")
 
 		--// Create container row
 		local ContainerRow = Canvas:Row({
@@ -5443,14 +5444,13 @@ ReGui:DefineElement("MultiElement", {
 
 		--// Create DragInt elements
 		for Index, Overwrites in InputConfigs do
-			ReGui:CheckConfig(Overwrites, {
+			local Config = Copy(BaseInputConfig, Overwrites)
+			ReGui:CheckConfig(Config, {
 				Minimum = Minimum[Index],
 				Maximum = Maximum[Index],
 			})
 			
-			local Config = Copy(BaseInputConfig, Overwrites)
 			local Input = Row[InputType](Row, Config)
-			
 			table.insert(Inputs, Input)
 		end
 		
@@ -5596,15 +5596,24 @@ local function GenerateColor3Input(Name: string, InputType: string, InputCount: 
 	})
 end
 
+
+export type InputCFrameFlags = {
+	Label: string?,
+	Value: CFrame?,
+	Callback: (InputCFrameFlags, Value: CFrame) -> any,
+
+	ValueChanged: (InputCFrameFlags) -> nil,
+	SetValue: (InputCFrameFlags, Value: CFrame) -> InputCFrameFlags,
+}
 local function GenerateCFrameInput(Name: string, InputType: string, InputCount: number, Extra)
 	ReGui:DefineElement(Name, {
 		Base = {
 			Label = Name,
 			Callback = EmptyFunction,
 			Disabled = false,
-			Value = CFrame.new(1,1,1),
+			Value = CFrame.new(10,10,10),
 			Minimum = CFrame.new(0,0,0),
-			Maximum = CFrame.new(1,1,1),
+			Maximum = CFrame.new(100,100,100),
 			BaseInputConfig = {},
 			InputConfigs = {
 				[1] = {Format = "X: %.f"},
@@ -5612,7 +5621,7 @@ local function GenerateCFrameInput(Name: string, InputType: string, InputCount: 
 				[3] = {Format = "Z: %.f"},
 			}
 		},
-		Create = function(self, Config: InputColor3Flags)
+		Create = function(self, Config: InputCFrameFlags)
 			--// Unpack configuration
 			local BaseInputConfig = Config.BaseInputConfig
 			local Value = Config.Value
@@ -5690,23 +5699,6 @@ GenerateColor3Input("DragColor3", "DragInt3")
 GenerateCFrameInput("InputCFrame", "InputInt3")
 GenerateCFrameInput("SliderCFrame", "SliderInt3")
 GenerateCFrameInput("DragCFrame", "DragInt3")
-
-export type InputCFrameFlags = {
-	Label: string?,
-	Value: CFrame?,
-	Callback: (InputCFrameFlags, Value: CFrame) -> any,
-
-	ValueChanged: (InputCFrameFlags) -> nil,
-	SetValue: (InputCFrameFlags, Value: CFrame) -> InputCFrameFlags,
-}
-
-
-ReGui:DefineElement("SliderCFrame", {
-	Base = {
-		InputType = "SliderInt"
-	},
-	Create = Elements.InputCFrame
-})
 
 ReGui:DefineElement("SliderProgress", {
 	Base = {
