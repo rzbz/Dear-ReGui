@@ -2917,6 +2917,7 @@ export type Keybind = {
 	Enabled: boolean?,
 	IgnoreGameProcessed: boolean?,
 	Callback: ((Enum.KeyCode) -> any)?,
+	OnKeybindSet: ((Enum.KeyCode) -> any)?,
 
 	SetValue: ((Keybind, New: Enum.KeyCode) -> any)?,
 	WaitForNewKey: ((Keybind) -> any)?,
@@ -2924,12 +2925,13 @@ export type Keybind = {
 ReGui:DefineElement("Keybind", {
 	Base = {
 		Label = "Keybind",
+		ColorTag = "Frame",
 		Value = nil,
 		DeleteKey = Enum.KeyCode.Backspace,
-		Callback = EmptyFunction,
 		IgnoreGameProcessed = true,
 		Enabled = true,
-		ColorTag = "Frame",
+		Callback = EmptyFunction,
+		OnKeybindSet = EmptyFunction,
 		UiPadding = UDim.new(),
 		AutomaticSize = Enum.AutomaticSize.None,
 		Size = UDim2.new(0.4, 0, 0, 19)
@@ -2950,61 +2952,73 @@ ReGui:DefineElement("Keybind", {
 		})
 
 		function Config:SetValue(New: Enum.KeyCode)
-			local DeleteKey = Config.DeleteKey
+			local DeleteKey = self.DeleteKey
 
 			--// Remove keybind 
-			if not New or New == DeleteKey then
-				Object.Text = "Not set"
-				self.Value = nil
-				return
+			if New == DeleteKey then
+				New = nil
 			end
-
-			Object.Text = New.Name
+			
 			self.Value = New
+			Object.Text = New and New.Name or "Not set"
 		end
 
 		function Config:WaitForNewKey()
-			local Previous = self.Value
-
+			self._WaitingForNewKey = true
+			
 			Object.Text = "..."
 			Object.Interactable = false
-
-			--// Wait for new key
-			local Key = UserInputService.InputBegan:Wait()
-			local KeyCode = Key.KeyCode
-
-			wait() Object.Interactable = true
+		end
+		
+		local function Callback(Func, ...)
+			return Func(Object, ...)
+		end
+		
+		local function OnKeybindSet(KeyCode: Enum.KeyCode)
+			local OnKeybindSet = Config.OnKeybindSet
+			local Previous = Config.Value
+			
+			Object.Interactable = true
 
 			--// Check if window is focused
 			if not UserInputService.WindowFocused then return end 
 
 			--// Reset back to previous if new key is unknown
 			if KeyCode.Name == "Unknown" then
-				return self:SetValue(Previous)
+				return Config:SetValue(Previous)
 			end
 
 			--// Set new keybind
-			self:SetValue(KeyCode)
+			Config:SetValue(KeyCode)
+			Callback(OnKeybindSet, KeyCode)
 		end
 
-		local function InputBegan(Input, GameProcessed)
+		local function InputBegan(Input, GameProcessed: boolean)
 			local IgnoreGameProcessed = Config.IgnoreGameProcessed
-			local Enabled = Config.Enabled and Object.Interactable
-			local Callback = Config.Callback 
+			local Enabled = Config.Enabled
 			local NullKey = Config.NullKey
 			local Previous = Config.Value
+			local Func = Config.Callback
 
 			local KeyCode = Input.KeyCode
+			
+			--// OnKeybindSet
+			if Config._WaitingForNewKey then
+				Config._WaitingForNewKey = false
+				OnKeybindSet(KeyCode)
+				return
+			end
 
 			--// Check input state
-			if not Enabled then return end
+			if not Enabled and Object.Interactable then return end
 			if not IgnoreGameProcessed and GameProcessed then return end
 
 			--// Check KeyCode
 			if KeyCode == NullKey then return end
 			if KeyCode ~= Previous then return end 
-
-			return Callback(Input.KeyCode)
+			
+			--// Invoke callback
+			Callback(Func, KeyCode)
 		end
 
 		--// Update object state
@@ -3024,10 +3038,10 @@ ReGui:DefineElement("Keybind", {
 
 ReGui:DefineElement("ArrowButton", {
 	Base = {
-		Icon = ReGui.Icons.Arrow,
 		Direction = "Left",
-		Size = UDim2.fromOffset(21,21),
 		ColorTag = "Button",
+		Icon = ReGui.Icons.Arrow,
+		Size = UDim2.fromOffset(21,21),
 		Rotations = {
 			Left = 180,
 			Right = 0,
@@ -6100,11 +6114,6 @@ function WindowClass:SetTitle(Text: string?): WindowClass
 	return self
 end
 
-function WindowClass:Remove()
-	local Window = self.WindowFrame
-	Window:Destroy()
-end
-
 function WindowClass:SetPosition(Position): WindowClass
 	local Window = self.WindowFrame
 	Window.Position = Position
@@ -6172,7 +6181,7 @@ end
 
 function WindowClass:SetFocused(Focused: true)
 	Focused = Focused == nil and true or Focused
-
+	
 	self.Focused = Focused
 
 	--// Update Window focus
@@ -6396,6 +6405,23 @@ function WindowClass:UpdateConfig(Config)
 	return self
 end
 
+--// Window removal function 
+function WindowClass:Remove()
+	local Window = self.WindowFrame
+	local WindowClass = self.WindowClass
+	local Windows = ReGui.Windows
+	
+	--// Remove Window from the Windows array
+	local Index = table.find(Windows, WindowClass)
+	if Index then
+		table.remove(Windows, Index)
+	end
+	
+	--// Destroy the Window frame
+	Window:Destroy()
+end
+
+
 export type WindowFlags = {
 	AutoSize: string?,
 	CloseCallback: (Window) -> boolean?,
@@ -6439,7 +6465,7 @@ ReGui:DefineElement("Window", {
 		Collapsed = false,
 		Visible = true,
 		AutoSize = false,
-		MinSize = Vector2.new(160, 90),
+		MinimumSize = Vector2.new(160, 90),
 		OpenOnDoubleClick = true,
 		NoAutoTheme = true,
 		NoWindowRegistor = false,
@@ -6457,7 +6483,7 @@ ReGui:DefineElement("Window", {
 		--// Unpack config
 		local NoTitleButtons = Config.NoDefaultTitleBarButtons
 		local Collapsed = Config.Collapsed
-		local MinSize = Config.MinSize
+		local MinimumSize = Config.MinimumSize
 		local Title = Config.Title
 		local NoTabs = Config.NoTabs
 		local NoScroll = Config.NoScroll
@@ -6493,7 +6519,7 @@ ReGui:DefineElement("Window", {
 
 		--// Make the window resizable
 		local ResizeConnection = ReGui:MakeResizable({
-			MinimumSize = MinSize,
+			MinimumSize = MinimumSize,
 			Resize = Window,
 			OnUpdate = function(Size)
 				Class:SetSize(Size, true)
@@ -6555,8 +6581,12 @@ ReGui:DefineElement("Window", {
 			Class.WindowTabSelector = Canvas
 		end
 		
+		--// Create Window class from Canvas and Class merge
+		WindowClass = ReGui:MergeMetatables(Class, Canvas)
+		
 		--// Merge canvas data
 		Merge(Class, {
+			WindowClass = WindowClass,
 			Body = Body,
 			ContentCanvas = Canvas
 		})
@@ -6589,24 +6619,21 @@ ReGui:DefineElement("Window", {
 		--// Update selection
 		Class:SetFocused()
 		
-		--// Create Window class from Canvas and Class merge
-		WindowClass = ReGui:MergeMetatables(Class, Canvas)
-
-		--// Append to Windows array
-		if not NoWindowRegistor then
-			table.insert(Windows, WindowClass)
-		end
-
 		--// Register elements into Window Class
 		local ResizeGrab = ResizeConnection.Grab
 		ReGui:SetAnimation(ResizeGrab, "TextButtons")
-		
+
 		WindowClass:TagElements({
 			[ResizeGrab] = "ResizeGrab",
 			[TitleBar] = "TitleBar",
 			[CanvasFrame] = "Window"
 		})
 
+		--// Append to Windows array
+		if not NoWindowRegistor then
+			table.insert(Windows, WindowClass)
+		end
+		
 		return WindowClass, Window
 	end,
 })

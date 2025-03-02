@@ -712,7 +712,7 @@ local WidgetDemos = {
 		Header:SliderColor3({
 			Value = ReGui.Accent.Red
 		})
-		Header:DragColor3({
+		Header:InputColor3({
 			Value = ReGui.Accent.Green
 		})
 		
@@ -865,6 +865,9 @@ local WidgetDemos = {
 			Label = "Toggle checkbox",
 			--Value = Enum.KeyCode.Q,
 			IgnoreGameProcessed = false,
+			OnKeybindSet = function(self, KeyCode)
+				warn(KeyCode)
+			end,
 			Callback = function(self, KeyCode)
 				print(KeyCode)
 				TestCheckbox:Toggle()
