@@ -13,7 +13,7 @@
 
 local ReGui = {
 	--// Package data
-	Version = "1.3.5",
+	Version = "1.3.6",
 	Author = "Depso",
 	License = "MIT",
 	Repository = "https://github.com/depthso/Dear-ReGui/",
@@ -184,6 +184,8 @@ ThemeConfigs.DarkTheme = {
 		RegionBgTransparency = 0.1,
 		Separator = ReGui.Accent.Gray,
 		SeparatorTransparency = 0.5,
+		LabelPaddingTop = UDim.new(0, 0),
+		LabelPaddingBottom = UDim.new(0, 0),
 
 		--// TabSelector
 		TabTextPaddingTop = UDim.new(0, 3),
@@ -1229,12 +1231,9 @@ function ReGui:ResolveContainerParent(): GuiObject?
 			return GetHiddenUI()
 		end,
 		[2] = function()
-			return CoreGui:FindFirstChild('RobloxGui')
-		end,
-		[3] = function()
 			return CoreGui
 		end,
-		[4] = function()
+		[3] = function()
 			return PlayerGui
 		end
 	}
@@ -3161,6 +3160,12 @@ ReGui:DefineElement("Label", {
 	Base = {
 		Font = "Inconsolata"
 	},
+	ColorData = {
+		["LabelPadding"] = {
+			PaddingTop = "LabelPaddingTop",
+			PaddingBottom = "LabelPaddingBottom"
+		},
+	},
 	Create = function(self, Config: Label): TextLabel
 		--// Unpack config
 		local IsBold = Config.Bold
@@ -3183,9 +3188,16 @@ ReGui:DefineElement("Label", {
 		if not FontFace and AddFlag then
 			Config.FontFace = Font.fromName(FontName, Weight, Style)
 		end
+		
+		local Label = ReGui:InsertPrefab("Label", Config)
+		local Padding = Label:FindFirstChildOfClass("UIPadding")
+
+		self:TagElements({
+			[Padding] = "LabelPadding",
+		})
 
 		--// Create label
-		return ReGui:InsertPrefab("Label", Config)
+		return Label
 	end,
 })
 
@@ -3456,12 +3468,14 @@ function TabSelectorClass:CreateTab(Config: Tab): Elements
 	table.insert(Tabs, TabData)
 
 	--// Add color infomation
-	WindowClass:TagElements({
-		[Button] = "Tab",
-		[Label] = "TabLabel",
-		[TextPadding] = "TabSelectorTabPadding",
-		[PagePadding] = "TabSelectorPagePadding",
-	})
+	if WindowClass then
+		WindowClass:TagElements({
+			[Button] = "Tab",
+			[Label] = "TabLabel",
+			[TextPadding] = "TabSelectorTabPadding",
+			[PagePadding] = "TabSelectorPagePadding",
+		})
+	end
 
 	--// Apply automatic size
 	ReGui:SetProperties(NewPage, {
