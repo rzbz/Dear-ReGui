@@ -5,49 +5,52 @@ ReGui:Init({
 	--Prefabs = game.StarterGui["ReGui-Prefabs"]
 })
 
-local Window = ReGui:TabsWindow({
-	Title = "Tabs window demo!",
-	Size = UDim2.fromOffset(300, 200)
-})
-
-local Names = {"Avocado", "Broccoli", "Cucumber"}
-for _, Name in next, Names do
-	local Tab = Window:CreateTab({Name=Name})
-	Tab:Label({
-		Text = `This is the {Name} tab!`
+do --// Tabs window demo
+	local Window = ReGui:TabsWindow({
+		Title = "Tabs window demo!",
+		Size = UDim2.fromOffset(300, 200)
 	})
+
+	local Names = {"Avocado", "Broccoli", "Cucumber"}
+	for _, Name in next, Names do
+		local Tab = Window:CreateTab({Name=Name})
+		Tab:Label({
+			Text = `This is the {Name} tab!`
+		})
+	end
 end
 
---// Watermark demo
-local Watermark = ReGui.Elements:Canvas({
-	Parent = ReGui.Container.Windows,
-	Position = UDim2.fromOffset(10,10),
-	Size = UDim2.fromOffset(250, 50),
+do --// Watermark demo
+	local Watermark = ReGui.Elements:Canvas({
+		Parent = ReGui.Container.Windows,
+		Position = UDim2.fromOffset(10,10),
+		Size = UDim2.fromOffset(250, 50),
 
-	CornerRadius = UDim.new(0, 2),
-	Border = true,
-	BorderThickness = 1,
-	BorderColor = Color3.fromRGB(91, 91, 91),
-	BackgroundTransparency = 0.4,
-	BackgroundColor3 = Color3.fromRGB(39, 39, 39),
-})
+		CornerRadius = UDim.new(0, 2),
+		Border = true,
+		BorderThickness = 1,
+		BorderColor = Color3.fromRGB(91, 91, 91),
+		BackgroundTransparency = 0.4,
+		BackgroundColor3 = Color3.fromRGB(39, 39, 39),
+	})
 
-local StatsRow = Watermark:Row({
-	Spacing = 10
-})
+	local StatsRow = Watermark:Row({
+		Spacing = 10
+	})
 
-local FPSLabel = StatsRow:Label()
-local TimeLabel = Watermark:Label()
+	local FPSLabel = StatsRow:Label()
+	local TimeLabel = Watermark:Label()
 
-game:GetService("RunService").RenderStepped:Connect(function(Delta)
-	local FPS = math.round(1/Delta)
-	local TimeString = DateTime.now():FormatLocalTime("dddd h:mm:ss A", "en-us")
+	game:GetService("RunService").RenderStepped:Connect(function(Delta)
+		local FPS = math.round(1/Delta)
+		local TimeString = DateTime.now():FormatLocalTime("dddd h:mm:ss A", "en-us")
 
-	FPSLabel.Text = `FPS: {FPS}`
-	TimeLabel.Text = `The time is {TimeString}`
-end)
+		FPSLabel.Text = `FPS: {FPS}`
+		TimeLabel.Text = `The time is {TimeString}`
+	end)
+end
 
---// Demo 
+--// Demo Window
 local Window = ReGui:Window({
 	Title = "Dear ReGui Demo",
 	Size = UDim2.new(0, 400, 0, 300),
@@ -136,6 +139,7 @@ local Options = {
 	NoCollapse = false,
 	--NoTabsBar = false, --:TabsWindow only
 	OpenOnDoubleClick = true,
+	NoBringToFrontOnFocus = false,
 	NoMove = false,
 	NoSelect = false,
 	NoScrollBar = false,
@@ -155,18 +159,6 @@ for Key, Value in pairs(Options) do
 		end,
 	})
 end
-
---for Key, Value in pairs(Options) do
---	WindowOptions:Checkbox({
---		Value = Value,
---		Label = Key,
---		Callback = function(self, Value)
---			Window:UpdateConfig({
---				[Key] = Value
---			})
---		end,
---	})
---end
 
 local Widgets = Window:CollapsingHeader({
 	Title = "Widgets"
@@ -340,7 +332,7 @@ local WidgetDemos = {
 			Label = "Color 1",
 			--Callback = print
 		})
-		
+
 		Header:SliderColor3({
 			Value = ReGui.Accent.Light,
 			Label = "Color 2"
@@ -353,7 +345,7 @@ local WidgetDemos = {
 			Label = "CFrame 1",
 			--Callback = print
 		})
-		
+
 		Header:SliderCFrame({
 			Value = CFrame.new(1,1,1),
 			Minimum = CFrame.new(0,0,0),
@@ -381,7 +373,8 @@ local WidgetDemos = {
 	["Tooltips"] = function(Header)
 		--// General
 		Header:Separator({Text="General"})
-
+		
+		--// Basic
 		local Basic = Header:Button({
 			Text = "Basic",
 			Size = UDim2.fromScale(1, 0)
@@ -391,7 +384,8 @@ local WidgetDemos = {
 				Text = "I am a tooltip"
 			})
 		end)
-
+		
+		--// Fancy
 		local Fancy = Header:Button({
 			Text = "Fancy",
 			Size = UDim2.fromScale(1, 0)
@@ -409,6 +403,19 @@ local WidgetDemos = {
 				Time.Text = `Sin(time) = {math.sin(tick())}`
 			end
 		end)
+		
+		--// Double
+		local Fancy = Header:Button({
+			Text = "Double tooltip",
+			Size = UDim2.fromScale(1, 0)
+		})
+		for i = 1,3 do
+			ReGui:SetItemTooltip(Fancy, function(Canvas)
+				Canvas:Label({
+					Text = `I am tooltip {i}`
+				})
+			end)
+		end
 	end,
 	["Videos"] = function(Header)
 		local Video = Header:VideoPlayer({
@@ -564,9 +571,11 @@ local WidgetDemos = {
 	["Images"] = function(Header)
 		Header:Label({
 			TextWrapped = true,
-			Text=`Below we are displaying the icons (which are the ones builtin to ReGui in this demo).\
-			\
-			\There is a total of {ReGui:GetDictSize(ReGui.Icons)} icons in this demo!`
+			Text="Below we are displaying the icons (which are the ones builtin to ReGui in this demo). Hover the texture for a zoomed view!"
+		})
+		Header:Label({
+			TextWrapped = true,
+			Text=`There is a total of {ReGui:GetDictSize(ReGui.Icons)} icons in this demo!`
 		})
 
 		local List = Header:List({
@@ -660,11 +669,14 @@ local WidgetDemos = {
 	end,
 	["Multi-component Widgets"] = function(Header)
 		Header:Separator({Text="2-wide"})
-		
+
 		Header:InputInt2({
 			Value = {10, 50},
 			Minimum = {0,0},
 			Maximum = {20,100},
+			Callback = function(self, Values)
+				print("1:", Values[1], "2:", Values[2])
+			end,
 		})
 		Header:SliderInt2()
 		Header:SliderFloat2()
@@ -672,19 +684,17 @@ local WidgetDemos = {
 		Header:DragFloat2()
 
 		Header:Separator({Text="3-wide"})
-		
+
 		Header:InputInt3()
 		Header:SliderInt3()
 		Header:SliderFloat3()
 		Header:DragInt3()
 		Header:DragFloat3()
-		
+
 		Header:Separator({Text="4-wide"})
-		
+
 		Header:InputInt4()
-		Header:SliderInt4({
-			Callback = print
-		})
+		Header:SliderInt4()
 		Header:SliderFloat4()
 		Header:DragInt4()
 		Header:DragFloat4()
@@ -715,7 +725,7 @@ local WidgetDemos = {
 		Header:InputColor3({
 			Value = ReGui.Accent.Green
 		})
-		
+
 		--// CFrame pickers
 		Header:Separator({Text="CFrame pickers"})
 		Header:DragCFrame({
@@ -776,9 +786,9 @@ local WidgetDemos = {
 				"C",
 			},
 		})
-		
+
 		Header:Separator({Text="One-liner variants"})
-		
+
 		Header:Combo({
 			Label = "Combo 1 (array)",
 			Selected = 1,
@@ -835,11 +845,11 @@ local WidgetDemos = {
 			Clone = true, --// Otherwise will parent
 			Model = Rig,
 		})
-		
+
 		--// Fetch the new model from the viewport
 		local Model = Viewport.Model
 		Model:PivotTo(CFrame.new(0, -2.5, -5))
-		
+
 		--// Rotate the rig
 		local RunService = game:GetService("RunService")
 		RunService.RenderStepped:Connect(function(DeltaTime)
@@ -853,7 +863,7 @@ local WidgetDemos = {
 		local List = Header:List()
 
 		for i = 1, 10 do
-			List:Button({Text=`Hello world! {i}`})
+			List:Button({Text=`Resize the window! {i}`})
 		end
 	end,
 	["Keybinds"] = function(Header)
@@ -872,6 +882,12 @@ local WidgetDemos = {
 				print(KeyCode)
 				TestCheckbox:Toggle()
 			end,
+		})
+
+		Header:Keybind({
+			Label = "Keybind (w/ blacklist)",
+			IgnoreGameProcessed = false,
+			KeyBlacklist = {Enum.KeyCode.Q}
 		})
 
 		Header:Keybind({
@@ -952,7 +968,6 @@ local Windows = Window:CollapsingHeader({
 local ChildWindows = Windows:TreeNode({Title="Child windows"})
 local ChildWindow = ChildWindows:Window({
 	Size = UDim2.fromOffset(300, 200),
-	NoSelect = true,
 	NoMove = true,
 	NoClose = true,
 	NoCollapse = true,
@@ -1010,6 +1025,7 @@ Modals:Button({
 Modals:Button({
 	Text = "Stacked modals..",
 	Callback = function()
+		--// First window
 		local Stacked1 = Modals:PopupModal({
 			Title = "Stacked 1"
 		})
@@ -1021,13 +1037,14 @@ Modals:Button({
 		Stacked1:Combo({
 			Items = {"aaaa", "bbbb", "cccc", "dddd", "eeee"}
 		})
-		Stacked1:InputColor3({
+		Stacked1:DragColor3({
 			Value = Color3.fromRGB(102, 178, 0)
 		})
 
 		Stacked1:Button({
 			Text = "Add another modal..",
 			Callback = function()
+				--// Second window
 				local Stacked2 = Modals:PopupModal({
 					Title = "Stacked 2"
 				})
@@ -1037,7 +1054,7 @@ Modals:Button({
 					TextWrapped = true
 				})
 
-				Stacked2:InputColor3({
+				Stacked2:DragColor3({
 					Value = Color3.fromRGB(102, 178, 0)
 				})
 
@@ -1107,14 +1124,21 @@ local HeadersTable = Headers:Table({
 
 local Rows = {"One", "Two", "Three"}
 
-local HeaderRow = HeadersTable:HeaderRow()
-local Row = HeadersTable:Row()
-
-for Count, RowHeader in Rows do
-	HeaderRow:Column():Label({Text=RowHeader})
-
-	local Column = Row:Column()
-	for Line = 1, 6 do
+for Line = 1, 7 do
+	if Line == 1 then
+		Row = HeadersTable:HeaderRow()
+	else
+		Row = HeadersTable:Row()
+	end
+	
+	for Count, RowHeader in Rows do
+		if Line == 1 then
+			local Column = Row:Column()
+			Column:Label({Text=RowHeader})
+			continue
+		end
+		
+		local Column = Row:NextColumn()
 		Column:Label({Text=`Hello {Count},{Line}`})
 	end
 end

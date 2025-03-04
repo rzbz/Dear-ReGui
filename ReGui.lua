@@ -13,20 +13,22 @@
 
 local ReGui = {
 	--// Package data
-	Version = "1.3.2",
+	Version = "1.3.3",
 	Author = "Depso",
 	License = "MIT",
 	Repository = "https://github.com/depthso/Dear-ReGui/",
-
+	
+	--// Configuration
 	Debug = false,
 	PrefabsId = 71968920594655,
 	DefaultTitle = "ReGui",
 	ContainerName = "ReGui",
 	DoubleClickThreshold = 0.3,
-
+	TooltipOffset = 15,
+	
+	--// Objects
 	Container = nil,
 	Prefabs = nil,
-	Tooltip = nil,
 	ActiveWindow = nil,
 
 	--// Classes
@@ -39,6 +41,7 @@ local ReGui = {
 	--// Collections
 	_FlagCache = {},
 	Windows = {},
+	ActiveTooltips = {},
 	AnimationConnections = {},
 	MouseEvents = {
 		DoubleClick = {},
@@ -174,7 +177,7 @@ ThemeConfigs.DarkTheme = {
 		RadioButtonHoveredBg = ReGui.Accent.Light,
 		ResizeGrab = ReGui.Accent.Light,
 		HeaderBg = ReGui.Accent.Gray,
-		HeaderBgTransparency = 0.6,
+		HeaderBgTransparency = 0.7,
 		HistogramBar = ReGui.Accent.Yellow,
 		ProgressBar = ReGui.Accent.Yellow,
 		RegionBg = ReGui.Accent.Dark,
@@ -780,6 +783,17 @@ ReGui.ElementFlags = {
 	}
 }
 
+type table = { 
+	[any]: any 
+}
+type ObjectTable = { 
+	[GuiObject]: any 
+}
+type TagsList = {
+	[GuiObject]: string 
+}
+
+
 --// Compatibility 
 local EmptyFunction = function() end
 local GetHiddenUI = get_hidden_gui or gethui
@@ -801,6 +815,7 @@ local Players: Players = Services.Players
 local CoreGui = Services.CoreGui
 local UserInputService = Services.UserInputService
 local TweenService = Services.TweenService
+local RunService = Services.RunService
 
 --// Local player
 local LocalPlayer = Players.LocalPlayer
@@ -888,7 +903,7 @@ end
 
 type Animate = {
 	NoAnimation: boolean?,
-	Objects: {},
+	Objects: ObjectTable,
 	Tweeninfo: TweenInfo?,
 	Completed: () -> any,
 }
@@ -1047,6 +1062,14 @@ function GetAndRemove(Key: string, Dict)
 	return Value
 end
 
+function MoveTableItem(Table: table, Item, NewPosition: number)
+	local Index = table.find(Table, Item)
+	if not Index then return end
+	
+	local Value = table.remove(Table, Index)
+	table.insert(Table, NewPosition, Value)
+end
+
 function Merge(Base, New)
 	for Key, Value in next, New do
 		Base[Key] = Value
@@ -1117,8 +1140,19 @@ function ReGui:Init(Overwrites)
 		end,
 	}, true)
 
-	--// MouseEvents
+	--// Input events
+	local Container = self.Container
+	local TooltipOffset = self.TooltipOffset
+	local ActiveTooltips = self.ActiveTooltips
+	local Overlays = Container.Overlays
 	local LastClick = 0
+	
+	--// Create tooltips container
+	self.TooltipsContainer = ReGui.Elements:Overlay({
+		Parent = Overlays
+	})
+	
+	--// Key press
 	UserInputService.InputBegan:Connect(function(Input)
 		if not self:IsMouseEvent(Input) then return end
 		
@@ -1136,6 +1170,23 @@ function ReGui:Init(Overwrites)
 			LastClick = ClickTick
 		end
 	end)
+	
+	local function InputUpdate()
+		local Tooltips = self.TooltipsContainer
+		Tooltips.Visible = #ActiveTooltips >= 1
+		
+		--// Set frame position to mosue location
+		local X, Y = ReGui:GetMouseLocation()
+		local Position = Overlays.AbsolutePosition
+
+		Tooltips.Position = UDim2.fromOffset(
+			X - Position.X + TooltipOffset, 
+			Y - Position.Y + TooltipOffset
+		)
+	end
+	
+	--// Bind events
+	RunService:BindToRenderStep("ReGui_InputUpdate", Enum.RenderPriority.Input.Value, InputUpdate)
 end
 
 function ReGui:GetVersion(): string
@@ -1817,6 +1868,7 @@ function ReGui:DetectHover(Object: GuiObject, Config: DetectHover)
 
 	--// Unpack configuration
 	local OnInput = Config.OnInput
+	local OnHoverChange = Config.OnHoverChange
 	local Anykey = Config.Anykey
 	local MouseMove = Config.MouseMove
 	local MouseEnter = Config.MouseEnter
@@ -1830,9 +1882,15 @@ function ReGui:DetectHover(Object: GuiObject, Config: DetectHover)
 			if not ReGui:IsMouseEvent(Input) then return end
 		end
 
-		--// Update data
+		--// Set new IsHovering state
 		if IsHovering ~= nil then
+			local Previous = Config.Hovering
 			Config.Hovering = IsHovering
+			
+			--// Invoke OnHoverChange
+			if IsHovering ~= Previous and OnHoverChange then
+				OnHoverChange(IsHovering)
+			end
 		end
 
 		--// Mouse Enter events
@@ -1864,7 +1922,9 @@ function ReGui:DetectHover(Object: GuiObject, Config: DetectHover)
 
 	--// Update on mouse move
 	if MouseMove then
-		local Connection = Object.MouseMoved:Connect(Update)
+		local Connection = Object.MouseMoved:Connect(function()
+			Update()
+		end)
 		table.insert(Connections, Connection)
 	end
 
@@ -1892,11 +1952,13 @@ function ReGui:StackWindows()
 end
 
 type UpdateColors = {
-	Config: Instance,
-	Tag: string,
-	Animate: boolean?,
+	Object: GuiObject,
+	Tag: (string|table),
+	NoAnimation: boolean?,
+	Theme: string?,
+	TagsList: TagsList?
 }
-function ReGui:UpdateColors(Config)
+function ReGui:UpdateColors(Config: UpdateColors)
 	--// Unpack global configuration
 	local ElementColors = self.ElementColors
 	local Themes = self.ThemeConfigs
@@ -1952,7 +2014,13 @@ function ReGui:UpdateColors(Config)
 	})
 end
 
-function ReGui:MultiUpdateColors(Config)
+export type MultiUpdateColorsConfig = {
+	Objects: ObjectsTable,
+	TagsList: TagsList?,
+	Theme: string?,
+	Animate: boolean?
+}
+function ReGui:MultiUpdateColors(Config: MultiUpdateColorsConfig)
 	local Objects = Config.Objects
 
 	for Object: GuiObject, Tag: string? in next, Objects do
@@ -2260,8 +2328,8 @@ function ReGui:WrapGeneration(Function, Data: WrapGeneration)
 		end
 
 		--// Create element and apply properties
-		local Class, Element = Function(Canvas, Flags, ...)
-		--local Success, Class, Element = pcall(Function, Canvas, Flags, ...)
+		--local Class, Element = Function(Canvas, Flags, ...)
+		local Success, Class, Element = pcall(Function, Canvas, Flags, ...)
 		
 		local NoAutoTag = Flags.NoAutoTag
 		local NoAutoFlags = Flags.NoAutoFlags
@@ -2417,14 +2485,26 @@ function ReGui:UpdateWindowFocuses()
 	self:SetFocusedWindow(nil)
 end
 
-function ReGui:WindowCanFocus(WindowClass): boolean
+function ReGui:WindowCanFocus(WindowClass: table): boolean
 	if WindowClass.NoSelect then return false end
 	if WindowClass.Collapsed then return false end
+	if WindowClass._SelectDisabled then return false end
 
 	return true
 end
 
-function ReGui:SetFocusedWindow(ActiveClass)
+function ReGui:BringWindowToFront(WindowClass: table)
+	local Windows = self.Windows
+	
+	--// Check if the NoBringToFrontOnFocus flag is enabled
+	local NoBringToFront = WindowClass.NoBringToFrontOnFocus
+	if NoBringToFront then return end
+	
+	--// Change position of window in the Windows array to 1
+	MoveTableItem(Windows, WindowClass, 1)
+end
+
+function ReGui:SetFocusedWindow(ActiveClass: table)
 	local Previous = self.ActiveWindow
 	local Windows = self.Windows
 
@@ -2436,62 +2516,73 @@ function ReGui:SetFocusedWindow(ActiveClass)
 	if ActiveClass then
 		local CanSelect = self:WindowCanFocus(ActiveClass)
 		if not CanSelect then return end
+		
+		--// Bring Window to the front
+		self:BringWindowToFront(ActiveClass)
 	end
 
 	--// Update active state for each window
+	local ZIndex = #Windows
 	for _, Class in Windows do
 		local CanSelect = self:WindowCanFocus(Class)
+		local Window = Class.WindowFrame
 
 		--// Ignore NoSelect windows with NoSelect flag
 		if not CanSelect then continue end
+		
+		ZIndex -= 1
+		
+		--// Set Window ZIndex
+		if ZIndex then
+			Window.ZIndex = ZIndex
+		end
 
-		--// Update Window state
+		--// Update Window focus state
 		local Active = Class == ActiveClass
-		Class:SetFocused(Active)
+		Class:SetFocused(Active, ZIndex)
 	end
 end
 
-function ReGui:SetTooltip(Tooltip: GuiObject)
-	local Previous = self.Tooltip
-
-	--// Check if the tooltip is the same as the previous
-	if not Previous then return end
-	if Previous == Tooltip then return end
-
-	Previous.Visible = false
-
-	--// Set new Tooltip
-	self.Tooltip = Tooltip
-end
-
-function ReGui:SetItemTooltip(Object: GuiObject, Render: () -> ...any)
+function ReGui:SetItemTooltip(Parent: GuiObject, Render: () -> ...any)
 	local Elements = self.Elements
-	local Container = self.Container
+	local Tooltips = self.TooltipsContainer
+	local ActiveTooltips = self.ActiveTooltips
 
-	--// Create tooltip
-	local Tooltip = Elements:Tooltip({
+	--// Create canvas object
+	local Canvas, Object = Tooltips:Canvas({
 		Visible = false,
-		Parent = Container.Overlays
+		UiPadding = UDim.new()
 	})
 
 	--// Create content
-	task.spawn(Render, Tooltip)
+	task.spawn(Render, Canvas)
 
 	--// Connect events
-	ReGui:DetectHover(Object, {
+	ReGui:DetectHover(Parent, {
 		MouseMove = true,
 		MouseEnter = true,
-		OnInput = function(MouseHovering, Input)
-			Tooltip:Update(MouseHovering)
+		OnHoverChange = function(Hovering: boolean)
+			--// Registor tooltip into ActiveTooltips
+			if Hovering then
+				table.insert(ActiveTooltips, Canvas)
+				return 
+			end
+			
+			--// Remove from ActiveTooltips
+			local Index = table.find(ActiveTooltips, Canvas)
+			table.remove(ActiveTooltips, Index)
+		end,
+		OnInput = function(Hovering: boolean, Input)
+			Object.Visible = Hovering
 		end,
 	})
 end
 
 function ReGui:CheckFlags(Flags, Config)
-	for Name, Func in next, Flags do
+	for Name: string, Func in next, Flags do
 		local Value = Config[Name]
 		if not Value then continue end
-
+		
 		Func(Value)
 	end
 end
@@ -2528,12 +2619,18 @@ function Elements:GetParent()
 	return self.ParentCanvas
 end
 
-function Elements:TagElements(Objects)
+function Elements:TagElements(Objects: ObjectTable)
 	local WindowClass = self.WindowClass
-
-	if WindowClass then 
-		WindowClass:TagElements(Objects)
+	
+	--// Missing WindowClass
+	if not WindowClass then 	
+		if Debug then
+			ReGui:Warn("No WindowClass for TagElements:", Objects)
+		end
+		return
 	end
+
+	WindowClass:TagElements(Objects)
 end
 
 function Elements:GetThemeKey(Key: string)
@@ -2546,7 +2643,7 @@ function Elements:GetThemeKey(Key: string)
 	return ReGui:GetThemeKey(nil, Key)
 end
 
-function Elements:SetColorTags(Objects, Animate)
+function Elements:SetColorTags(Objects: ObjectTables, Animate: boolean?)
 	local WindowClass = self.WindowClass
 	if not WindowClass then return end
 
@@ -2605,8 +2702,6 @@ ReGui:DefineElement("Dropdown", {
 		local OnClosed = Config.OnClosed
 		local OnSelected = Config.OnSelected
 
-		if not Parent then return end
-
 		--// Create overlay object
 		local Canvas, Object = self:OverlayScroll(Config)
 		local UIStroke = Object.UIStroke
@@ -2614,7 +2709,7 @@ ReGui:DefineElement("Dropdown", {
 		--// Get content size of parent
 		local Padding = UIStroke.Thickness
 		local Position = Parent.AbsolutePosition
-		local Size = ReGui:GetContentSize(Parent, true)
+		local Size = Parent.AbsoluteSize --ReGui:GetContentSize(Parent, true)
 
 		--// Connect hover watch
 		local Hover = ReGui:DetectHover(Object, {
@@ -2667,49 +2762,11 @@ ReGui:DefineElement("Dropdown", {
 		-- Roblox does not support UISizeConstraint on a scrolling frame grr
 		local Absolute = Canvas:GetCanvasSize()
 		local YSize = math.clamp(Absolute.Y, Size.Y, MaxSizeY)
-		local XSize = math.clamp(Size.X-Padding, MinSizeX, math.huge)
+		local XSize = math.min(Size.X-Padding, MinSizeX)
 		
 		Object.Size = UDim2.fromOffset(XSize, YSize)
 
 		return Config, Object
-	end,
-})
-
-export type Tooltip = {
-	Offset: number?
-}
-ReGui:DefineElement("Tooltip", {
-	Base = {
-		Offset = 15
-	},
-	Create = function(self, Config: Tooltip)
-		--// Unpack configuration
-		local Offset = Config.Offset
-
-		--// Create content canvas
-		local Overlay = self:Overlay(Config)
-		local Class = ReGui:MergeMetatables(Config, Overlay)
-
-		function Config:Update(Hovering: boolean)
-			Overlay.Visible = Hovering
-
-			--// If the tooltip is not visible
-			if not Hovering then return end
-
-			--// Set new tooltip
-			ReGui:SetTooltip(Overlay)
-
-			--// Set frame position to mosue location
-			local X, Y = ReGui:GetMouseLocation()
-			local Position = Overlay.Parent.AbsolutePosition
-			
-			Overlay.Position = UDim2.fromOffset(
-				X - Position.X + Offset, 
-				Y - Position.Y + Offset
-			)
-		end
-
-		return Class, Overlay
 	end,
 })
 
@@ -2930,58 +2987,87 @@ ReGui:DefineElement("Keybind", {
 		DeleteKey = Enum.KeyCode.Backspace,
 		IgnoreGameProcessed = true,
 		Enabled = true,
+		Disabled = false,
 		Callback = EmptyFunction,
 		OnKeybindSet = EmptyFunction,
+		OnBlacklistedKeybindSet = EmptyFunction,
+		KeyBlacklist = {},
 		UiPadding = UDim.new(),
 		AutomaticSize = Enum.AutomaticSize.None,
 		Size = UDim2.new(0.4, 0, 0, 19)
 	},
-	Create = function(self, Config: Keybind)
+	Create = function(Canvas, Config: Keybind)
 		local Value = Config.Value
-		local Label = Config.Label
+		local LabelText = Config.Label
+		local Disabled = Config.Disabled
+		local KeyBlacklist = Config.KeyBlacklist
 
 		--// Create keybind object
 		local Object = ReGui:InsertPrefab("Button", Config)
 		local Class = ReGui:MergeMetatables(Config, Object)
 
-		self:Label({
+		local Label = Canvas:Label({
 			Parent = Object, 
-			Text = Label,
+			Text = LabelText,
 			Position = UDim2.new(1, 5, 0.5),
 			AnchorPoint = Vector2.new(0, 0.5)
 		})
-
-		function Config:SetValue(New: Enum.KeyCode)
-			local DeleteKey = self.DeleteKey
-
-			--// Remove keybind 
-			if New == DeleteKey then
-				New = nil
-			end
-			
-			self.Value = New
-			Object.Text = New and New.Name or "Not set"
-		end
-
-		function Config:WaitForNewKey()
-			self._WaitingForNewKey = true
-			
-			Object.Text = "..."
-			Object.Interactable = false
-		end
 		
 		local function Callback(Func, ...)
 			return Func(Object, ...)
 		end
 		
-		local function OnKeybindSet(KeyCode: Enum.KeyCode)
-			local OnKeybindSet = Config.OnKeybindSet
-			local Previous = Config.Value
+		local function KeyIsBlacklisted(KeyCode: Enum.KeyCode)
+			local Blacklisted = table.find(KeyBlacklist, KeyCode)
+			return Blacklisted
+		end
+		
+		function Config:SetDisabled(Disabled: boolean)
+			self.Disabled = Disabled
+			Object.Interactable = not Disabled
+			Canvas:SetColorTags({
+				[Label] = Disabled and "LabelDisabled" or "Label"
+			}, true)
+		end
+
+		function Config:SetValue(KeyCode: Enum.KeyCode)
+			local OnKeybindSet = self.OnKeybindSet
+			local DeleteKey = self.DeleteKey
+
+			--// Remove keybind 
+			if KeyCode == DeleteKey then
+				KeyCode = nil
+			end
 			
-			Object.Interactable = true
+			self.Value = KeyCode
+			Object.Text = KeyCode and KeyCode.Name or "Not set"
+			
+			--// Invoke OnKeybindSet callback
+			Callback(OnKeybindSet, KeyCode)
+		end
+
+		function Config:WaitForNewKey()
+			self._WaitingForNewKey = true
+			Object.Text = "..."
+			Object.Interactable = false
+		end
+		
+		local function CheckNewKey(KeyCode: Enum.KeyCode)
+			local OnBlacklistedKeybindSet = Config.OnBlacklistedKeybindSet
+			local Previous = Config.Value
 
 			--// Check if window is focused
 			if not UserInputService.WindowFocused then return end 
+			
+			--// Check if keycode is blacklisted
+			if KeyIsBlacklisted(KeyCode) then
+				--// Invoke OnKeybindSet callback
+				Callback(OnBlacklistedKeybindSet, KeyCode)
+				return
+			end
+			
+			Object.Interactable = true
+			Config._WaitingForNewKey = false
 
 			--// Reset back to previous if new key is unknown
 			if KeyCode.Name == "Unknown" then
@@ -2990,13 +3076,12 @@ ReGui:DefineElement("Keybind", {
 
 			--// Set new keybind
 			Config:SetValue(KeyCode)
-			Callback(OnKeybindSet, KeyCode)
 		end
 
 		local function InputBegan(Input, GameProcessed: boolean)
 			local IgnoreGameProcessed = Config.IgnoreGameProcessed
+			local DeleteKey = Config.DeleteKey
 			local Enabled = Config.Enabled
-			local NullKey = Config.NullKey
 			local Previous = Config.Value
 			local Func = Config.Callback
 
@@ -3004,8 +3089,7 @@ ReGui:DefineElement("Keybind", {
 			
 			--// OnKeybindSet
 			if Config._WaitingForNewKey then
-				Config._WaitingForNewKey = false
-				OnKeybindSet(KeyCode)
+				CheckNewKey(KeyCode)
 				return
 			end
 
@@ -3014,7 +3098,7 @@ ReGui:DefineElement("Keybind", {
 			if not IgnoreGameProcessed and GameProcessed then return end
 
 			--// Check KeyCode
-			if KeyCode == NullKey then return end
+			if KeyCode == DeleteKey then return end
 			if KeyCode ~= Previous then return end 
 			
 			--// Invoke callback
@@ -3023,6 +3107,7 @@ ReGui:DefineElement("Keybind", {
 
 		--// Update object state
 		Config:SetValue(Value)
+		Config:SetDisabled(Disabled)
 
 		--// Connect events
 		Config.Connection = UserInputService.InputBegan:Connect(InputBegan)
@@ -4437,7 +4522,7 @@ ReGui:DefineElement("Table", {
 				RowsCount += 1
 			end
 			
-			--// Background colors
+			--// RowBackground background colors for rows
 			if RowBackground and not IsHeader then
 				local Transparency = RowsCount % 2 ~= 1 and RowTransparency or 1
 				Row.BackgroundTransparency = Transparency
@@ -4445,17 +4530,32 @@ ReGui:DefineElement("Table", {
 
 			--// Row class
 			local RowClass = {}
+			local Class = ReGui:MergeMetatables(RowClass, Row)
+			
 			function RowClass:Column(Config)
+				Config = Config or {}
+				
+				ReGui:CheckConfig(Config, {
+					HorizontalAlign = Enum.HorizontalAlignment.Left,
+					VerticalAlignment = Enum.VerticalAlignment.Top,
+				})
+				
 				--// Create column object
 				local Column = Row.ColumnTemp:Clone()
+				local Stroke = Column:FindFirstChildOfClass("UIStroke")
+				local ListLayout = Column:FindFirstChildOfClass("UIListLayout")
+				
+				--// Column Properties
 				ReGui:SetProperties(Column, {
-					Visible = true,
 					Parent = Row,
+					Visible = true,
 					Name = "Column"
 				})
+				
+				--// ListLayout Properties
+				ReGui:SetProperties(ListLayout, Config)
 
-				--// Apply border
-				local Stroke = Column:FindFirstChildOfClass("UIStroke")
+				--// Set border enabled based on Flag
 				Stroke.Enabled = Border
 				
 				--// Content canvas
@@ -4469,7 +4569,7 @@ ReGui:DefineElement("Table", {
 			function RowClass:NextColumn()
 				ColumnIndex += 1
 				
-				local Index = ColumnIndex%MaxColumns+1
+				local Index = ColumnIndex % MaxColumns + 1
 				local Column = Columns[Index]
 				
 				--// Create Column
@@ -4484,7 +4584,6 @@ ReGui:DefineElement("Table", {
 			table.insert(Rows, RowClass)
 			
 			--// Content canvas
-			local Class = ReGui:MergeMetatables(RowClass, Row)
 			return Class
 		end
 		
@@ -4615,7 +4714,7 @@ ReGui:DefineElement("CollapsingHeader", {
 			Size = UDim2.fromScale(1, 0),
 			AutomaticSize = Enum.AutomaticSize.None,
 			PaddingTop = UDim.new(0, 4),
-			UsePropertiesList = true,
+			PaddingBottom = UDim.new(0, 1),
 		})
 
 		--// Open Animations
@@ -5350,6 +5449,10 @@ ReGui:DefineElement("DragInt", {
 			DragEnd = DragEnded,
 			DragMovement = DragMovement,
 		})
+		
+		Canvas:TagElements({
+			[ValueText] = "Label"
+		})
 
 		return Class, Object
 	end,
@@ -5388,11 +5491,14 @@ ReGui:DefineElement("MultiElement", {
 		local Maximum = Config.Maximum
 		
 		assert(InputType, "No input type provided for MultiElement")
+		--assert(#Minimum ~= #InputConfigs, `Minimum does not match input count ({Minimum} != {#InputConfigs})`)
+		--assert(#Maximum ~= #InputConfigs, `Maximum does not match input count ({Maximum} != {#InputConfigs})`)
 
 		--// Create container row
 		local ContainerRow = Canvas:Row({
 			Spacing = 5
 		})
+		
 		local Row = ContainerRow:Row({
 			Size = UDim2.fromScale(0.65, 0),
 			Expanded = true,
@@ -5405,8 +5511,9 @@ ReGui:DefineElement("MultiElement", {
 		})
 
 		local Class = ReGui:MergeMetatables(Config, ContainerRow)
-		
 		local Inputs = {}
+		local _CallbackEnabled = false
+		
 		local function GetValue()
 			local Value = {}
 			for Index, Input in Inputs do
@@ -5417,14 +5524,18 @@ ReGui:DefineElement("MultiElement", {
 			return Value
 		end
 		
-		local function InvokeCallback()
+		local function Callback(...)
 			local Callback = Config.MultiCallback
-
-			--// +1 function is called before it is added into the Inputs
+			Callback(Class, ...)
+		end
+		
+		local function InputChanged()
+			--// Check if all the elements have loaded
 			if #Inputs ~= #InputConfigs then return end
+			if not _CallbackEnabled then return end
 
-			local Value = GetValue()
-			Callback(Class, Value)
+			local Values = GetValue()
+			Callback(Values)
 		end
 		
 		function Config:SetDisabled(Disabled: boolean)
@@ -5442,18 +5553,25 @@ ReGui:DefineElement("MultiElement", {
 		end
 
 		function Config:SetValue(Values)
+			_CallbackEnabled = false
+			
+			--// Invoke :SetValue on each input object
 			for Index, Value in Values do
 				local Input = Inputs[Index]
 				assert(Input, `No input object for index: {Index}`)
 
 				Input:SetValue(Value)
 			end
+			
+			_CallbackEnabled = true
+			Callback(Values)
 		end
 		
+		--// BaseInputConfig
 		BaseInputConfig = Copy(BaseInputConfig, {
 			Size = UDim2.new(1, 0, 0, 19),
 			Label = "",
-			Callback = InvokeCallback,
+			Callback = InputChanged,
 		})
 
 		--// Create DragInt elements
@@ -5464,18 +5582,18 @@ ReGui:DefineElement("MultiElement", {
 				Maximum = Maximum[Index],
 			})
 			
+			--// Create input object
 			local Input = Row[InputType](Row, Config)
 			table.insert(Inputs, Input)
 		end
-		
-		--// Invoke the callback once the elements have loaded
-		InvokeCallback()
 		
 		--// Merge properties into the configuration
 		Merge(Config, {
 			Row = Row,
 			Inputs = Inputs
 		})
+		
+		_CallbackEnabled = true
 		
 		--// Update object states
 		Config:SetDisabled(Disabled)
@@ -5977,15 +6095,8 @@ function WindowClass:Tween(Data)
 	return Animation:Tween(Data)
 end
 
-function WindowClass:TagElements(Objects)
+function WindowClass:TagElements(Objects: ObjectTable)
 	local Debug = ReGui.Debug
-
-	if not WindowClass then 	
-		if Debug then
-			ReGui:Warn("No WindowClass for objects registor:", Objects)
-		end
-		return 
-	end
 
 	--// Unpack WindowClass
 	local Elements = self.TagsList
@@ -6189,12 +6300,13 @@ function WindowClass:SetFocused(Focused: true)
 		ReGui:SetFocusedWindow(self)
 	end
 
-	--// Unpack elements
+	--// Unpack class values
 	local ContentFrame = self.ContentFrame
 	local TitleBar = self.TitleBar
 	local Theme = self.Theme
 	local TitleLabel = self.TitleLabel
 	local Collapsed = self.Collapsed
+	local State = self.WindowState
 
 	local Border = ContentFrame:FindFirstChildOfClass("UIStroke")
 
@@ -6223,16 +6335,17 @@ function WindowClass:SetFocused(Focused: true)
 		}
 	}
 	
-	local ThemeTags = Focused and Tags.Focused or Tags.UnFocused
+	--// Theme tags for Window state
+	local NewState = Collapsed and "Collapsed" or Focused and "Focused" or "UnFocused"
 	
-	if Collapsed then
-		ThemeTags = Tags.Collapsed
-	end
-
+	--// Check if the window state is identical
+	if NewState == State then return end
+	self.WindowState = NewState
+	
 	--// Update colors
 	ReGui:MultiUpdateColors({
 		Animate = true,
-		Objects = ThemeTags,
+		Objects = Tags[NewState],
 		Theme = Theme,
 	})
 end
@@ -6469,16 +6582,18 @@ ReGui:DefineElement("Window", {
 		OpenOnDoubleClick = true,
 		NoAutoTheme = true,
 		NoWindowRegistor = false,
+		NoBringToFrontOnFocus = false,
 		IsDragging = false,
 	},
 	Create = function(self, Config: WindowFlags)
-		ReGui:CheckConfig(Config, {
-			Parent = ReGui.Container.Windows,
-			Title = ReGui.DefaultTitle
-		})
-
 		--// Global config unpack
 		local Windows = ReGui.Windows
+		local WindowsContainer = ReGui.Container.Windows
+		
+		ReGui:CheckConfig(Config, {
+			Parent = WindowsContainer,
+			Title = ReGui.DefaultTitle
+		})
 
 		--// Unpack config
 		local NoTitleButtons = Config.NoDefaultTitleBarButtons
@@ -6493,6 +6608,7 @@ ReGui:DefineElement("Window", {
 		local AutoSelectNewTabs = Config.AutoSelectNewTabs
 		local OpenOnDoubleClick = Config.OpenOnDoubleClick
 		local NoCollapse = Config.NoCollapse
+		local _SelectDisabled = Config.Parent ~= WindowsContainer
 		
 		local CanvasConfig = {
 			Scroll = not NoScroll,
@@ -6549,6 +6665,7 @@ ReGui:DefineElement("Window", {
 			TitleBar = TitleBar,
 			Elements = Elements,
 			TagsList = {},
+			_SelectDisabled = _SelectDisabled,
 
 			--// Connections
 			ResizeConnection = ResizeConnection,
