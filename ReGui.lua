@@ -13,7 +13,7 @@
 
 local ReGui = {
 	--// Package data
-	Version = "1.3.3",
+	Version = "1.3.5",
 	Author = "Depso",
 	License = "MIT",
 	Repository = "https://github.com/depthso/Dear-ReGui/",
@@ -2685,7 +2685,7 @@ end
 ReGui:DefineElement("Dropdown", {
 	Base = {
 		Disabled = false,
-		MaxSizeY = 220,
+		MaxSizeY = 150,
 		MinSizeX = 100,
 		OnClosed = EmptyFunction,
 		OnSelected = EmptyFunction
@@ -2762,7 +2762,7 @@ ReGui:DefineElement("Dropdown", {
 		-- Roblox does not support UISizeConstraint on a scrolling frame grr
 		local Absolute = Canvas:GetCanvasSize()
 		local YSize = math.clamp(Absolute.Y, Size.Y, MaxSizeY)
-		local XSize = math.min(Size.X-Padding, MinSizeX)
+		local XSize = math.clamp(Size.X-Padding, MinSizeX, math.huge)
 		
 		Object.Size = UDim2.fromOffset(XSize, YSize)
 
