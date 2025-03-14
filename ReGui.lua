@@ -2403,12 +2403,12 @@ function ReGui:OnElementCreate(Data: OnElementCreateData)
 		})
 	end
 	
+	--// Apply style functions to the element
+	if WindowClass then
+		WindowClass:LoadStylesIntoElement(Data)
+	end
+	
 	if not NoAutoFlags then
-		--// Apply style functions to the element
-		if WindowClass then
-			WindowClass:LoadStylesIntoElement(Object)
-		end
-		
 		--// Apply flags to the element
 		self:ApplyFlags({
 			Object = Object,
@@ -6587,9 +6587,15 @@ function WindowClass:Center(): WindowClass --// Without an Anchor point
 	return self
 end
 
-function WindowClass:LoadStylesIntoElement(Object: GuiObject)
+function WindowClass:LoadStylesIntoElement(Data)
+	local Flags = Data.Flags
+	local Object = Data.Object
+	local Canvas = Data.Canvas
+	
 	local TagFunctions = {
 		["FrameRounding"] = function(Value)
+			if Flags.CornerRadius then return end
+			
 			local UICorner = Object:FindFirstChild("FrameRounding", true)
 			if not UICorner then return end
 

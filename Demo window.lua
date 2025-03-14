@@ -2,7 +2,7 @@
 local ReGui = require(game.ReplicatedStorage.ReGui)
 ReGui:Init({
 	--Debug = true,
-	Prefabs = game.StarterGui["ReGui-Prefabs"]
+	--Prefabs = game.StarterGui["ReGui-Prefabs"]
 })
 
 do --// Tabs window demo
@@ -102,16 +102,6 @@ Style:Combo({
 		Window:SetTheme(Name)
 	end,
 })
---Style:Combo({
---	Selected = ReGui.Theme.Font,
---	Label = "Fonts",
---	Items = {
---		"Dark",
---		"Light",
---		"Classic",
---	},
---	Callback = print
---})
 
 Style:Separator({
 	Text = "Color controls:"
