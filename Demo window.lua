@@ -1,8 +1,8 @@
 --// Import ReGui
 local ReGui = require(game.ReplicatedStorage.ReGui)
 ReGui:Init({
-	--Debug = true
-	--Prefabs = game.StarterGui["ReGui-Prefabs"]
+	--Debug = true,
+	Prefabs = game.StarterGui["ReGui-Prefabs"]
 })
 
 do --// Tabs window demo
@@ -135,7 +135,7 @@ local WindowOptions = Window:CollapsingHeader({
 local Options = {
 	NoResize = false,
 	NoTitleBar = false,
-	NoClose = true,
+	NoClose = false,
 	NoCollapse = false,
 	--NoTabsBar = false, --:TabsWindow only
 	OpenOnDoubleClick = true,
@@ -875,19 +875,21 @@ local WidgetDemos = {
 			Label = "Toggle checkbox",
 			--Value = Enum.KeyCode.Q,
 			IgnoreGameProcessed = false,
-			OnKeybindSet = function(self, KeyCode)
-				warn(KeyCode)
+			OnKeybindSet = function(self, KeyId) -- KeyId: (Enum.UserInputType | Enum.KeyCode)
+				warn("[OnKeybindSet] .Value ->", KeyId)
 			end,
-			Callback = function(self, KeyCode)
-				print(KeyCode)
+			Callback = function(self, KeyId)
+				print(KeyId)
 				TestCheckbox:Toggle()
 			end,
 		})
 
 		Header:Keybind({
-			Label = "Keybind (w/ blacklist)",
-			IgnoreGameProcessed = false,
-			KeyBlacklist = {Enum.KeyCode.Q}
+			Label = "Keybind (w/ Q & Left-Click blacklist)",
+			KeyBlacklist = {
+				Enum.UserInputType.MouseButton1,
+				Enum.KeyCode.Q
+			}
 		})
 
 		Header:Keybind({
