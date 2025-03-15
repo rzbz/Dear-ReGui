@@ -1142,9 +1142,10 @@ local function SortByQuery(Table: table, Query: string): table
 	return Sorted
 end
 
-function NewClass(Base)
+function NewClass(Base, Merge)
+	Merge = Merge or {}
 	Base.__index = Base
-	return setmetatable({}, Base)
+	return setmetatable(Merge, Base)
 end
 
 function ReGui:Warn(...)
@@ -2336,13 +2337,15 @@ function ReGui:MakeCanvas(Config: MakeCanvas)
 	--// Debug report
 	if not WindowClass and Debug then
 		self:Warn(`No WindowClass for {Element}`)
-		print(Config)
+		self:Warn(Config)
 	end
 
 	--// Create new canvas class
-	local Canvas = NewClass(ElementsClass)
-	Canvas.ParentCanvas = Element
-	Canvas.WindowClass = WindowClass or false
+	local Canvas = NewClass(ElementsClass, {
+		ParentCanvas = Element,
+		WindowClass = WindowClass or false,
+		Elements = {}
+	})
 
 	--// Create metatable merge
 	local Meta = {
@@ -2441,6 +2444,7 @@ function ReGui:WrapGeneration(Function, Data: WrapGeneration)
 		end
 		
 		local Parent = Canvas.ParentCanvas
+		local Elements = Canvas.Elements
 
 		--// Check flags again as the element generation may have modified
 		self:CheckConfig(Flags, {
@@ -2481,11 +2485,14 @@ function ReGui:WrapGeneration(Function, Data: WrapGeneration)
 		
 		--// Add element into the flag Cache
 		if Element then
+			if Elements then
+				table.insert(Elements, Element)
+			end
+			
+			--// Cache element flags
 			Cache[Element] = Flags
-		end
-
-		--// Load element into theme
-		if Element then
+			
+			--// Load element into theme
 			self:OnElementCreate({
 				Object = Element,
 				Flags = Flags,
@@ -2736,6 +2743,14 @@ Elements.__index = Elements
 
 function Elements:GetParent()
 	return self.ParentCanvas
+end
+
+function Elements:ClearChildElements()
+	local Elements = self.Elements
+	
+	for _, Object in next, Elements do
+		Object:Destroy()
+	end
 end
 
 function Elements:TagElements(Objects: ObjectTable)
@@ -4908,6 +4923,7 @@ export type CollapsingHeader = {
 	NoArrow: boolean?,
 	OpenOnDoubleClick: boolean?, -- Need double-click to open node
 	OpenOnArrow: boolean?, -- Only open when clicking on the arrow
+	Activated: (CollapsingHeader) -> nil,
 	
 	Remove: (CollapsingHeader) -> nil,
 	SetArrowVisible: (CollapsingHeader, Visible: boolean) -> nil,
