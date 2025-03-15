@@ -13,7 +13,7 @@
 
 local ReGui = {
 	--// Package data
-	Version = "1.3.8",
+	Version = "1.3.9",
 	Author = "Depso",
 	License = "MIT",
 	Repository = "https://github.com/depthso/Dear-ReGui/",
@@ -94,7 +94,7 @@ ReGui.Icons = {
 	ChatBox2 = "rbxassetid://15839116089",
 	Devices = "rbxassetid://4458812712",
 	Weight = "rbxassetid://9855685269",
-	Image = "rbxassetid://4669770840",
+	Image = "rbxassetid://123311808092347",
 	Profile = "rbxassetid://13585614795",
 	Admin = "rbxassetid://11656483170",
 	PaintBrush = "rbxassetid://12111879608",
@@ -621,8 +621,8 @@ ReGui.ElementFlags = {
 			Image = ReGui:CheckAssetUrl(Image)
 
 			ReGui:SetProperties(Icon, {
-				Visible = Value and true,
-				Image = Image,
+				Visible = Icon ~= "",
+				Image = ReGui:CheckAssetUrl(Image),
 				Size = Size,
 				Rotation = Rotation
 			})
@@ -2471,7 +2471,7 @@ function ReGui:WrapGeneration(Function, Data: WrapGeneration)
 			end
 
 			self:Warn("Class:", Class)
-			error(debug.traceback())
+			self:Warn(debug.traceback())
 		end
 
 		--// Some elements may return the instance without a class
@@ -3115,13 +3115,18 @@ ReGui:DefineElement("SmallButton", {
 	Create = Elements.Button
 })
 
+type KeyId = (Enum.UserInputType | Enum.KeyCode)
 export type Keybind = {
 	Value: Enum.KeyCode?,
 	DeleteKey: Enum.KeyCode?,
 	Enabled: boolean?,
 	IgnoreGameProcessed: boolean?,
-	Callback: ((Enum.KeyCode) -> any)?,
-	OnKeybindSet: ((Enum.KeyCode) -> any)?,
+	Callback: ((KeyId) -> any)?,
+	OnKeybindSet: ((KeyId) -> any)?,
+	OnBlacklistedKeybindSet: ((KeyId) -> any)?,
+	KeyBlacklist: {
+		[number]: KeyId
+	},
 
 	SetValue: ((Keybind, New: Enum.KeyCode) -> any)?,
 	WaitForNewKey: ((Keybind) -> any)?,
@@ -3164,8 +3169,8 @@ ReGui:DefineElement("Keybind", {
 			return Func(Object, ...)
 		end
 		
-		local function KeyIsBlacklisted(KeyCode: Enum.KeyCode)
-			local Blacklisted = table.find(KeyBlacklist, KeyCode)
+		local function KeyIsBlacklisted(KeyId: KeyId)
+			local Blacklisted = table.find(KeyBlacklist, KeyId)
 			return Blacklisted
 		end
 		
@@ -3177,7 +3182,7 @@ ReGui:DefineElement("Keybind", {
 			}, true)
 		end
 
-		function Config:SetValue(KeyId: (Enum.UserInputType | Enum.KeyCode))
+		function Config:SetValue(KeyId: KeyId)
 			local OnKeybindSet = self.OnKeybindSet
 			local DeleteKey = self.DeleteKey
 
@@ -3544,6 +3549,7 @@ export type Tab = {
 	AutoSize: string?,
 	TabButton: boolean?,
 	Closeable: boolean?,
+	OnClosure: (Tab) -> nil,
 	Icon: (string|number)?
 }
 function TabSelectorClass:CreateTab(Config: Tab): Elements
@@ -3695,13 +3701,14 @@ end
 
 export type TabSelector = {
 	NoTabsBar: boolean?,
+	NoBody: boolean?,
 	NoAnimation: boolean?,
 	AutoSelectNewTabs: boolean?,
-	ActiveTab: table,
+	OnActiveTabChange: ((Tab: Tab, Previous: Tab) -> nil)?,
 
-	CreateTab: (TabSelector, Tab) -> Elements,
-	RemoveTab: (TabSelector, Target: (table|string)) -> nil,
-	SetActiveTab: (TabSelector, Target: (table|string)) -> nil,
+	CreateTab: (TabsBox, Tab) -> Elements,
+	RemoveTab: (TabsBox, Target: (table|string)) -> nil,
+	SetActiveTab: (TabsBox, Target: (table|string)) -> nil,
 }
 ReGui:DefineElement("TabSelector", {
 	Base = {
@@ -4893,43 +4900,52 @@ ReGui:DefineElement("List", {
 
 export type CollapsingHeader = {
 	Title: string,
+	CollapseIcon: string?,
 	Icon: string?,
 	NoAnimation: boolean?,
 	Collapsed: boolean?,
 	Offset: number?,
+	NoArrow: boolean?,
 	OpenOnDoubleClick: boolean?, -- Need double-click to open node
 	OpenOnArrow: boolean?, -- Only open when clicking on the arrow
 	
 	Remove: (CollapsingHeader) -> nil,
+	SetArrowVisible: (CollapsingHeader, Visible: boolean) -> nil,
+	SetTitle: (CollapsingHeader, Title: string) -> nil,
+	SetIcon: (CollapsingHeader, Icon: string) -> nil,
+	SetVisible: (CollapsingHeader, Visible: boolean) -> nil,
 	SetCollapsed: (CollapsingHeader, Open: boolean) -> CollapsingHeader
 }
 ReGui:DefineElement("CollapsingHeader", {
 	Base = {
 		Title = "Collapsing Header",
-		Icon = ReGui.Icons.Arrow,
+		CollapseIcon = ReGui.Icons.Arrow,
 		Collapsed = true,
 		Offset = 0,
 		NoAutoTag = true,
 		NoAutoFlags = true,
+		Activated = EmptyFunction
 	},
 	Create = function(Canvas, Config: CollapsingHeader): CollapsingHeader
 		--// Unpack config
 		local Title = Config.Title
-		local Icon = Config.Icon
 		local Collapsed = Config.Collapsed
 		local Style = Config.ElementStyle
 		local Offset = Config.Offset
 		local TitleProperties = Config.TitleBarProperties
 		local OpenOnDoubleClick = Config.OpenOnDoubleClick
 		local OpenOnArrow = Config.OpenOnArrow
+		local CollapseIcon = Config.CollapseIcon
+		local Icon = Config.Icon
+		local NoArrow = Config.NoArrow
 
 		--// Create header object
 		local Object = ReGui:InsertPrefab("CollapsingHeader", Config)
 
 		local Titlebar = Object.TitleBar
-		local ToggleButton = Titlebar.Toggle.Icon
-		ToggleButton.Image = Icon
-
+		local CollapseButton = Titlebar.Collapse.CollapseIcon
+		local IconImage = Titlebar.Icon
+		
 		local TitleText = Canvas:Label({
 			ColorTag = "CollapsingHeader",
 			Parent = Titlebar,
@@ -4948,17 +4964,33 @@ ReGui:DefineElement("CollapsingHeader", {
 			PaddingBottom = UDim.new(0, 1),
 		})
 		
+		CollapseButton.Image = ReGui:CheckAssetUrl(CollapseIcon)
+		
+		local function Activated()
+			local Callback = Config.Activated
+			Callback(Canvas)
+		end
+		
 		function Config:Remove()
 			Object:Destroy()
 			table.clear(self)
 		end
-		
+		function Config:SetArrowVisible(Visible: boolean)
+			CollapseButton.Visible = Visible
+		end
 		function Config:SetTitle(Title: string)
 			TitleText.Text = Title
 		end
-		
 		function Config:SetVisible(Visible: boolean)
 			Object.Visible = Visible
+		end
+		function Config:SetIcon(Icon: (string|number)?)
+			local Visible = Icon and Icon ~= ""
+			IconImage.Visible = Visible
+			
+			if Visible then 
+				IconImage.Image = ReGui:CheckAssetUrl(Icon) 
+			end
 		end
 
 		--// Open Animations
@@ -4975,7 +5007,7 @@ ReGui:DefineElement("CollapsingHeader", {
 			Animation:HeaderCollapse({
 				Tweeninfo = Tweeninfo,
 				Collapsed = Collapsed,
-				Toggle = ToggleButton,
+				Toggle = CollapseButton,
 				Resize = ContentFrame,
 				Hide = ContentFrame,
 
@@ -5006,11 +5038,14 @@ ReGui:DefineElement("CollapsingHeader", {
 				Callback = Toggle,
 			})
 		end
-		ToggleButton.Activated:Connect(Toggle)
+		CollapseButton.Activated:Connect(Toggle)
+		Titlebar.Activated:Connect(Activated)
 		
 		--// Update object state
 		Config:SetCollapsed(Collapsed)
 		Config:SetTitle(Title)
+		Config:SetIcon(Icon)
+		Config:SetArrowVisible(not NoArrow)
 
 		--// Style elements
 		ReGui:ApplyStyle(Titlebar, Style)

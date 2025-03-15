@@ -60,6 +60,8 @@ Window:Label({
 	Text = `Dear ReGui says hello! ({ReGui:GetVersion()})`
 })
 
+print(Window.ParentCanvas)
+
 local Help = Window:CollapsingHeader({
 	Title = "Help"
 })
@@ -464,6 +466,12 @@ local WidgetDemos = {
 			Row:Label({Text="Blah blah"})
 			Row:SmallButton({Text="Button"})
 		end
+		
+		Header:TreeNode({
+			Title = `With icon & NoArrow`,
+			NoArrow = true,
+			Icon = ReGui.Icons.Image,
+		})
 	end,
 	["Collapsing Headers"] = function(Header)
 		local Second
@@ -473,7 +481,16 @@ local WidgetDemos = {
 			Label = "Show 2nd header",
 			Callback = function(self, Value)
 				if Second then 
-					Second.Visible = Value 
+					Second:SetVisible(Value)
+				end
+			end,
+		})
+		Header:Checkbox({
+			Value = true,
+			Label = "2nd has arrow",
+			Callback = function(self, Value)
+				if Second then 
+					Second:SetArrowVisible(Value)
 				end
 			end,
 		})
@@ -913,7 +930,9 @@ processors (all in the P5 microarchitecture).#
 }
 
 for _, Title in DemosOrder do
-	local Header = Widgets:TreeNode({Title=Title})
+	local Header = Widgets:TreeNode({
+		Title=Title
+	})
 	local Generate = WidgetDemos[Title]
 
 	if Generate then
