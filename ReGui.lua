@@ -13,7 +13,7 @@
 
 local ReGui = {
 	--// Package data
-	Version = "1.3.7",
+	Version = "1.3.8",
 	Author = "Depso",
 	License = "MIT",
 	Repository = "https://github.com/depthso/Dear-ReGui/",
@@ -3433,7 +3433,8 @@ function TabSelectorClass:SetActiveTab(Target: (table|string))
 	--// Unpack class data
 	local Tabs = self.Tabs
 	local NoAnimation = self.NoAnimation
-	local ActiveTab = self.ActiveTab
+	local Previous = self.ActiveTab
+	local OnActiveTabChange = self.OnActiveTabChange
 
 	local MatchName = typeof(Target) == "string"
 	local FoundTab = nil
@@ -3473,8 +3474,11 @@ function TabSelectorClass:SetActiveTab(Target: (table|string))
 	local Page = FoundTab.Content
 	
 	--// Set ActiveTab value
-	if ActiveTab == Canvas then return end
+	if Previous == Canvas then return end
 	self.ActiveTab = Canvas
+	
+	--// Invoke OnActiveTabChange
+	OnActiveTabChange(Canvas, Previous)
 
 	--// Page animation
 	if NoAnimation then return self end
@@ -3506,6 +3510,9 @@ function TabSelectorClass:RemoveTab(Target: (table|string))
 		local Name = Tab.Name
 		local Page = Tab.Content
 		local TabFrame = Tab.Tab
+		
+		local Config = Tab.Config
+		local OnClosure = Config.OnClosure
 
 		local Match = false
 
@@ -3523,6 +3530,9 @@ function TabSelectorClass:RemoveTab(Target: (table|string))
 
 		Page:Destroy()
 		TabFrame:Destroy()
+		
+		--// Invoke OnClosure
+		OnClosure(Tab)
 	end
 
 	return self
@@ -3541,6 +3551,7 @@ function TabSelectorClass:CreateTab(Config: Tab): Elements
 		Name = "Tab",
 		AutoSize = "Y",
 		Focused = false,
+		OnClosure = EmptyFunction
 	})
 
 	--// Unpack class data
@@ -3586,7 +3597,7 @@ function TabSelectorClass:CreateTab(Config: Tab): Elements
 	local Canvas = ReGui:MakeCanvas({
 		Element = NewPage,
 		WindowClass = WindowClass,
-		Class = self
+		Class = Config
 	})
 
 	local function Activated()
@@ -3597,7 +3608,8 @@ function TabSelectorClass:CreateTab(Config: Tab): Elements
 		Name = Name,
 		Tab = Tab,
 		Canvas = Canvas,
-		Content = NewPage
+		Content = NewPage,
+		Config = Config
 	}
 
 	--// Addional flags
@@ -3694,7 +3706,9 @@ export type TabSelector = {
 ReGui:DefineElement("TabSelector", {
 	Base = {
 		NoTabsBar = false,
-		AutoSelectNewTabs = true
+		NoBody = false,
+		AutoSelectNewTabs = true,
+		OnActiveTabChange = EmptyFunction,
 	},
 	ColorData = {
 		["DeselectedTab"] = {
@@ -3729,6 +3743,7 @@ ReGui:DefineElement("TabSelector", {
 		local WindowClass = self.WindowClass
 
 		local NoTabsBar = Config.NoTabsBar
+		local NoBody = Config.NoBody
 
 		--// Create TabSelector object
 		local Object = ReGui:InsertPrefab("TabSelector", Config)
@@ -3741,13 +3756,28 @@ ReGui:DefineElement("TabSelector", {
 		local PageTemplate = Body.PageTemplate
 
 		local Line = TabsBar:FindFirstChildOfClass("UIStroke")
-
+		
+		local TabsRailCanvas = ReGui:MakeCanvas({
+			Element = TabsBar,
+			WindowClass = WindowClass,
+			Class = Class
+		})
+		
 		--// Hide template objects
 		TemplateButton.Visible = false
 		PageTemplate.Visible = false
 
 		--// Hide/Show elements
 		TabsBar.Visible = not NoTabsBar
+		Body.Visible = not NoBody
+		
+		--// NoBody style
+		if NoBody then
+			ReGui:CheckConfig(Config, {
+				AutomaticSize = Enum.AutomaticSize.Y,
+				Size = UDim2.fromScale(1, 0)
+			})
+		end
 
 		--// Merge table into class
 		Merge(Class, Config)
@@ -3756,6 +3786,7 @@ ReGui:DefineElement("TabSelector", {
 				TabButton = TemplateButton,
 				Page = PageTemplate
 			},
+			TabsRailCanvas = TabsRailCanvas,
 			ParentCanvas = self,
 			WindowClass = WindowClass,
 			Body = Body,
