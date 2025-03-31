@@ -24,7 +24,7 @@ local AnalyzerWire = Instance.new("Wire", AudioDeviceOutput)
 AnalyzerWire.SourceInstance = AudioPlayer
 AnalyzerWire.TargetInstance = AudioAnalyzer
 
-repeat wait() until AudioPlayer.IsReady
+repeat RunService.Heartbeat:Wait() until AudioPlayer.IsReady
 
 AudioPlayer:Play()
 
@@ -70,9 +70,6 @@ local TimeSlider = Controls:SliderInt({
 Controls:Expand()
 
 --// https://devforum.roblox.com/t/new-audio-api-beta-elevate-sound-and-voice-in-your-experiences/2848873
-local function lerp(lower, upper, fract)
-	return upper * fract + lower * (1 - fract)
-end
 local function getMappedBins(binCount) : {number}	
 	local bins = AudioAnalyzer:GetSpectrum()
 	if not bins or #bins <= 0 then return end
@@ -83,7 +80,7 @@ local function getMappedBins(binCount) : {number}
 		local lower = math.max(1, math.floor(j))
 		local upper = math.min(#bins, math.ceil(j))
 		local fract = j - math.floor(j)
-		result[i] = lerp(bins[lower], bins[upper], fract)
+		result[i] = math.lerp(bins[lower], bins[upper], fract)
 		result[i] = math.sqrt(result[i]) * 2
 		result[i] = math.clamp(result[i], 0, 10)
 	end
