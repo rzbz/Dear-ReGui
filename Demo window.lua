@@ -1,71 +1,176 @@
 --// Import ReGui
 local ReGui = require(game.ReplicatedStorage.ReGui)
-ReGui:Init({
-	--Debug = true,
-	--Prefabs = game.StarterGui["ReGui-Prefabs"]
+ReGui:Init({})
+
+--// Configuration saving demo
+local ConfigSavingWindow = ReGui:Window({
+	Title = "Configuration saviing",
+	Size = UDim2.fromOffset(300, 200)
 })
 
-do --// Tabs window demo
-	local Window = ReGui:TabsWindow({
-		Title = "Tabs window demo!",
-		Size = UDim2.fromOffset(300, 200)
-	})
+local Row = ConfigSavingWindow:Row()
+local MySaveString = nil
 
-	local Names = {"Avocado", "Broccoli", "Cucumber"}
-	for _, Name in next, Names do
-		local Tab = Window:CreateTab({Name=Name})
-		Tab:Label({
-			Text = `This is the {Name} tab!`
-		})
-	end
+Row:Button({
+	Text = "Dump Ini",
+	Callback = function()
+		print(ReGui:DumpIni(true))
+	end,
+})
+Row:Button({
+	Text = "Save Ini",
+	Callback = function()
+		MySaveString = ReGui:DumpIni(true)
+	end,
+})
+Row:Button({
+	Text = "Load Ini",
+	Callback = function()
+		if not MySaveString then
+			warn("No save data!")
+			return
+		end
+		
+		ReGui:LoadIni(MySaveString, true)
+	end,
+})
+
+ConfigSavingWindow:Separator()
+ConfigSavingWindow:SliderInt({
+	IniFlag = "MySlider",
+	Value = 5,
+	Minimum = 1,
+	Maximum = 32,
+})
+ConfigSavingWindow:Checkbox({
+	IniFlag = "MyCheckbox",
+	Value = true,
+})
+ConfigSavingWindow:InputText({
+	IniFlag = "MyInput",
+	Value = "Hello world!"
+})
+
+--// Tabs window demo
+local TabsWindow = ReGui:TabsWindow({
+	Title = "Tabs window!",
+	Visible = false,
+	Size = UDim2.fromOffset(300, 200)
+})
+
+for _, Name in {"Avocado", "Broccoli", "Cucumber"} do
+	local Tab = TabsWindow:CreateTab({Name=Name})
+	Tab:Label({
+		Text = `This is the {Name} tab!`
+	})
 end
 
-do --// Watermark demo
-	local Watermark = ReGui.Elements:Canvas({
-		Parent = ReGui.Container.Windows,
-		Position = UDim2.fromOffset(10,10),
-		Size = UDim2.fromOffset(250, 50),
+--// Watermark demo
+local Watermark = ReGui.Elements:Label({ --> TextLabel
+	Parent = ReGui.Container.Windows,
+	Visible = false,
+	UiPadding = UDim.new(0, 8),
+	CornerRadius = UDim.new(0, 2),
+	Position = UDim2.fromOffset(10,10),
+	Size = UDim2.fromOffset(250, 50),
+	Border = true,
+	BorderThickness = 1,
+	BorderColor = ReGui.Accent.Gray,
+	BackgroundTransparency = 0.4,
+	BackgroundColor3 = ReGui.Accent.Black,
+})
 
-		CornerRadius = UDim.new(0, 2),
-		Border = true,
-		BorderThickness = 1,
-		BorderColor = Color3.fromRGB(91, 91, 91),
-		BackgroundTransparency = 0.4,
-		BackgroundColor3 = Color3.fromRGB(39, 39, 39),
-	})
-
-	local StatsRow = Watermark:Row({
-		Spacing = 10
-	})
-
-	local FPSLabel = StatsRow:Label()
-	local TimeLabel = Watermark:Label()
-
-	game:GetService("RunService").RenderStepped:Connect(function(Delta)
-		local FPS = math.round(1/Delta)
-		local TimeString = DateTime.now():FormatLocalTime("dddd h:mm:ss A", "en-us")
-
-		FPSLabel.Text = `FPS: {FPS}`
-		TimeLabel.Text = `The time is {TimeString}`
-	end)
-end
+game:GetService("RunService").RenderStepped:Connect(function(Delta)
+	local FPS = math.round(1/Delta)
+	local TimeString = DateTime.now():FormatLocalTime("dddd h:mm:ss A", "en-us")
+	
+	local String = `ReGui {ReGui:GetVersion()}\n`
+	String ..= `FPS: {FPS}\n`
+	String ..= `The time is {TimeString}`
+	
+	Watermark.Text = String
+end)
 
 --// Demo Window
 local Window = ReGui:Window({
 	Title = "Dear ReGui Demo",
 	Size = UDim2.new(0, 400, 0, 300),
+	-- If you have a window with a single element with Fill enabled, you should disable Scroll on the window 
+	-- Otherwise it will not fit correctly as automatic canvas size is enabled for the scrolling functionality
+	NoScroll = true
 }):Center()
 
-Window:Label({
+--// MenuBar
+local MenuBar = Window:MenuBar()
+
+--// Menu
+local MenuItem = MenuBar:MenuItem({
+	Text = "Menu"
+})
+MenuItem:Selectable({
+	Text = "New"
+})
+MenuItem:Selectable({
+	Text = "Open"
+})
+MenuItem:Selectable({
+	Text = "Save"
+})
+MenuItem:Selectable({
+	Text = "Save as"
+})
+MenuItem:Selectable({
+	Text = "Exit",
+	Callback = function()
+		Window:Close()
+	end,
+})
+
+--// Examples
+local MenuItem = MenuBar:MenuItem({
+	Text = "Examples"
+})
+MenuItem:Selectable({
+	Text = "Print hello world",
+	Callback = function()
+		print("Hello world!")
+	end,
+})
+MenuItem:Selectable({
+	Text = "Tabs window",
+	Callback = function()
+		TabsWindow:ToggleVisibility()
+	end,
+})
+MenuItem:Selectable({
+	Text = "Configuration saving",
+	Callback = function()
+		ConfigSavingWindow:ToggleVisibility()
+	end,
+})
+MenuItem:Selectable({
+	Text = "Watermark",
+	Callback = function()
+		Watermark.Visible = not Watermark.Visible
+	end,
+})
+
+
+local Label = Window:Label({
 	Text = `Dear ReGui says hello! ({ReGui:GetVersion()})`
 })
 
-print(Window.ParentCanvas)
-
-local Help = Window:CollapsingHeader({
-	Title = "Help"
+--// The window has automatic scroll enable by default, 
+-- this is here to seperate the scroll so the positions of elements are static at the top
+local Content = Window:ScrollingCanvas({
+	Fill = true,
+	UiPadding = UDim.new(0, 0)
 })
 
+--// Help
+local Help = Content:CollapsingHeader({
+	Title = "Help"
+})
 Help:Separator({
 	Text = "ABOUT THIS DEMO:"	
 })
@@ -74,7 +179,6 @@ Help:BulletText({
 		"Sections below are demonstrating many aspects of the library.",
 	}
 })
-
 Help:Separator({
 	Text = "PROGRAMMER GUIDE:"	
 })
@@ -89,36 +193,30 @@ Help:Indent():BulletText({
 	}
 })
 
-local ConfigurationHeader = Window:CollapsingHeader({
+--// Configuration
+local ConfigurationHeader = Content:CollapsingHeader({
 	Title = "Configuration"
 })
+
+local BackendFlags = ConfigurationHeader:TreeNode({
+	Title = "Backend Flags"
+})
+BackendFlags:Checkbox({Label="ReGui:IsMobileDevice", Disabled=true, Value=ReGui:IsMobileDevice()})
+BackendFlags:Checkbox({Label="ReGui:IsConsoleDevice", Disabled=true, Value=ReGui:IsConsoleDevice()})
 
 local Style = ConfigurationHeader:TreeNode({
 	Title = "Style"
 })
 Style:Combo({
 	Selected = "DarkTheme",
-	Label = "Theme",
+	Label = "Colors",
 	Items = ReGui.ThemeConfigs,
 	Callback = function(self, Name)
 		Window:SetTheme(Name)
 	end,
 })
 
-Style:Separator({
-	Text = "Color controls:"
-})
-
-local Row = Style:Row()
-Row:Button({
-	Text = "Refresh colors",
-	Callback = function()
-		Window:SetTheme()
-		print("Elements:", Window.ElementsList)
-	end,
-})
-
-local WindowOptions = Window:CollapsingHeader({
+local WindowOptions = Content:CollapsingHeader({
 	Title = "Window options"
 }):Table({
 	MaxColumns = 3 -- Per row
@@ -152,7 +250,7 @@ for Key, Value in pairs(Options) do
 	})
 end
 
-local Widgets = Window:CollapsingHeader({
+local Widgets = Content:CollapsingHeader({
 	Title = "Widgets"
 })
 
@@ -172,7 +270,7 @@ local DemosOrder = {
 	"Progress Bars",
 	"Picker Widgets",
 	"Console",
-	"List",
+	"List layout",
 	--"Selectable", 
 	--"Group", 
 	"Indent", 
@@ -205,7 +303,7 @@ local WidgetDemos = {
 		RadioRow:Radiobox({Label="radio a"})
 		RadioRow:Radiobox({Label="radio b"})
 		RadioRow:Radiobox({Label="radio c"})
-
+		
 		local ButtonsRow = Header:Row()
 		for i = 1,7 do
 			local Hue = i / 7.0
@@ -866,7 +964,7 @@ local WidgetDemos = {
 			Model:PivotTo(Pivot)
 		end)
 	end,
-	["List"] = function(Header)
+	["List layout"] = function(Header)
 		local List = Header:List()
 
 		for i = 1, 10 do
@@ -903,8 +1001,10 @@ local WidgetDemos = {
 			Label = "Toggle UI visibility",
 			Value = Enum.KeyCode.E,
 			Callback = function()
-				local IsVisible = Window.Visible
-				Window:SetVisible(not IsVisible)
+				--local IsVisible = Window.Visible
+				--Window:SetVisible(not IsVisible)
+				
+				Window:ToggleVisibility()
 			end,
 		})
 	end,
@@ -940,40 +1040,43 @@ for _, Title in DemosOrder do
 	end
 end
 
-local Windows = Window:CollapsingHeader({
+--// Popups & child windows
+local Windows = Content:CollapsingHeader({
 	Title = "Popups & child windows"
 })
 
---local Popups = Windows:TreeNode({Title="Popups"})
---local Row = Popups:Row()
+--// Popups
+local Popups = Windows:TreeNode({Title="Popups"})
+local Row = Popups:Row()
 
---local SelectedText = Row:Label({
---	Text = "",
---	LayoutOrder = 2
---})
+local SelectedText = Row:Label({
+	Text = "<None>",
+	LayoutOrder = 2
+})
 
---Popups:Button({
---	Text = "Select..",
---	Callback = function(self)
---		local Names = {"Bream", "Haddock", "Mackerel", "Pollock", "Tilefish"}
+Row:Button({
+	Text = "Select..",
+	Callback = function(self)
+		local Names = {"Bream", "Haddock", "Mackerel", "Pollock", "Tilefish"}
 
---		local Popup = Popups:PopupCanvas({
---			Object = self
---		})
+		local Popup = Popups:PopupCanvas({
+			RelativeTo = self,
+			MaxSizeX = 200,
+		})
 
---		Popup:Separator({Text="Aquarium"})
+		Popup:Separator({Text="Aquarium"})
 
---		for _, Name in Names do
---			Popup:Button({
---				Text = Name,
---				Callback = function(self)
---					SelectedText.Text = Name
---					Popup:ClosePopup()
---				end,
---			})
---		end
---	end,
---})
+		for _, Name in Names do
+			Popup:Selectable({
+				Text = Name,
+				Callback = function(self)
+					SelectedText.Text = Name
+					Popup:ClosePopup()
+				end,
+			})
+		end
+	end,
+})
 
 --// ChildWindows
 local ChildWindows = Windows:TreeNode({Title="Child windows"})
@@ -1087,7 +1190,8 @@ Modals:Button({
 	end,
 })
 
-local TablesNColumns = Window:CollapsingHeader({
+--// Tables & Columns
+local TablesNColumns = Content:CollapsingHeader({
 	Title = "Tables & Columns"
 })
 local Basic = TablesNColumns:TreeNode({
@@ -1105,6 +1209,7 @@ for RowCount = 1, 3 do
 	end
 end
 
+--// Borders, background
 local Borders = TablesNColumns:TreeNode({
 	Title = "Borders, background"
 })
@@ -1123,6 +1228,7 @@ for RowCount = 1, 5 do
 	end
 end
 
+--// With headers
 local Headers = TablesNColumns:TreeNode({
 	Title = "With headers"
 })
