@@ -1,40 +1,60 @@
 --[[
-@author biggaboy212 & LorekeeperZinnia
+@author biggaboy212 & LorekeeperZinnia???
 @description Integrated Development Environment to view and edit code within a ROBLOX experience.
-
-https://github.com/biggaboy212/In-Game-IDE/tree/main
 ]]
+
+local IDEVersion = "8.0"
+
+--// Compatibility 
+local SetClipboard = setclipboard or toclipboard or set_clipboard
+local NewReference = cloneref or function(Ins): Instance 
+	return Ins 
+end
 
 local Settings = {
 	Theme = {
 		Syntax = {
-			Text = Color3.fromRGB(204, 204, 204),
-    	Background = Color3.fromRGB(20,20,20),
-    	Selection = Color3.fromRGB(255,255,255),
-    	SelectionBack = Color3.fromRGB(102, 161, 255),
-    	Operator = Color3.fromRGB(204, 204, 204),
-    	Number = Color3.fromRGB(255, 198, 0),
-    	String = Color3.fromRGB(173, 241, 149),
-    	Comment = Color3.fromRGB(102, 102, 102),
-    	Keyword = Color3.fromRGB(248, 109, 124),
-    	BuiltIn = Color3.fromRGB(132, 214, 247),
-    	LocalMethod = Color3.fromRGB(253, 251, 172),
-    	LocalProperty = Color3.fromRGB(97, 161, 241),
-    	Nil = Color3.fromRGB(255, 198, 0),
-    	Bool = Color3.fromRGB(255, 198, 0),
-    	Function = Color3.fromRGB(248, 109, 124),
-    	Local = Color3.fromRGB(248, 109, 124),
-    	Self = Color3.fromRGB(248, 109, 124),
-    	FunctionName = Color3.fromRGB(253, 251, 172),
-    	Bracket = Color3.fromRGB(204, 204, 204)
+			Text = Color3.fromRGB(204,204,204),
+			Background = Color3.fromRGB(20,20,20),
+			Selection = Color3.fromRGB(255,255,255),
+			SelectionBack = Color3.fromRGB(102, 161, 255),
+			Operator = Color3.fromRGB(249, 117, 131),
+			Number = Color3.fromRGB(121, 184, 255),
+			String = Color3.fromRGB(158, 203, 255),
+			Comment = Color3.fromRGB(102,102,102),
+			Keyword = Color3.fromRGB(249, 117, 131),
+			BuiltIn = Color3.fromRGB(121, 184, 255),
+			LocalMethod = Color3.fromRGB(121, 184, 255),
+			LocalProperty = Color3.fromRGB(179, 146, 240),
+			Nil = Color3.fromRGB(121, 184, 255),
+			Bool = Color3.fromRGB(121, 184, 255),
+			Function = Color3.fromRGB(249, 117, 131),
+			Local = Color3.fromRGB(249, 117, 131),
+			Self = Color3.fromRGB(179, 146, 240),
+			FunctionName = Color3.fromRGB(179, 146, 240),
+			Bracket = Color3.fromRGB(121, 184, 255)
 		},
 	}
 }
 
-local players = game:GetService('Players')
-local plr = game.Players.LocalPlayer
+--// Service handlers
+local Services = setmetatable({}, {
+	__index = function(self, Name: string)
+		local Service = game:GetService(Name)
+		return NewReference(Service)
+	end,
+})
 
 local cursor = Instance.new("Frame")
+
+--// Services
+local Players: Players = Services.Players
+local UserInputService: UserInputService = Services.UserInputService
+local RunService: RunService = Services.RunService
+local TweenService: TweenService = Services.TweenService
+
+local LocalPlayer = Players.LocalPlayer
+local Mouse = LocalPlayer:GetMouse()
 
 local create = function(data)
 	local insts = {}
@@ -64,7 +84,6 @@ local Lib = {}
 
 Lib.CheckMouseInGui = function(gui)
 	if gui == nil then return false end
-	local mouse = plr:GetMouse()
 	local guiPosition = gui.AbsolutePosition
 	local guiSize = gui.AbsoluteSize	
 
@@ -182,8 +201,6 @@ end)
 
 Lib.ScrollBar = (function()
 	local funcs = {}
-	local user = game.UserInputService
-	local mouse = plr:GetMouse()
 	local checkMouseInGui = Lib.CheckMouseInGui
 	local createArrow = Lib.CreateArrow
 
@@ -307,7 +324,7 @@ Lib.ScrollBar = (function()
 			if self:CanScrollUp() then self:ScrollUp() self.Scrolled:Fire() end
 			local buttonTick = tick()
 			local releaseEvent
-			releaseEvent = user.InputEnded:Connect(function(input)
+			releaseEvent = UserInputService.InputEnded:Connect(function(input)
 				if input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
 				releaseEvent:Disconnect()
 				if checkMouseInGui(button1) and self:CanScrollUp() then button1.BackgroundTransparency = 0.8 else button1.BackgroundTransparency = 1 end
@@ -332,7 +349,7 @@ Lib.ScrollBar = (function()
 			if self:CanScrollDown() then self:ScrollDown() self.Scrolled:Fire() end
 			local buttonTick = tick()
 			local releaseEvent
-			releaseEvent = user.InputEnded:Connect(function(input)
+			releaseEvent = UserInputService.InputEnded:Connect(function(input)
 				if input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
 				releaseEvent:Disconnect()
 				if checkMouseInGui(button2) and self:CanScrollDown() then button2.BackgroundTransparency = 0.8 else button2.BackgroundTransparency = 1 end
@@ -361,11 +378,11 @@ Lib.ScrollBar = (function()
 			thumbFramePress = false			
 			thumbPress = true
 			scrollThumb.BackgroundTransparency = 0
-			local mouseOffset = mouse[dir] - scrollThumb.AbsolutePosition[dir]
-			local mouseStart = mouse[dir]
+			local mouseOffset = Mouse[dir] - scrollThumb.AbsolutePosition[dir]
+			local mouseStart = Mouse[dir]
 			local releaseEvent
 			local mouseEvent
-			releaseEvent = user.InputEnded:Connect(function(input)
+			releaseEvent = UserInputService.InputEnded:Connect(function(input)
 
 				if input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
 				releaseEvent:Disconnect()
@@ -375,10 +392,10 @@ Lib.ScrollBar = (function()
 			end)
 			self:Update()
 
-			mouseEvent = user.InputChanged:Connect(function(input)
+			mouseEvent = UserInputService.InputChanged:Connect(function(input)
 				if input.UserInputType == Enum.UserInputType.MouseMovement and thumbPress and releaseEvent.Connected then
 					local thumbFrameSize = scrollThumbFrame.AbsoluteSize[dir]-scrollThumb.AbsoluteSize[dir]
-					local pos = mouse[dir] - scrollThumbFrame.AbsolutePosition[dir] - mouseOffset
+					local pos = Mouse[dir] - scrollThumbFrame.AbsolutePosition[dir] - mouseOffset
 					if pos > thumbFrameSize then
 						pos = thumbFrameSize
 					elseif pos < 0 then
@@ -400,15 +417,15 @@ Lib.ScrollBar = (function()
 
 			local dir = self.Horizontal and "X" or "Y"
 			local scrollDir = 0
-			if mouse[dir] >= scrollThumb.AbsolutePosition[dir] + scrollThumb.AbsoluteSize[dir] then
+			if Mouse[dir] >= scrollThumb.AbsolutePosition[dir] + scrollThumb.AbsoluteSize[dir] then
 				scrollDir = 1
 			end
 
 			local function doTick()
 				local scrollSize = self.VisibleSpace - 1
-				if scrollDir == 0 and mouse[dir] < scrollThumb.AbsolutePosition[dir] then
+				if scrollDir == 0 and Mouse[dir] < scrollThumb.AbsolutePosition[dir] then
 					self:ScrollTo(self.Index - scrollSize)
-				elseif scrollDir == 1 and mouse[dir] >= scrollThumb.AbsolutePosition[dir] + scrollThumb.AbsoluteSize[dir] then
+				elseif scrollDir == 1 and Mouse[dir] >= scrollThumb.AbsolutePosition[dir] + scrollThumb.AbsoluteSize[dir] then
 					self:ScrollTo(self.Index + scrollSize)
 				end
 			end
@@ -418,7 +435,7 @@ Lib.ScrollBar = (function()
 			doTick()
 			local thumbFrameTick = tick()
 			local releaseEvent
-			releaseEvent = user.InputEnded:Connect(function(input)
+			releaseEvent = UserInputService.InputEnded:Connect(function(input)
 				if input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
 				releaseEvent:Disconnect()
 				thumbFramePress = false
@@ -838,7 +855,6 @@ Lib.CodeFrame = (function()
 		[("%s [^%s]"):format(tabSub,tabSub)] = 1,
 	}
 
-	local tweenService = game:GetService('TweenService')
 	local lineTweens = {}
 
 	local function initBuiltIn()
@@ -892,7 +908,6 @@ Lib.CodeFrame = (function()
 	end
 
 	local function setupMouseSelection(obj)
-		local mouse = plr:GetMouse()
 		local codeFrame = obj.GuiElems.LinesFrame
 		local lines = obj.Lines
 
@@ -900,8 +915,8 @@ Lib.CodeFrame = (function()
 			if input.UserInputType == Enum.UserInputType.MouseButton1 then
 				local fontSizeX,fontSizeY = math.ceil(obj.FontSize/2),obj.FontSize
 
-				local relX = mouse.X - codeFrame.AbsolutePosition.X
-				local relY = mouse.Y - codeFrame.AbsolutePosition.Y
+				local relX = Mouse.X - codeFrame.AbsolutePosition.X
+				local relY = Mouse.Y - codeFrame.AbsolutePosition.Y
 				local selX = math.round(relX / fontSizeX) + obj.ViewX
 				local selY = math.floor(relY / fontSizeY) + obj.ViewY
 				local releaseEvent,mouseEvent,scrollEvent
@@ -915,8 +930,8 @@ Lib.CodeFrame = (function()
 				obj.FloatCursorX = selX
 
 				local function updateSelection()
-					local relX = mouse.X - codeFrame.AbsolutePosition.X
-					local relY = mouse.Y - codeFrame.AbsolutePosition.Y
+					local relX = Mouse.X - codeFrame.AbsolutePosition.X
+					local relY = Mouse.Y - codeFrame.AbsolutePosition.Y
 					local sel2X = math.max(0,math.round(relX / fontSizeX) + obj.ViewX)
 					local sel2Y = math.max(0,math.floor(relY / fontSizeY) + obj.ViewY)
 
@@ -935,7 +950,7 @@ Lib.CodeFrame = (function()
 					obj:Refresh()
 				end
 
-				releaseEvent = game.UserInputService.InputEnded:Connect(function(input)
+				releaseEvent = UserInputService.InputEnded:Connect(function(input)
 					if input.UserInputType == Enum.UserInputType.MouseButton1 then
 						releaseEvent:Disconnect()
 						mouseEvent:Disconnect()
@@ -945,12 +960,12 @@ Lib.CodeFrame = (function()
 					end
 				end)
 
-				mouseEvent = game.UserInputService.InputChanged:Connect(function(input)
+				mouseEvent = UserInputService.InputChanged:Connect(function(input)
 					if input.UserInputType == Enum.UserInputType.MouseMovement then
-						local upDelta = mouse.Y - codeFrame.AbsolutePosition.Y
-						local downDelta = mouse.Y - codeFrame.AbsolutePosition.Y - codeFrame.AbsoluteSize.Y
-						local leftDelta = mouse.X - codeFrame.AbsolutePosition.X
-						local rightDelta = mouse.X - codeFrame.AbsolutePosition.X - codeFrame.AbsoluteSize.X
+						local upDelta = Mouse.Y - codeFrame.AbsolutePosition.Y
+						local downDelta = Mouse.Y - codeFrame.AbsolutePosition.Y - codeFrame.AbsoluteSize.Y
+						local leftDelta = Mouse.X - codeFrame.AbsolutePosition.X
+						local rightDelta = Mouse.X - codeFrame.AbsolutePosition.X - codeFrame.AbsoluteSize.X
 						scrollPowerV = 0
 						scrollPowerH = 0
 						if downDelta > 0 then
@@ -967,7 +982,7 @@ Lib.CodeFrame = (function()
 					end
 				end)
 
-				scrollEvent = game:GetService("RunService").RenderStepped:Connect(function()
+				scrollEvent = RunService.RenderStepped:Connect(function()
 					if scrollPowerV ~= 0 or scrollPowerH ~= 0 then
 						obj:ScrollDelta(scrollPowerH,scrollPowerV)
 						updateSelection()
@@ -979,7 +994,7 @@ Lib.CodeFrame = (function()
 		end)
 	end
 
-	local function makeFrame(obj)
+	function funcs.MakeEditorFrame(self)
 		local frame = Instance.new('TextButton')
 		frame.BackgroundTransparency = 1
 		frame.TextTransparency = 1
@@ -996,7 +1011,7 @@ Lib.CodeFrame = (function()
 		local lineNumbersLabel = Instance.new("TextLabel")
 		lineNumbersLabel.Name = "LineNumbers"
 		lineNumbersLabel.BackgroundTransparency = 1
-		lineNumbersLabel.Font = Enum.Font.Code
+		lineNumbersLabel.FontFace = self.FontFace
 		lineNumbersLabel.TextXAlignment = Enum.TextXAlignment.Right
 		lineNumbersLabel.TextYAlignment = Enum.TextYAlignment.Top
 		lineNumbersLabel.ClipsDescendants = true
@@ -1013,10 +1028,10 @@ Lib.CodeFrame = (function()
 		editBox.MultiLine = true
 		editBox.Visible = false
 		editBox.Parent = frame
-		editBox.TextSize = obj.FontSize
+		editBox.TextSize = self.FontSize
 
-		lineTweens.Invis = tweenService:Create(cursor,TweenInfo.new(0,Enum.EasingStyle.Quart,Enum.EasingDirection.Out),{BackgroundTransparency = 1})
-		lineTweens.Vis = tweenService:Create(cursor,TweenInfo.new(0,Enum.EasingStyle.Quart,Enum.EasingDirection.Out),{BackgroundTransparency = 0})
+		lineTweens.Invis = TweenService:Create(cursor,TweenInfo.new(0,Enum.EasingStyle.Quart,Enum.EasingDirection.Out),{BackgroundTransparency = 1})
+		lineTweens.Vis = TweenService:Create(cursor,TweenInfo.new(0,Enum.EasingStyle.Quart,Enum.EasingDirection.Out),{BackgroundTransparency = 0})
 
 		elems.LinesFrame = linesFrame
 		elems.LineNumbersLabel = lineNumbersLabel
@@ -1029,15 +1044,15 @@ Lib.CodeFrame = (function()
 		elems.ScrollCorner.Parent = frame
 		linesFrame.InputBegan:Connect(function(input)
 			if input.UserInputType == Enum.UserInputType.MouseButton1 then
-				obj:SetEditing(true,input)
+				self:SetEditing(true,input)
 			end
 		end)
 
-		obj.Frame = frame
-		obj.Gui = frame
-		obj.GuiElems = elems
-		setupEditBox(obj)
-		setupMouseSelection(obj)
+		self.Frame = frame
+		self.Gui = frame
+		self.GuiElems = elems
+		setupEditBox(self)
+		setupMouseSelection(self)
 
 		return frame
 	end
@@ -1085,7 +1100,7 @@ Lib.CodeFrame = (function()
 			self.EditBoxEvent:Disconnect()
 		end
 
-		self.EditBoxEvent = game.UserInputService.InputBegan:Connect(function(input)
+		self.EditBoxEvent = UserInputService.InputBegan:Connect(function(input)
 			if input.UserInputType ~= Enum.UserInputType.Keyboard then return end
 
 			local keycodes = Enum.KeyCode
@@ -1093,7 +1108,7 @@ Lib.CodeFrame = (function()
 
 			local function setupMove(key,func)
 				local endCon,finished
-				endCon = game.UserInputService.InputEnded:Connect(function(input)
+				endCon = UserInputService.InputEnded:Connect(function(input)
 					if input.KeyCode ~= key then return end
 					endCon:Disconnect()
 					finished = true
@@ -1197,7 +1212,7 @@ Lib.CodeFrame = (function()
 					self:ResetSelection(true)
 					self:JumpToCursor()
 				end)
-			elseif game.UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then
+			elseif UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then
 				if keycode == keycodes.A then
 					self.SelectionRange = {{0,5},{#self.Lines[#self.Lines],#self.Lines-1}}
 					self:SetCopyableSelection()
@@ -1709,7 +1724,7 @@ Lib.CodeFrame = (function()
 				local label = Instance.new("TextLabel")
 				label.Name = "Label"
 				label.BackgroundTransparency = 1
-				label.Font = Enum.Font.Code
+				label.FontFace = self.FontFace
 				label.TextSize = self.FontSize
 				label.Size = UDim2.new(1,0,0,self.FontSize)
 				label.RichText = true
@@ -1945,6 +1960,10 @@ Lib.CodeFrame = (function()
 		end
 	end
 
+	funcs.GetVersion = function(self)
+		return IDEVersion
+	end
+
 	funcs.MakeRichTemplates = function(self)
 		local floor = math.floor
 		local templates = {}
@@ -1976,6 +1995,7 @@ Lib.CodeFrame = (function()
 		scrollH.Gui.Position = UDim2.new(0,0,1,-10)
 		
 		local Base = {
+			FontFace = Font.fromEnum(Enum.Font.Code),
 			FontSize = 16,
 			ViewX = 0,
 			ViewY = 0,
@@ -2021,7 +2041,7 @@ Lib.CodeFrame = (function()
 			obj:Refresh()
 		end)
 
-		makeFrame(obj)
+		obj:MakeEditorFrame(obj)
 		obj:MakeRichTemplates()
 		obj:ApplyTheme()
 		scrollV:SetScrollFrame(obj.Frame.Lines)
