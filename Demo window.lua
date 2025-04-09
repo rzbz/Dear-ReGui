@@ -1,6 +1,9 @@
 --// Import ReGui
 local ReGui = require(game.ReplicatedStorage.ReGui)
-ReGui:Init({})
+ReGui:Init({
+	--Debug = true,
+	Prefabs = game.StarterGui["ReGui-Prefabs"]
+})
 
 --// Configuration saving demo
 local ConfigSavingWindow = ReGui:Window({
@@ -49,6 +52,14 @@ ConfigSavingWindow:Checkbox({
 ConfigSavingWindow:InputText({
 	IniFlag = "MyInput",
 	Value = "Hello world!"
+})
+ConfigSavingWindow:Keybind({
+	IniFlag = "MyKeybind",
+	Label = "Keybind (w/ Q & Left-Click blacklist)",
+	KeyBlacklist = {
+		Enum.UserInputType.MouseButton1,
+		Enum.KeyCode.Q
+	}
 })
 
 --// Tabs window demo
@@ -332,7 +343,7 @@ local WidgetDemos = {
 		Header:InputText({
 			Placeholder = "Enter text here",
 			Label = "Input text (w/ hint)",
-			Value = "Hello world!"
+			Value = ""
 		})
 		Header:InputInt({
 			Value = 50,
@@ -887,8 +898,9 @@ local WidgetDemos = {
 			Selected = 1,
 			Items = {
 				"AAAAAAAAAAAA",
-				"BBB",
-				"C",
+				"BBBBBBBB",
+				"CCCCC",
+				"DDD",
 			},
 		})
 

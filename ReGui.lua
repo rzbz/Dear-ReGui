@@ -13,7 +13,7 @@
 
 local ReGui = {
 	--// Package data
-	Version = "1.4.0",
+	Version = "1.4.1",
 	Author = "Depso",
 	License = "MIT",
 	Repository = "https://github.com/depthso/Dear-ReGui/",
@@ -53,7 +53,7 @@ local ReGui = {
 
 ReGui.Icons = {
 	Dot = "rbxasset://textures/whiteCircle.png",
-	Arrow = "rbxassetid://4731371527",
+	Arrow = "rbxasset://textures/DeveloperFramework/button_arrow_right.png",
 	Close = "rbxasset://textures/AnimationEditor/icon_close.png",
 	Checkmark = "rbxasset://textures/AnimationEditor/icon_checkmark.png",
 	Cat = "rbxassetid://16211812161",
@@ -191,6 +191,7 @@ ThemeConfigs.DarkTheme = {
 		LabelPaddingTop = UDim.new(0, 0),
 		LabelPaddingBottom = UDim.new(0, 0),
 		MenuBar = ReGui.Accent.ExtraDark,
+		MenuBarTransparency = 0.1,
 		PopupCanvas = ReGui.Accent.Black,
 
 		--// TabSelector
@@ -279,6 +280,7 @@ ThemeConfigs.ImGui = {
 		CheckMark = ReGui.Accent.ImGui.Light,
 		ResizeGrab = ReGui.Accent.ImGui.Light,
 		MenuBar = ReGui.Accent.ImGui.Gray,
+		MenuBarTransparency = 0,
 		PopupCanvas = ReGui.Accent.ImGui.Black,
 		
 		TabText = ReGui.Accent.Gray,
@@ -302,7 +304,8 @@ ThemeConfigs.ImGui = {
 
 ReGui.ElementColors = {
 	["MenuBar"] = {
-		BackgroundColor3 = "MenuBar"
+		BackgroundColor3 = "MenuBar",
+		BackgroundTransparency = "MenuBarTransparency",
 	},
 	["FrameRounding"] = {
 		CornerRadius = "FrameRounding"
@@ -547,7 +550,6 @@ ReGui.ElementFlags = {
 		Properties = {"Center"},
 		Callback = function<FlagFunc>(Data, Object, Value)
 			local Position = Object.Position
-
 			ReGui:SetProperties(Object, {
 				Position = UDim2.new(
 					Value:find("X") and 0.5 or Position.X.Scale,
@@ -574,7 +576,8 @@ ReGui.ElementFlags = {
 			local Class = Data.Class
 			local WindowClass = Data.WindowClass
 			local NoAutoTheme = Class.NoAutoTheme
-
+			
+			--// Check if theming is enabled
 			if not WindowClass then return end
 			if NoAutoTheme then return end
 
@@ -589,39 +592,44 @@ ReGui.ElementFlags = {
 	{
 		Properties = {"Animation"},
 		Callback = function<StyleFunc>(Data, Object, Value)
+			--// Check if animations are disabled
 			local NoAnimation = Data.Class.NoAnimation
 			if NoAnimation then return end
+			
 			ReGui:SetAnimation(Object, Value)
 		end,
 	},
 	{
-		Properties = {"Icon", "IconSize", "IconRotation"},
+		Properties = {"Icon", "IconSize", "IconRotation", "IconPadding"},
 		Callback = function<StyleFunc>(Data, Object, Value)
 			--// Locate icon element
 			local Icon = Object:FindFirstChild("Icon", true)
 			if not Icon then 
 				return ReGui:Warn("No icon for", Object) 
 			end 
-
+			
+			--// Check class data for missing values
 			local Class = Data.Class
 			ReGui:CheckConfig(Class, {
 				Icon = "",
 				IconSize = UDim2.fromScale(1,1),
-				IconRotation = 0
+				IconRotation = 0,
+				IconPadding = UDim2.new(0, 2)
 			})
+			
+			--// Apply icon padding
+			local Padding = Icon.Parent:FindFirstChild("UIPadding")
+			ReGui:SetPadding(Padding, Class.IconPadding)
 
-			--// Unpack configuration
-			local Size = Class.IconSize
+			--// Check image asset url
 			local Image = Class.Icon
-			local Rotation = Class.IconRotation
-
 			Image = ReGui:CheckAssetUrl(Image)
 
 			ReGui:SetProperties(Icon, {
 				Visible = Icon ~= "",
 				Image = ReGui:CheckAssetUrl(Image),
-				Size = Size,
-				Rotation = Rotation
+				Size = Class.IconSize,
+				Rotation = Class.IconRotation
 			})
 		end,
 	},
@@ -1185,7 +1193,7 @@ function NewClass(Class, Merge)
 	return setmetatable(Merge, Class)
 end
 
-function ReGui:Warn(...)
+function ReGui:Warn(...: string?)
 	warn("[ReGui]::", ...)
 end
 
@@ -1458,7 +1466,7 @@ function ReGui:RemoveAnimations(Object: GuiObject)
 	end
 end
 
-function ReGui:GetAnimationData(Object: GuiObject)
+function ReGui:GetAnimationData(Object: GuiObject): table
 	local Connections = self.AnimationConnections
 	local Existing = Connections[Object]
 	
@@ -1590,6 +1598,17 @@ function ReGui:GetChildOfClass(Object: GuiObject, ClassName: string): GuiObject
 	end
 
 	return Child
+end
+
+function ReGui:SetPadding(UiPadding: UIPadding, Padding: UDim)
+	if not UiPadding then return end
+	
+	self:SetProperties(UiPadding, {
+		PaddingBottom = Padding,
+		PaddingLeft = Padding,
+		PaddingRight = Padding,
+		PaddingTop = Padding
+	})
 end
 
 export type ConnectDrag = {
@@ -2184,7 +2203,7 @@ function ReGui:ApplyFlags(Config: ApplyFlags)
 	end
 end
 
-function ReGui:SetProperties(Object: Instance, Properties)
+function ReGui:SetProperties(Object: Instance, Properties: table)
 	for Key: string, Value in next, Properties do
 		pcall(function()
 			Object[Key] = Value
@@ -2379,7 +2398,7 @@ function ReGui:LoadIniIntoElement(Element, Values: table)
 	end
 end
 
-function ReGui:LoadIni(NewSettings: (table|string), JsonEncoded: boolean?): table
+function ReGui:LoadIni(NewSettings: (table|string), JsonEncoded: boolean?)
 	local IniSettings = self.IniSettings
 	assert(NewSettings, "No Ini configuration was passed")
 	
@@ -2394,9 +2413,9 @@ function ReGui:LoadIni(NewSettings: (table|string), JsonEncoded: boolean?): tabl
 	end
 end
 
-function ReGui:AddIniFlag(Flag: string, Class: table)
+function ReGui:AddIniFlag(Flag: string, Element: table)
 	local IniSettings = self.IniSettings
-	IniSettings[Flag] = Class
+	IniSettings[Flag] = Element
 end
 
 type OnElementCreateData = {
@@ -2608,7 +2627,7 @@ function ReGui:DefineTheme(Name: string, ThemeData: ThemeData)
 	return Theme
 end
 
-function ReGui:GetMouseLocation()
+function ReGui:GetMouseLocation(): (number, number)
 	local Mouse = self.Mouse
 	return Mouse.X, Mouse.Y
 end
@@ -2647,7 +2666,7 @@ function ReGui:WindowCanFocus(WindowClass: table): boolean
 	return true
 end
 
-function ReGui:GetFocusedWindow()
+function ReGui:GetFocusedWindow(): table?
 	return self.FocusedWindow
 end
 
@@ -2662,7 +2681,7 @@ function ReGui:BringWindowToFront(WindowClass: table)
 	MoveTableItem(Windows, WindowClass, 1)
 end
 
-function ReGui:SetFocusedWindow(ActiveClass: table)
+function ReGui:SetFocusedWindow(ActiveClass: table?)
 	local Previous = self:GetFocusedWindow()
 	local Windows = self.Windows
 
@@ -2701,7 +2720,7 @@ function ReGui:SetFocusedWindow(ActiveClass: table)
 	end
 end
 
-function ReGui:SetItemTooltip(Parent: GuiObject, Render: () -> ...any)
+function ReGui:SetItemTooltip(Parent: GuiObject, Render: (Elements) -> ...any)
 	local Elements = self.Elements
 	local Tooltips = self.TooltipsContainer
 	local ActiveTooltips = self.ActiveTooltips
@@ -3229,7 +3248,7 @@ ReGui:DefineElement("Keybind", {
 		local Label = Canvas:Label({
 			Parent = Object, 
 			Text = LabelText,
-			Position = UDim2.new(1, 5, 0.5),
+			Position = UDim2.new(1, 4, 0.5),
 			AnchorPoint = Vector2.new(0, 0.5)
 		})
 
@@ -3361,7 +3380,9 @@ ReGui:DefineElement("ArrowButton", {
 		Direction = "Left",
 		ColorTag = "Button",
 		Icon = ReGui.Icons.Arrow,
-		Size = UDim2.fromOffset(21,21),
+		Size = UDim2.fromOffset(21, 21),
+		IconSize = UDim2.fromScale(1, 1),
+		IconPadding = UDim.new(0, 4),
 		Rotations = {
 			Left = 180,
 			Right = 0,
@@ -4003,7 +4024,7 @@ ReGui:DefineElement("TabSelector", {
 					Tweeninfo = Tweeninfo,
 					NoAnimation = NoAnimation,
 					StartProperties = {
-						Position = UDim2.fromOffset(0, 5)
+						Position = UDim2.fromOffset(0, 4)
 					},
 					EndProperties = {
 						Position = UDim2.fromOffset(0, 0)
@@ -4246,7 +4267,7 @@ ReGui:DefineElement("PlotHistogram", {
 		local Label = Canvas:Label({
 			Text = LabelText,
 			Parent = Object,
-			Position = UDim2.new(1, 5)
+			Position = UDim2.new(1, 4)
 		})
 
 		--// Create tooltip
@@ -4532,7 +4553,7 @@ ReGui:DefineElement("InputText", {
 			Text = Label,
 			AutomaticSize = Enum.AutomaticSize.X,
 			Size = UDim2.fromOffset(0, 19),
-			Position = UDim2.new(1, 5),
+			Position = UDim2.new(1, 4),
 			LayoutOrder = 2
 		})
 
@@ -4660,7 +4681,7 @@ ReGui:DefineElement("InputInt", {
 			Text = LabelText,
 			AutomaticSize = Enum.AutomaticSize.X,
 			Size = UDim2.fromOffset(0, 19),
-			Position = UDim2.new(1, 5),
+			Position = UDim2.new(1, 4),
 			LayoutOrder = 4
 		})
 
@@ -5095,7 +5116,7 @@ export type List = {
 }
 ReGui:DefineElement("List", {
 	Base = {
-		Spacing = 5,
+		Spacing = 4,
 		HorizontalFlex = Enum.UIFlexAlignment.None,
 		VerticalFlex = Enum.UIFlexAlignment.None,
 		HorizontalAlignment = Enum.HorizontalAlignment.Left,
@@ -5165,6 +5186,7 @@ ReGui:DefineElement("CollapsingHeader", {
 		Offset = 0,
 		NoAutoTag = true,
 		NoAutoFlags = true,
+		IconPadding = UDim.new(0, 4),
 		Activated = EmptyFunction
 	},
 	Create = function(Canvas, Config: CollapsingHeader): CollapsingHeader
@@ -5177,6 +5199,7 @@ ReGui:DefineElement("CollapsingHeader", {
 		local OpenOnDoubleClick = Config.OpenOnDoubleClick
 		local OpenOnArrow = Config.OpenOnArrow
 		local CollapseIcon = Config.CollapseIcon
+		local IconPadding = Config.IconPadding
 		local Icon = Config.Icon
 		local NoArrow = Config.NoArrow
 
@@ -5184,8 +5207,12 @@ ReGui:DefineElement("CollapsingHeader", {
 		local Object = ReGui:InsertPrefab("CollapsingHeader", Config)
 
 		local Titlebar = Object.TitleBar
-		local CollapseButton = Titlebar.Collapse.CollapseIcon
+		local Collapse = Titlebar.Collapse
 		local IconImage = Titlebar.Icon
+		
+		local CollapseButton = Collapse.CollapseIcon
+		local CollapsePadding = Collapse.UIPadding
+		ReGui:SetPadding(CollapsePadding, IconPadding)
 
 		local TitleText = Canvas:Label({
 			ColorTag = "CollapsingHeader",
@@ -5301,8 +5328,9 @@ ReGui:DefineElement("CollapsingHeader", {
 ReGui:DefineElement("TreeNode", {
 	Base = {
 		Offset = 21,
+		IconPadding = UDim.new(0, 2),
 		TitleBarProperties = {
-			Size = UDim2.new(1, 0, 0, 14)
+			Size = UDim2.new(1, 0, 0, 13)
 		}
 	},
 	Create = Elements.CollapsingHeader,
@@ -5612,7 +5640,7 @@ ReGui:DefineElement("SliderBase", {
 		local Label = Canvas:Label({
 			Parent = Object, 
 			Text = LabelText,
-			Position = UDim2.new(1, 5),
+			Position = UDim2.new(1, 4),
 			Size = UDim2.fromScale(0, 1)
 		})
 
@@ -6030,7 +6058,7 @@ ReGui:DefineElement("MultiElement", {
 
 		--// Create container row
 		local ContainerRow, Object = Canvas:Row({
-			Spacing = 5
+			Spacing = 4
 		})
 
 		local Row = ContainerRow:Row({
@@ -6456,9 +6484,8 @@ ReGui:DefineElement("Combo", {
 		})
 		local ArrowButton = Canvas:ArrowButton({
 			Parent = Combo,
-			Ratio = 1,
 			Interactable = false,
-			Size = UDim2.fromScale(0, 0),
+			Size = UDim2.fromOffset(19, 19),
 			LayoutOrder = 2,
 		})
 		local Label = Canvas:Label({
@@ -6470,11 +6497,11 @@ ReGui:DefineElement("Combo", {
 		--// Enable automatic sizes
 		if WidthFitPreview then
 			ReGui:SetProperties(Object, {
-				AutomaticSize = Enum.AutomaticSize.X,
-				Size = UDim2.new(0, 0, 0, 20)
+				AutomaticSize = Enum.AutomaticSize.XY,
+				Size = UDim2.new(0, 0, 0, 0)
 			})
 			ReGui:SetProperties(Combo, {
-				AutomaticSize = Enum.AutomaticSize.X,
+				AutomaticSize = Enum.AutomaticSize.XY,
 				Size = UDim2.fromScale(0, 1)
 			})
 		end
@@ -6720,12 +6747,12 @@ local WindowClass = {
 	--// Icons
 	TileBarConfig = {
 		Close = {
-			Image = ReGui.Icons.Close,	
-			IconSize = UDim2.fromOffset(11,11),
+			Image = ReGui.Icons.Close,
+			IconPadding = UDim.new(0, 3)
 		},
 		Collapse = {
 			Image = ReGui.Icons.Arrow,
-			IconSize = UDim2.fromScale(1,1),
+			IconPadding = UDim.new(0, 3)
 		},
 	},
 
@@ -6792,7 +6819,7 @@ function WindowClass:AddDefaultTitleButtons()
 		--// Create window interaction buttons
 		Toggle = Canvas:RadioButton({
 			Icon = Toggle.Image,
-			IconSize = Toggle.IconSize,
+			IconPadding = Toggle.IconPadding,
 			LayoutOrder = 1,
 			Ratio = 1,
 			Size = UDim2.new(0, 0),
@@ -6802,7 +6829,7 @@ function WindowClass:AddDefaultTitleButtons()
 		}),
 		CloseButton = Canvas:RadioButton({
 			Icon = Close.Image,
-			IconSize = Close.IconSize,
+			IconPadding = Close.IconPadding,
 			LayoutOrder = 3,
 			Ratio = 1,
 			Size = UDim2.new(0, 0),
@@ -7499,7 +7526,6 @@ ReGui:DefineElement("PopupCanvas", {
 	},
 	Create = function(self, Config: PopupCanvas)
 		Config.Parent = ReGui.Container.Overlays
-		Config.Bozo = "HELLO WORLD"
 
 		local RelativeTo = Config.RelativeTo
 		local MaxSizeY = Config.MaxSizeY
