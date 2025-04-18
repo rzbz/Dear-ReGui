@@ -13,7 +13,7 @@
 
 local ReGui = {
 	--// Package data
-	Version = "1.4.1",
+	Version = "1.4.2",
 	Author = "Depso",
 	License = "MIT",
 	Repository = "https://github.com/depthso/Dear-ReGui/",
@@ -6561,7 +6561,7 @@ ReGui:DefineElement("Combo", {
 			local DictValue = Items[Selected]
 			local Value = DictValue or Selected
 
-			self._Selected = Selected
+			self.Selected = Selected
 			self.Value = Value
 			
 			self:ClosePopup()
@@ -6577,7 +6577,7 @@ ReGui:DefineElement("Combo", {
 		end
 
 		function Config:SetOpen(Open: boolean)
-			local Selected = self._Selected
+			local Selected = self.Selected
 
 			self.Open = Open
 			SetAnimationState(Open, NoAnimation)
@@ -6726,7 +6726,7 @@ ReGui:DefineElement("Combo", {
 --			--local DictValue = Items[Selected]
 --			--local Value = DictValue or Selected
 
---			--self._Selected = Selected
+--			--self.Selected = Selected
 --			--self.Value = Value
 
 --			----// Update Value text with selected item
