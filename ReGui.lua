@@ -6937,6 +6937,8 @@ function WindowClass:LoadStylesIntoElement(Data)
 	local Object = Data.Object
 	local Canvas = Data.Canvas
 
+	if not Object then return end
+
 	local TagFunctions = {
 		["FrameRounding"] = function()
 			if Flags.CornerRadius then return end
