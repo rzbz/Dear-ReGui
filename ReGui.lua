@@ -13,7 +13,7 @@
 
 local ReGui = {
 	--// Package data
-	Version = "1.4.2",
+	Version = "1.4.3",
 	Author = "Depso",
 	License = "MIT",
 	Repository = "https://github.com/depthso/Dear-ReGui/",
@@ -130,6 +130,12 @@ ReGui.Icons = {
 	Character = "rbxassetid://13285102351",
 }
 
+ReGui.DynamicImages = {
+	[ReGui.Icons.Arrow] = "ImageFollowsText",
+	[ReGui.Icons.Close] = "ImageFollowsText",
+	[ReGui.Icons.Dot] = "ImageFollowsText",
+}
+
 ReGui.Accent = {
 	--// ReGui acent colors
 	Light = Color3.fromRGB(50, 150, 250),
@@ -160,8 +166,8 @@ local ThemeConfigs = ReGui.ThemeConfigs
 ThemeConfigs.DarkTheme = {
 	Values = {
 		AnimationTweenInfo = TweenInfo.new(0.08),
-		TextFont = Font.fromName("Inconsolata"),
-		TextSize = 13,
+		TextFont = Font.fromEnum(Enum.Font.RobotoMono),
+		TextSize = 14,
 		Text = ReGui.Accent.White,
 		TextDisabled = ReGui.Accent.Gray,
 		ErrorText = ReGui.Accent.Red,
@@ -170,7 +176,7 @@ ThemeConfigs.DarkTheme = {
 		FrameBgTransparency = 0.4,
 		FrameBgActive = ReGui.Accent.Light,
 		FrameBgTransparencyActive = 0.4,
-		FrameRounding = UDim.new(0, 2),
+		FrameRounding = UDim.new(0, 0),
 
 		--// Elements
 		SliderGrab = ReGui.Accent.Light,
@@ -231,7 +237,7 @@ ThemeConfigs.LightTheme = {
 	BaseTheme = ThemeConfigs.DarkTheme,
 	Values = {
 		Text = ReGui.Accent.Black,
-		TextFont = Font.fromName("Ubuntu"),
+		TextFont = Font.fromEnum(Enum.Font.Ubuntu),
 		TextSize = 14,
 
 		FrameBg = ReGui.Accent.Gray,
@@ -330,6 +336,9 @@ ReGui.ElementColors = {
 		TextColor3 = "Text",
 		FontFace = "TextFont",
 		TextSize = "TextSize",
+	},
+	["ImageFollowsText"] = {
+		ImageColor3 = "Text",
 	},
 	["ConsoleLineNumbers"] = {
 		TextColor3 = "ConsoleLineNumbers",
@@ -600,6 +609,14 @@ ReGui.ElementFlags = {
 		end,
 	},
 	{
+		Properties = {"Image"},
+		Callback = function<StyleFunc>(Data, Object, Value)
+			local WindowClass = Data.WindowClass
+			Object.Image = ReGui:CheckAssetUrl(Value)
+			ReGui:DynamicImageTag(Object, Value, WindowClass)
+		end,
+	},
+	{
 		Properties = {"Icon", "IconSize", "IconRotation", "IconPadding"},
 		Callback = function<StyleFunc>(Data, Object, Value)
 			--// Locate icon element
@@ -624,7 +641,10 @@ ReGui.ElementFlags = {
 			--// Check image asset url
 			local Image = Class.Icon
 			Image = ReGui:CheckAssetUrl(Image)
-
+			
+			--// Dynamic image
+			local WindowClass = Data.WindowClass
+			ReGui:DynamicImageTag(Icon, Image, WindowClass)
 			ReGui:SetProperties(Icon, {
 				Visible = Icon ~= "",
 				Image = ReGui:CheckAssetUrl(Image),
@@ -1197,6 +1217,12 @@ function ReGui:Warn(...: string?)
 	warn("[ReGui]::", ...)
 end
 
+function ReGui:Error(...: string?)
+	local Concated = ReGui:Concat({...}, " ")
+	local Message = `\n[ReGui]:: {Concated}`
+	coroutine.wrap(error)(Message)
+end
+
 function ReGui:IsDoubleClick(TickRange: number): boolean
 	local ClickThreshold = self.DoubleClickThreshold
 	return TickRange < ClickThreshold
@@ -1446,6 +1472,18 @@ end
 
 function ReGui:GetAnimation(Animate: boolean?)
 	return Animate and self.Animation or TweenInfo.new(0)
+end
+
+function ReGui:DynamicImageTag(Object: Instance, Image: string, WindowClass: table)
+	local Tags = self.DynamicImages
+	local Tag = Tags[Image]
+	
+	if not Tag then return end
+	if not WindowClass then return end
+	
+	WindowClass:TagElements({
+		[Object] = Tag
+	})
 end
 
 function ReGui:GetDictSize(Dict: table): number
@@ -1731,9 +1769,8 @@ function ReGui:MakeDraggable(Config: MakeDraggableFlags)
 			StateChanged(self)
 		end
 	end
-	function Interface:CanDrag(Key)
-		if not self.Enabled then return end
-		return true
+	function Interface:CanDrag(Key): boolean
+		return self.Enabled
 	end
 
 	--// Movement event functions
@@ -2526,8 +2563,8 @@ function ReGui:WrapGeneration(Function, Data: table)
 				})
 			end
 
-			self:Warn("Class:", Class)
-			self:Warn(debug.traceback())
+			self:Error("Class:", Class)
+			self:Error(debug.traceback())
 		end
 
 		--// Some elements may return the instance without a class
@@ -2832,6 +2869,16 @@ function Elements:GetObject()
 	return self.RawObject
 end
 
+function Elements:ApplyFlags(Object, Flags)
+	local WindowClass = self.WindowClass
+	
+	ReGui:ApplyFlags({
+		WindowClass = WindowClass,
+		Object = Object,
+		Class = Flags
+	})
+end
+
 function Elements:Remove()
 	local OnChildChange = self.OnChildChange
 	local Object = self:GetObject()
@@ -3049,10 +3096,6 @@ ReGui:DefineElement("Image", {
 		Callback = EmptyFunction
 	},
 	Create = function(self, Config: Image): ImageButton
-		--// Correct configuration
-		local Image = Config.Image
-		Config.Image = ReGui:CheckAssetUrl(Image)
-
 		--// Create image object
 		local Object = ReGui:InsertPrefab("Image", Config)
 		Object.Activated:Connect(function(...)
@@ -3821,10 +3864,7 @@ function TabBarClass:CreateTab(Config: Tab): Elements
 	self:SetButtonSelected(Config, IsFocused)	
 
 	--// Apply flags
-	ReGui:ApplyFlags({
-		Object = TabButton,
-		Class = Config
-	})
+	ParentCanvas:ApplyFlags(TabButton, Config)
 	
 	local Responce = OnTabCreate(self, Config)
 	
@@ -4781,7 +4821,8 @@ export type Console = {
 	AutoScroll: boolean,
 	LinesFormat: string,
 	MaxLines: number,
-
+	
+	CountLines: (Console) -> number,
 	UpdateLineNumbers: (Console) -> Console,
 	UpdateScroll: (Console) -> Console,
 	SetValue: (Console, Value: string) -> Console,
@@ -4814,15 +4855,18 @@ ReGui:DefineElement("Console", {
 
 		local Source: TextBox = Object.Source
 		local Lines = Object.Lines
-
-		ReGui:SetProperties(Source, Config)
-		ReGui:SetProperties(Source, {
-			TextEditable = not ReadOnly,
-			Parent = Object,
-			PlaceholderText = Placeholder
-		})
-
 		Lines.Visible = LineNumbers
+		
+		function Config:CountLines(ExcludeEmpty: boolean?): number
+			local Lines = Source.Text:split("\n")
+			local Count = #Lines
+			
+			if Count == 1 and Lines[1] == "" then
+				return 0 
+			end
+			
+			return Count
+		end
 
 		function Config:UpdateLineNumbers()
 			--// configuration
@@ -4832,9 +4876,8 @@ ReGui:DefineElement("Console", {
 			--// If line counts are disabled
 			if not LineNumbers then return end
 
-			local LinesCount = #Source.Text:split("\n")
-
 			--// Update lines text
+			local LinesCount = self:CountLines()
 			Lines.Text = ""
 
 			for Line = 1, LinesCount do
@@ -4894,27 +4937,33 @@ ReGui:DefineElement("Console", {
 		end
 
 		function Config:AppendText(...)
-			local NewString = "\n" .. ReGui:Concat({...}, " ") 
-
-			--// Append string
+			local Lines = self:CountLines(true)
+			local Concated = ReGui:Concat({...}, " ")
+			
+			--// Set the content if there are no lines
+			if Lines == 0 then
+				return self:SetValue(Concated)
+			end
+			
 			local Value = self:GetValue()
-			self:SetValue(Value..NewString)
+			local NewString = `{Value}\n{Concated}`
 
-			--// Check if content needs to be cut
-			self:CheckLineCount()
-
+			--// Write new content
+			self:SetValue(NewString)
+			
 			return self
 		end
 
 		function Config:Update()
 			--// Configuration
-			local AutoScroll = Config.AutoScroll
-
-			Config:UpdateLineNumbers()
+			local AutoScroll = self.AutoScroll
+			
+			self:CheckLineCount()
+			self:UpdateLineNumbers()
 
 			--// Automatically scroll to bottom
 			if AutoScroll then
-				Config:UpdateScroll()
+				self:UpdateScroll()
 			end
 		end
 
@@ -4926,6 +4975,14 @@ ReGui:DefineElement("Console", {
 
 		--// Update element
 		Config:SetValue(Value)
+		
+		--// Set properties
+		ReGui:SetProperties(Source, Config)
+		ReGui:SetProperties(Source, {
+			TextEditable = not ReadOnly,
+			Parent = Object,
+			PlaceholderText = Placeholder
+		})
 
 		self:TagElements({
 			[Source] = "ConsoleText",
@@ -5209,10 +5266,16 @@ ReGui:DefineElement("CollapsingHeader", {
 		local Titlebar = Object.TitleBar
 		local Collapse = Titlebar.Collapse
 		local IconImage = Titlebar.Icon
+		Canvas:ApplyFlags(IconImage, {
+			Image = Icon
+		})
 		
 		local CollapseButton = Collapse.CollapseIcon
 		local CollapsePadding = Collapse.UIPadding
 		ReGui:SetPadding(CollapsePadding, IconPadding)
+		Canvas:ApplyFlags(CollapseButton, {
+			Image = CollapseIcon
+		})
 
 		local TitleText = Canvas:Label({
 			ColorTag = "CollapsingHeader",
@@ -5231,8 +5294,6 @@ ReGui:DefineElement("CollapsingHeader", {
 			PaddingTop = UDim.new(0, 4),
 			PaddingBottom = UDim.new(0, 1),
 		})
-
-		CollapseButton.Image = ReGui:CheckAssetUrl(CollapseIcon)
 
 		local function Activated()
 			local Callback = Config.Activated
@@ -5293,10 +5354,7 @@ ReGui:DefineElement("CollapsingHeader", {
 
 		--// Apply flags
 		if TitleProperties then
-			ReGui:ApplyFlags({
-				Object = Titlebar,
-				Class = TitleProperties
-			})
+			Canvas:ApplyFlags(Titlebar, TitleProperties)
 		end
 
 		--// Connect events
@@ -5312,7 +5370,6 @@ ReGui:DefineElement("CollapsingHeader", {
 		--// Update object state
 		Config:SetCollapsed(Collapsed)
 		Config:SetTitle(Title)
-		Config:SetIcon(Icon)
 		Config:SetArrowVisible(not NoArrow)
 
 		--// Style elements
@@ -5829,7 +5886,7 @@ ReGui:DefineElement("SliderEnum", {
 		local function Calculate(self, Value: number)
 			Value = math.round(Value)
 
-			--// Dymanic size
+			--// Dynamic size
 			local Items = self.Items
 			self.Maximum = #Items
 
@@ -6936,8 +6993,6 @@ function WindowClass:LoadStylesIntoElement(Data)
 	local Flags = Data.Flags
 	local Object = Data.Object
 	local Canvas = Data.Canvas
-
-	if not Object then return end
 
 	local TagFunctions = {
 		["FrameRounding"] = function()
