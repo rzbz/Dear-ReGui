@@ -13,7 +13,7 @@
 
 local ReGui = {
 	--// Package data
-	Version = "1.4.3",
+	Version = "1.4.4",
 	Author = "Depso",
 	License = "MIT",
 	Repository = "https://github.com/depthso/Dear-ReGui/",
@@ -27,6 +27,9 @@ local ReGui = {
 	TooltipOffset = 15,
 	IniToSave = {
 		"Value"
+	},
+	ClassIgnored = {
+		"Visible"
 	},
 
 	--// Objects
@@ -1262,12 +1265,17 @@ function ReGui:Init(Overwrites)
 		end,
 	}, true)
 
-	--// Input events
+	--// Containers
 	local Container = self.Container
 	local TooltipOffset = self.TooltipOffset
 	local ActiveTooltips = self.ActiveTooltips
 	local Overlays = Container.Overlays
+	local Windows = Container.Windows
 	local LastClick = 0
+	
+	self:SetProperties(Windows, {
+		OnTopOfCoreBlur = true
+	})
 
 	--// Create tooltips container
 	self.TooltipsContainer = ReGui.Elements:Overlay({
@@ -1534,6 +1542,7 @@ function ReGui:SetAnimation(Object: GuiObject, Reference: (string|table), Listen
 	Listener = Listener or Object
 
 	local Animations = self.Animations
+	local IsMobile = self.HasTouchScreen
 	
 	--// Get animation properties
 	local Data = Reference 
@@ -1603,10 +1612,12 @@ function ReGui:SetAnimation(Object: GuiObject, Reference: (string|table), Listen
 
 		--// Connect animation to signal
 		local Signal = Listener[SignalName]
-		local Connection = Signal:Connect(OnSignal)
-
-		--// Collect signal into array
-		self:AddAnimationSignal(Listener, Connection)
+		
+		--// Prevent animations for mobile devices
+		if not IsMobile then
+			local Connection = Signal:Connect(OnSignal)
+			self:AddAnimationSignal(Listener, Connection)
+		end
 
 		Signals[SignalName] = OnSignal
 
@@ -1926,6 +1937,7 @@ export type DetectHover = {
 }
 function ReGui:DetectHover(Object: GuiObject, Config: DetectHover)
 	Config = Config or {}
+	Config.Hovering = false
 
 	--// Unpack configuration
 	local OnInput = Config.OnInput
@@ -1934,8 +1946,6 @@ function ReGui:DetectHover(Object: GuiObject, Config: DetectHover)
 	local MouseMove = Config.MouseMove
 	local MouseEnter = Config.MouseEnter
 	local MouseOnly = Config.MouseOnly
-
-	Config.Hovering = false
 
 	local function Update(Input, IsHovering: boolean?, IsMouseEvent: boolean?)
 		--// Check if the input is mouse or touch
@@ -2122,14 +2132,26 @@ function ReGui:ApplyStyle(Object: GuiObject, StyleName: string)
 	})
 end
 
+function ReGui:ClassIgnores(Key: string): boolean
+	local Ignores = self.ClassIgnored
+	local Index = table.find(Ignores, Key)
+	
+	return Index and true or false
+end
+
 function ReGui:MergeMetatables(Class, Object: GuiObject)
 	local Debug = self.Debug
+	local NewIgnores = self.NewIndexIgnores
 	local Metadata = {}
 
 	Metadata.__index = function(_, Key: string)
+		local Ignored = self:ClassIgnores(Key)
+		
 		--// Fetch value from class
 		local Value = Class[Key]
-		if Value ~= nil then return Value end
+		if Value ~= nil and not Ignored then 
+			return Value 
+		end
 
 		--// Fetch value from Object
 		local Success, Value = pcall(function()
@@ -2141,13 +2163,17 @@ function ReGui:MergeMetatables(Class, Object: GuiObject)
 	end
 
 	Metadata.__newindex = function(_, Key: string, Value)
-		local IsClassValue = Class[Key] ~= nil or typeof(Value) == "function"
-
-		if IsClassValue then
+		local Ignored = self:ClassIgnores(Key)
+		local IsFunc = typeof(Value) == "function"
+		
+		--// Class only
+		local IsClass = Class[Key] ~= nil or IsFunc
+		if IsClass and not Ignored then
 			Class[Key] = Value
 			return
 		end
-
+		
+		--// Test on Object
 		xpcall(function()
 			Object[Key] = Value
 		end, function(err)
@@ -6433,30 +6459,6 @@ local function GenerateCFrameInput(Name: string, InputType: string, InputCount: 
 	})
 end
 
-GenerateMultiInput("InputInt2", "InputInt", 2, {NoButtons=true})
-GenerateMultiInput("InputInt3", "InputInt", 3, {NoButtons=true})
-GenerateMultiInput("InputInt4", "InputInt", 4, {NoButtons=true})
-GenerateMultiInput("SliderInt2", "SliderInt", 2)
-GenerateMultiInput("SliderInt3", "SliderInt", 3)
-GenerateMultiInput("SliderInt4", "SliderInt", 4)
-GenerateMultiInput("SliderFloat2", "SliderFloat", 2)
-GenerateMultiInput("SliderFloat3", "SliderFloat", 3)
-GenerateMultiInput("SliderFloat4", "SliderFloat", 4)
-GenerateMultiInput("DragInt2", "DragInt", 2)
-GenerateMultiInput("DragInt3", "DragInt", 3)
-GenerateMultiInput("DragInt4", "DragInt", 4)
-GenerateMultiInput("DragFloat2", "DragFloat", 2)
-GenerateMultiInput("DragFloat3", "DragFloat", 3)
-GenerateMultiInput("DragFloat4", "DragFloat", 4)
-
-GenerateColor3Input("InputColor3", "InputInt3")
-GenerateColor3Input("SliderColor3", "SliderInt3")
-GenerateColor3Input("DragColor3", "DragInt3")
-
-GenerateCFrameInput("InputCFrame", "InputInt3")
-GenerateCFrameInput("SliderCFrame", "SliderInt3")
-GenerateCFrameInput("DragCFrame", "DragInt3")
-
 ReGui:DefineElement("SliderProgress", {
 	Base = {
 		Label = "Slider Progress",
@@ -7782,5 +7784,29 @@ ReGui:DefineElement("PopupModal", {
 		return ModalClass, ModalEffect
 	end,
 })
+
+GenerateMultiInput("InputInt2", "InputInt", 2, {NoButtons=true})
+GenerateMultiInput("InputInt3", "InputInt", 3, {NoButtons=true})
+GenerateMultiInput("InputInt4", "InputInt", 4, {NoButtons=true})
+GenerateMultiInput("SliderInt2", "SliderInt", 2)
+GenerateMultiInput("SliderInt3", "SliderInt", 3)
+GenerateMultiInput("SliderInt4", "SliderInt", 4)
+GenerateMultiInput("SliderFloat2", "SliderFloat", 2)
+GenerateMultiInput("SliderFloat3", "SliderFloat", 3)
+GenerateMultiInput("SliderFloat4", "SliderFloat", 4)
+GenerateMultiInput("DragInt2", "DragInt", 2)
+GenerateMultiInput("DragInt3", "DragInt", 3)
+GenerateMultiInput("DragInt4", "DragInt", 4)
+GenerateMultiInput("DragFloat2", "DragFloat", 2)
+GenerateMultiInput("DragFloat3", "DragFloat", 3)
+GenerateMultiInput("DragFloat4", "DragFloat", 4)
+
+GenerateColor3Input("InputColor3", "InputInt3")
+GenerateColor3Input("SliderColor3", "SliderInt3")
+GenerateColor3Input("DragColor3", "DragInt3")
+
+GenerateCFrameInput("InputCFrame", "InputInt3")
+GenerateCFrameInput("SliderCFrame", "SliderInt3")
+GenerateCFrameInput("DragCFrame", "DragInt3")
 
 return ReGui
