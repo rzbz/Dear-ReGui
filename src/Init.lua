@@ -58,6 +58,7 @@ local Animation = require("@classes/Animations.lua")
 local Signaling = require("@classes/Signaling.lua")
 ReGui.DemoWindow = require("@src/Demo Window.lua")
 ReGui.Services = Wrappers.Services
+ReGui.Animation = Animation
 
 --// Configurations
 ReGui.Icons = require("@config/Icons.lua")

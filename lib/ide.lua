@@ -999,8 +999,7 @@ Lib.CodeFrame = (function()
 		frame.TextTransparency = 1
 		frame.BackgroundColor3=Color3.fromRGB(40, 40, 40);
 		frame.BorderSizePixel=0; 
-		frame.Size=UDim2.fromOffset(50,50);
-		frame.AutomaticSize=Enum.AutomaticSize.Y;
+		frame.Size=UDim2.fromOffset(100,100);
 		frame.Visible=true;
 		local elems = {}
 

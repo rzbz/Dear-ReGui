@@ -233,33 +233,32 @@ math.floor(S*0.05)+1 elseif R<0 then I=math.ceil(R*0.05)-1 end N()end end)L=i.
 RenderStepped:Connect(function()if H~=0 or I~=0 then x:ScrollDelta(I,H)N()end
 end)x:Refresh()end end)end function p.MakeEditorFrame(D)local E=Instance.new
 'TextButton'E.BackgroundTransparency=1 E.TextTransparency=1 E.BackgroundColor3=
-Color3.fromRGB(40,40,40)E.BorderSizePixel=0 E.Size=UDim2.fromOffset(50,50)E.
-AutomaticSize=Enum.AutomaticSize.Y E.Visible=true local F,G={},Instance.new
-'Frame'G.Name='Lines'G.BackgroundTransparency=1 G.Size=UDim2.new(1,0,1,0)G.
-ClipsDescendants=true G.Parent=E local H=Instance.new'TextLabel'H.Name=
-'LineNumbers'H.BackgroundTransparency=1 H.FontFace=D.FontFace H.TextXAlignment=
-Enum.TextXAlignment.Right H.TextYAlignment=Enum.TextYAlignment.Top H.
-ClipsDescendants=true H.RichText=true H.Parent=E f.Name='Cursor'f.
-BackgroundColor3=Color3.fromRGB(220,220,220)f.BorderSizePixel=0 f.Parent=E local
-I=Instance.new'TextBox'I.Name='EditBox'I.MultiLine=true I.Visible=false I.Parent
-=E I.TextSize=D.FontSize z.Invis=j:Create(f,TweenInfo.new(0,Enum.EasingStyle.
-Quart,Enum.EasingDirection.Out),{BackgroundTransparency=1})z.Vis=j:Create(f,
-TweenInfo.new(0,Enum.EasingStyle.Quart,Enum.EasingDirection.Out),{
-BackgroundTransparency=0})F.LinesFrame=G F.LineNumbersLabel=H F.Cursor=f F.
-EditBox=I local J=Instance.new'Frame'J.BackgroundColor3=Color3.new(
-0.15686275064945,0.15686275064945,0.15686275064945)J.BorderSizePixel=0 J.Name=
-'ScrollCorner'J.Position=UDim2.new(1,-10,1,-10)J.Size=UDim2.new(0,10,0,10)J.
-Visible=false F.ScrollCorner=J F.ScrollCorner.Parent=E G.InputBegan:Connect(
-function(K)if K.UserInputType==Enum.UserInputType.MouseButton1 then D:
-SetEditing(true,K)end end)D.Frame=E D.Gui=E D.GuiElems=F B(D)C(D)return E end p.
-GetSelectionText=function(D)if not D:IsValidRange()then return''end local E=D.
-SelectionRange local F,G,H,I=E[1][1],E[1][2],E[2][1],E[2][2]local J,K=I-G,D.
-Lines if not K[G+1]or not K[I+1]then return''end if J==0 then return D:
-ConvertText(K[G+1]:sub(F+1,H),false)end local L,M=K[G+1]:sub(F+1),K[I+1]:sub(1,H
-)local N=L..'\n'for O=G+1,I-1 do N=N..K[O+1]..'\n'end N=N..M return D:
-ConvertText(N,false)end p.SetCopyableSelection=function(D)local E,F=D:
-GetSelectionText(),D.GuiElems.EditBox D.EditBoxCopying=true F.Text=E F.
-SelectionStart=1 F.CursorPosition=#F.Text+1 D.EditBoxCopying=false end p.
+Color3.fromRGB(40,40,40)E.BorderSizePixel=0 E.Size=UDim2.fromOffset(100,100)E.
+Visible=true local F,G={},Instance.new'Frame'G.Name='Lines'G.
+BackgroundTransparency=1 G.Size=UDim2.new(1,0,1,0)G.ClipsDescendants=true G.
+Parent=E local H=Instance.new'TextLabel'H.Name='LineNumbers'H.
+BackgroundTransparency=1 H.FontFace=D.FontFace H.TextXAlignment=Enum.
+TextXAlignment.Right H.TextYAlignment=Enum.TextYAlignment.Top H.ClipsDescendants
+=true H.RichText=true H.Parent=E f.Name='Cursor'f.BackgroundColor3=Color3.
+fromRGB(220,220,220)f.BorderSizePixel=0 f.Parent=E local I=Instance.new'TextBox'
+I.Name='EditBox'I.MultiLine=true I.Visible=false I.Parent=E I.TextSize=D.
+FontSize z.Invis=j:Create(f,TweenInfo.new(0,Enum.EasingStyle.Quart,Enum.
+EasingDirection.Out),{BackgroundTransparency=1})z.Vis=j:Create(f,TweenInfo.new(0
+,Enum.EasingStyle.Quart,Enum.EasingDirection.Out),{BackgroundTransparency=0})F.
+LinesFrame=G F.LineNumbersLabel=H F.Cursor=f F.EditBox=I local J=Instance.new
+'Frame'J.BackgroundColor3=Color3.new(0.15686275064945,0.15686275064945,
+0.15686275064945)J.BorderSizePixel=0 J.Name='ScrollCorner'J.Position=UDim2.new(1
+,-10,1,-10)J.Size=UDim2.new(0,10,0,10)J.Visible=false F.ScrollCorner=J F.
+ScrollCorner.Parent=E G.InputBegan:Connect(function(K)if K.UserInputType==Enum.
+UserInputType.MouseButton1 then D:SetEditing(true,K)end end)D.Frame=E D.Gui=E D.
+GuiElems=F B(D)C(D)return E end p.GetSelectionText=function(D)if not D:
+IsValidRange()then return''end local E=D.SelectionRange local F,G,H,I=E[1][1],E[
+1][2],E[2][1],E[2][2]local J,K=I-G,D.Lines if not K[G+1]or not K[I+1]then return
+''end if J==0 then return D:ConvertText(K[G+1]:sub(F+1,H),false)end local L,M=K[
+G+1]:sub(F+1),K[I+1]:sub(1,H)local N=L..'\n'for O=G+1,I-1 do N=N..K[O+1]..'\n'
+end N=N..M return D:ConvertText(N,false)end p.SetCopyableSelection=function(D)
+local E,F=D:GetSelectionText(),D.GuiElems.EditBox D.EditBoxCopying=true F.Text=E
+F.SelectionStart=1 F.CursorPosition=#F.Text+1 D.EditBoxCopying=false end p.
 ConnectEditBoxEvent=function(D)if D.EditBoxEvent then D.EditBoxEvent:Disconnect(
 )end D.EditBoxEvent=h.InputBegan:Connect(function(E)if E.UserInputType~=Enum.
 UserInputType.Keyboard then return end local F,G,H=Enum.KeyCode,E.KeyCode,
@@ -898,50 +897,50 @@ DoubleClickThreshold=0.3,TooltipOffset=15,IniToSave={'Value'},ClassIgnored={
 'Visible'},Container=nil,Prefabs=nil,FocusedWindow=nil,HasTouchScreen=false,
 Services=nil,Elements={},_FlagCache={},_ErrorCache={},Windows={},ActiveTooltips=
 {},IniSettings={},AnimationConnections={}},a.load'a',a.load'b',a.load'c',a.load
-'d'aa.DemoWindow=a.load'e'aa.Services=ad.Services aa.Icons=a.load'f'aa.Accent=a.
-load'g'aa.ThemeConfigs=a.load'h'aa.ElementFlags=a.load'i'local ag=a.load'j'aa.
-ElementColors=ag.Coloring aa.Animations=ag.Animations aa.Styles=ag.Styles ad:
-CallOnInitConnections(aa)aa.DynamicImages={[aa.Icons.Arrow]='ImageFollowsText',[
-aa.Icons.Close]='ImageFollowsText',[aa.Icons.Dot]='ImageFollowsText'}local ah=aa
-.Services local c,d,e,f,g=ah.HttpService,ah.Players,ah.UserInputService,ah.
-RunService,ah.InsertService local h=d.LocalPlayer aa.PlayerGui=h.PlayerGui aa.
-Mouse=h:GetMouse()local i=function()end function GetAndRemove(j,k)local l=k[j]if
-l then k[j]=nil end return l end function MoveTableItem(j,k,l)local p=table.
-find(j,k)if not p then return end local q=table.remove(j,p)table.insert(j,l,q)
-end function Merge(j,k)for l,p in next,k do j[l]=p end end function Copy(j,k)
-local l=table.clone(j)if k then Merge(l,k)end return l end function aa:Warn(...)
-warn('[ReGui]::',...)end function aa:Error(...)local j=aa:Concat({...},' ')local
-k=`\n[ReGui]:: {j}`coroutine.wrap(error)(k)end function aa:IsDoubleClick(j)local
-k=self.DoubleClickThreshold return j<k end function aa:StyleContainers()local j=
-self.Container local k,l=j.Overlays,j.Windows self:SetProperties(l,{
-OnTopOfCoreBlur=true})self:SetProperties(k,{OnTopOfCoreBlur=true})end function
-aa:Init(j)j=j or{}if self.Initialised then return end Merge(self,j)Merge(self,{
-Initialised=true,HasGamepad=self:IsConsoleDevice(),HasTouchScreen=self:
-IsMobileDevice()})self:CheckConfig(self,{ContainerParent=function()return ad:
-ResolveUIParent()end,Prefabs=function()return self:LoadPrefabs()end},true)self:
-CheckConfig(self,{Container=function()return self:InsertPrefab('Container',{
-Parent=self.ContainerParent,Name=self.ContainerName})end},true)local k,l,p=self.
-Container,self.TooltipOffset,self.ActiveTooltips local q,r=k.Overlays,0 self:
-StyleContainers()self.TooltipsContainer=self.Elements:Overlay{Parent=q}e.
-InputBegan:Connect(function(s)if not self:IsMouseEvent(s,true)then return end
-local t=tick()local u=t-r local v=self:IsDoubleClick(u)r=v and 0 or t self:
-UpdateWindowFocuses()end)local s=function()local s,t=self.TooltipsContainer,#p>0
-s.Visible=t if not t then return end local u,v=aa:GetMouseLocation()local w=q.
-AbsolutePosition s.Position=UDim2.fromOffset(u-w.X+l,v-w.Y+l)end f:
-BindToRenderStep('ReGui_InputUpdate',Enum.RenderPriority.Input.Value,s)end
-function aa:CheckImportState()if self.Initialised then return end local j=self.
-PrefabsId local k=ad:CheckAssetUrl(j)local l,p=pcall(function()return g:
-LoadLocalAsset(k)end)self:Init{Prefabs=l and p or nil}end function aa:GetVersion
-()return self.Version end function aa:IsMobileDevice()return e.TouchEnabled end
-function aa:IsConsoleDevice()return e.GamepadEnabled end function aa:
-GetScreenSize()return workspace.CurrentCamera.ViewportSize end function aa:
-LoadPrefabs()local j,k=self.PlayerGui,'ReGui-Prefabs'local l=script:
-WaitForChild(k,2)if l then return l end local p=j:WaitForChild(k,2)if p then
-return p end return nil end function aa:CheckConfig(j,k,l,p)return ad:
-CheckConfig(j,k,l,p)end function aa:CreateInstance(j,k,l)local p=Instance.new(j,
-k)if l then local q=l.UsePropertiesList if not q then self:SetProperties(p,l)
-else self:ApplyFlags{Object=p,Class=l}end end return p end function aa:
-ConnectMouseEvent(j,k)local l,p,q,r,s=k.Callback,k.DoubleClick,k.
+'d'aa.DemoWindow=a.load'e'aa.Services=ad.Services aa.Animation=ae aa.Icons=a.
+load'f'aa.Accent=a.load'g'aa.ThemeConfigs=a.load'h'aa.ElementFlags=a.load'i'
+local ag=a.load'j'aa.ElementColors=ag.Coloring aa.Animations=ag.Animations aa.
+Styles=ag.Styles ad:CallOnInitConnections(aa)aa.DynamicImages={[aa.Icons.Arrow]=
+'ImageFollowsText',[aa.Icons.Close]='ImageFollowsText',[aa.Icons.Dot]=
+'ImageFollowsText'}local ah=aa.Services local c,d,e,f,g=ah.HttpService,ah.
+Players,ah.UserInputService,ah.RunService,ah.InsertService local h=d.LocalPlayer
+aa.PlayerGui=h.PlayerGui aa.Mouse=h:GetMouse()local i=function()end function
+GetAndRemove(j,k)local l=k[j]if l then k[j]=nil end return l end function
+MoveTableItem(j,k,l)local p=table.find(j,k)if not p then return end local q=
+table.remove(j,p)table.insert(j,l,q)end function Merge(j,k)for l,p in next,k do
+j[l]=p end end function Copy(j,k)local l=table.clone(j)if k then Merge(l,k)end
+return l end function aa:Warn(...)warn('[ReGui]::',...)end function aa:Error(...
+)local j=aa:Concat({...},' ')local k=`\n[ReGui]:: {j}`coroutine.wrap(error)(k)
+end function aa:IsDoubleClick(j)local k=self.DoubleClickThreshold return j<k end
+function aa:StyleContainers()local j=self.Container local k,l=j.Overlays,j.
+Windows self:SetProperties(l,{OnTopOfCoreBlur=true})self:SetProperties(k,{
+OnTopOfCoreBlur=true})end function aa:Init(j)j=j or{}if self.Initialised then
+return end Merge(self,j)Merge(self,{Initialised=true,HasGamepad=self:
+IsConsoleDevice(),HasTouchScreen=self:IsMobileDevice()})self:CheckConfig(self,{
+ContainerParent=function()return ad:ResolveUIParent()end,Prefabs=function()
+return self:LoadPrefabs()end},true)self:CheckConfig(self,{Container=function()
+return self:InsertPrefab('Container',{Parent=self.ContainerParent,Name=self.
+ContainerName})end},true)local k,l,p=self.Container,self.TooltipOffset,self.
+ActiveTooltips local q,r=k.Overlays,0 self:StyleContainers()self.
+TooltipsContainer=self.Elements:Overlay{Parent=q}e.InputBegan:Connect(function(s
+)if not self:IsMouseEvent(s,true)then return end local t=tick()local u=t-r local
+v=self:IsDoubleClick(u)r=v and 0 or t self:UpdateWindowFocuses()end)local s=
+function()local s,t=self.TooltipsContainer,#p>0 s.Visible=t if not t then return
+end local u,v=aa:GetMouseLocation()local w=q.AbsolutePosition s.Position=UDim2.
+fromOffset(u-w.X+l,v-w.Y+l)end f:BindToRenderStep('ReGui_InputUpdate',Enum.
+RenderPriority.Input.Value,s)end function aa:CheckImportState()if self.
+Initialised then return end local j=self.PrefabsId local k=ad:CheckAssetUrl(j)
+local l,p=pcall(function()return g:LoadLocalAsset(k)end)self:Init{Prefabs=l and
+p or nil}end function aa:GetVersion()return self.Version end function aa:
+IsMobileDevice()return e.TouchEnabled end function aa:IsConsoleDevice()return e.
+GamepadEnabled end function aa:GetScreenSize()return workspace.CurrentCamera.
+ViewportSize end function aa:LoadPrefabs()local j,k=self.PlayerGui,
+'ReGui-Prefabs'local l=script:WaitForChild(k,2)if l then return l end local p=j:
+WaitForChild(k,2)if p then return p end return nil end function aa:CheckConfig(j
+,k,l,p)return ad:CheckConfig(j,k,l,p)end function aa:CreateInstance(j,k,l)local
+p=Instance.new(j,k)if l then local q=l.UsePropertiesList if not q then self:
+SetProperties(p,l)else self:ApplyFlags{Object=p,Class=l}end end return p end
+function aa:ConnectMouseEvent(j,k)local l,p,q,r,s=k.Callback,k.DoubleClick,k.
 OnlyMouseHovering,0 if q then s=self:DetectHover(q)end j.Activated:Connect(
 function(...)local t=tick()local u=t-r if s and not s.Hovering then return end
 if p then if not aa:IsDoubleClick(u)then r=t return end r=0 end l(...)end)end
