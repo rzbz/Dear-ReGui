@@ -242,30 +242,30 @@ TextXAlignment.Right H.TextYAlignment=Enum.TextYAlignment.Top H.ClipsDescendants
 =true H.RichText=true H.Parent=E f.Name='Cursor'f.BackgroundColor3=Color3.
 fromRGB(220,220,220)f.BorderSizePixel=0 f.Parent=E local I=Instance.new'TextBox'
 I.Name='EditBox'I.MultiLine=true I.Visible=false I.Parent=E I.TextSize=D.
-FontSize z.Invis=j:Create(f,TweenInfo.new(0,Enum.EasingStyle.Quart,Enum.
-EasingDirection.Out),{BackgroundTransparency=1})z.Vis=j:Create(f,TweenInfo.new(0
-,Enum.EasingStyle.Quart,Enum.EasingDirection.Out),{BackgroundTransparency=0})F.
-LinesFrame=G F.LineNumbersLabel=H F.Cursor=f F.EditBox=I local J=Instance.new
-'Frame'J.BackgroundColor3=Color3.new(0.15686275064945,0.15686275064945,
-0.15686275064945)J.BorderSizePixel=0 J.Name='ScrollCorner'J.Position=UDim2.new(1
-,-10,1,-10)J.Size=UDim2.new(0,10,0,10)J.Visible=false F.ScrollCorner=J F.
-ScrollCorner.Parent=E G.InputBegan:Connect(function(K)if K.UserInputType==Enum.
-UserInputType.MouseButton1 then D:SetEditing(true,K)end end)D.Frame=E D.Gui=E D.
-GuiElems=F B(D)C(D)return E end p.GetSelectionText=function(D)if not D:
-IsValidRange()then return''end local E=D.SelectionRange local F,G,H,I=E[1][1],E[
-1][2],E[2][1],E[2][2]local J,K=I-G,D.Lines if not K[G+1]or not K[I+1]then return
-''end if J==0 then return D:ConvertText(K[G+1]:sub(F+1,H),false)end local L,M=K[
-G+1]:sub(F+1),K[I+1]:sub(1,H)local N=L..'\n'for O=G+1,I-1 do N=N..K[O+1]..'\n'
-end N=N..M return D:ConvertText(N,false)end p.SetCopyableSelection=function(D)
-local E,F=D:GetSelectionText(),D.GuiElems.EditBox D.EditBoxCopying=true F.Text=E
-F.SelectionStart=1 F.CursorPosition=#F.Text+1 D.EditBoxCopying=false end p.
-ConnectEditBoxEvent=function(D)if D.EditBoxEvent then D.EditBoxEvent:Disconnect(
-)end D.EditBoxEvent=h.InputBegan:Connect(function(E)if E.UserInputType~=Enum.
-UserInputType.Keyboard then return end local F,G,H=Enum.KeyCode,E.KeyCode,
-function(F,G)local H,I H=h.InputEnded:Connect(function(J)if J.KeyCode~=F then
-return end H:Disconnect()I=true end)G()n.FastWait(0.5)while not I do G()n.
-FastWait(0.03)end end if G==F.Down then H(F.Down,function()D.CursorX=D.
-FloatCursorX D.CursorY=D.CursorY+1 D:UpdateCursor()D:JumpToCursor()end)elseif G
+FontSize I.FontFace=D.FontFace z.Invis=j:Create(f,TweenInfo.new(0,Enum.
+EasingStyle.Quart,Enum.EasingDirection.Out),{BackgroundTransparency=1})z.Vis=j:
+Create(f,TweenInfo.new(0,Enum.EasingStyle.Quart,Enum.EasingDirection.Out),{
+BackgroundTransparency=0})local J=Instance.new'Frame'J.BackgroundColor3=Color3.
+new(0.15686275064945,0.15686275064945,0.15686275064945)J.BorderSizePixel=0 J.
+Name='ScrollCorner'J.Position=UDim2.new(1,-10,1,-10)J.Size=UDim2.new(0,10,0,10)J
+.Visible=false F.ScrollCorner=J F.LinesFrame=G F.LineNumbersLabel=H F.Cursor=f F
+.EditBox=I F.ScrollCorner.Parent=E G.InputBegan:Connect(function(K)if K.
+UserInputType==Enum.UserInputType.MouseButton1 then D:SetEditing(true,K)end end)
+D.Frame=E D.Gui=E D.GuiElems=F B(D)C(D)return E end p.GetSelectionText=function(
+D)if not D:IsValidRange()then return''end local E=D.SelectionRange local F,G,H,I
+=E[1][1],E[1][2],E[2][1],E[2][2]local J,K=I-G,D.Lines if not K[G+1]or not K[I+1]
+then return''end if J==0 then return D:ConvertText(K[G+1]:sub(F+1,H),false)end
+local L,M=K[G+1]:sub(F+1),K[I+1]:sub(1,H)local N=L..'\n'for O=G+1,I-1 do N=N..K[
+O+1]..'\n'end N=N..M return D:ConvertText(N,false)end p.SetCopyableSelection=
+function(D)local E,F=D:GetSelectionText(),D.GuiElems.EditBox D.EditBoxCopying=
+true F.Text=E F.SelectionStart=1 F.CursorPosition=#F.Text+1 D.EditBoxCopying=
+false end p.ConnectEditBoxEvent=function(D)if D.EditBoxEvent then D.EditBoxEvent
+:Disconnect()end D.EditBoxEvent=h.InputBegan:Connect(function(E)if E.
+UserInputType~=Enum.UserInputType.Keyboard then return end local F,G,H=Enum.
+KeyCode,E.KeyCode,function(F,G)local H,I H=h.InputEnded:Connect(function(J)if J.
+KeyCode~=F then return end H:Disconnect()I=true end)G()n.FastWait(0.5)while not
+I do G()n.FastWait(0.03)end end if G==F.Down then H(F.Down,function()D.CursorX=D
+.FloatCursorX D.CursorY=D.CursorY+1 D:UpdateCursor()D:JumpToCursor()end)elseif G
 ==F.Up then H(F.Up,function()D.CursorX=D.FloatCursorX D.CursorY=D.CursorY-1 D:
 UpdateCursor()D:JumpToCursor()end)elseif G==F.Left then H(F.Left,function()local
 I=D.Lines[D.CursorY+1]or''D.CursorX=D.CursorX-1-(I:sub(D.CursorX-3,D.CursorX)==x
@@ -1721,50 +1721,50 @@ ContentCanvas=P,WindowClass=R,Body=Q})aa:ConnectMouseEvent(L,{DoubleClick=true,
 OnlyMouseHovering=M,Callback=function(...)if not N.OpenOnDoubleClick then return
 end if N.NoCollapse then return end N:ToggleCollapsed()end})if not x then N:
 AddDefaultTitleButtons()end N:SetTitle(B)N:SetCollapsed(y,true)N:SetTheme(E)N:
-UpdateConfig(u)N:SetFocused()local V=U.Grab aa:SetAnimation(V,'TextButtons')R:
-TagElements{[V]='ResizeGrab',[M]='TitleBar',[T]='Window'}if not G then table.
-insert(v,R)end return R,K end})aa:DefineElement('TabsWindow',{Export=true,Base={
-NoTabs=false,AutoSelectNewTabs=true},Create=function(t,u)return t:Window(u)end})
-aa:DefineElement('PopupCanvas',{Base={AutoClose=false,Scroll=false,Visible=true,
-Spacing=UDim.new(0,1),AutomaticSize=Enum.AutomaticSize.XY,MaxSizeY=150,MinSizeX=
-100,MaxSizeX=math.huge,OnClosed=i},Create=function(t,u)local v,w,x,y,A,B,C=u.
-RelativeTo,u.MaxSizeY,u.MinSizeX,u.MaxSizeX,u.Visible,u.AutoClose,u.NoAnimation
-u.Parent=aa.Container.Overlays local D,E=t:OverlayScroll(u)local F=E.UIStroke
-local G,H,I,J,K,L,M=F.Thickness,E.Parent.AbsolutePosition,(aa:DetectHover(E,{
-MouseOnly=true,OnInput=function(G,H)if G then return end if not E.Visible then
-return end u:OnFocusLost()end}))function u:FetchScales()local N=D:GetCanvasSize(
-)J=v.AbsolutePosition K=v.AbsoluteSize L=math.clamp(N.Y,K.Y,w)M=math.clamp(K.X,x
-,y)end function u:UpdatePosition()E.Position=UDim2.fromOffset(J.X-H.X+G,J.Y-H.Y+
-K.Y)end function u:GetScale(N)local O,P=UDim2.fromOffset(M,L),UDim2.fromOffset(M
-,0)return N and O or P end function u:IsMouseHovering()return I.Hovering end
-function u:OnFocusLost()local N=self.OnClosed self:SetPopupVisible(false)N(self)
-if B then self:ClosePopup()end end function u:ClosePopup(N)self:SetPopupVisible(
-false,C,N)I:Disconnect()E:Remove()end function u:SetPopupVisible(N,O)if E.
-Visible==N then return end v.Interactable=not N self:UpdateScales(N,C,O)self.
-Visible=N end function u:UpdateScales(N,O,P)local Q=D:GetThemeKey
-'AnimationTweenInfo'N=N==nil and E.Visible or N u:FetchScales()u:UpdatePosition(
-)local R=ae:Tween{Tweeninfo=Q,Object=E,NoAnimation=O,EndProperties={Size=u:
-GetScale(N),Visible=N}}if R and P then R.Completed:Wait()end end u:UpdateScales(
-false,true)u:SetPopupVisible(A)D.OnChildChange:Connect(u.UpdateScales)return D,E
-end})aa:DefineElement('PopupModal',{Export=true,Base={NoAnimation=false,
-NoCollapse=true,NoClose=true,NoResize=true,NoSelect=true,NoAutoFlags=true,
-NoWindowRegistor=true,NoScroll=true},Create=function(t,u)local v,w,x=t.
-WindowClass,(u.NoAnimation)u.Parent=aa.Container.Overlays if v then x=v:
-GetThemeKey'ModalWindowDimTweenInfo'u.Theme=v.Theme end local y=aa:InsertPrefab(
-'ModalEffect',u)local A=t:Window(Copy(u,{NoAutoFlags=false,Parent=y,AnchorPoint=
-Vector2.new(0.5,0.5),Position=UDim2.fromScale(0.5,0.5),Size=UDim2.fromOffset(372
-,38),AutomaticSize=Enum.AutomaticSize.Y}))function u:ClosePopup()ae:Tween{Object
-=y,Tweeninfo=x,NoAnimation=w,EndProperties={BackgroundTransparency=1},Completed=
-function()y:Destroy()end}A:Close()end ae:Tween{Object=y,Tweeninfo=x,NoAnimation=
-w,StartProperties={BackgroundTransparency=1},EndProperties={
-BackgroundTransparency=0.8}}t:TagElements{[y]='ModalWindowDim'}local B=aa:
-MergeMetatables(u,A)return B,y end})p('InputInt2','InputInt',2,{NoButtons=true})
-p('InputInt3','InputInt',3,{NoButtons=true})p('InputInt4','InputInt',4,{
-NoButtons=true})p('SliderInt2','SliderInt',2)p('SliderInt3','SliderInt',3)p(
-'SliderInt4','SliderInt',4)p('SliderFloat2','SliderFloat',2)p('SliderFloat3',
-'SliderFloat',3)p('SliderFloat4','SliderFloat',4)p('DragInt2','DragInt',2)p(
-'DragInt3','DragInt',3)p('DragInt4','DragInt',4)p('DragFloat2','DragFloat',2)p(
-'DragFloat3','DragFloat',3)p('DragFloat4','DragFloat',4)q('InputColor3',
-'InputInt3')q('SliderColor3','SliderInt3')q('DragColor3','DragInt3')r(
-'InputCFrame','InputInt3')r('SliderCFrame','SliderInt3')r('DragCFrame',
-'DragInt3')return aa
+UpdateConfig(u)N:SetFocused()if not G then table.insert(v,R)end local V=U.Grab
+aa:SetAnimation(V,'TextButtons')aa:SetFocusedWindow(R)R:TagElements{[V]=
+'ResizeGrab',[M]='TitleBar',[T]='Window'}return R,K end})aa:DefineElement(
+'TabsWindow',{Export=true,Base={NoTabs=false,AutoSelectNewTabs=true},Create=
+function(t,u)return t:Window(u)end})aa:DefineElement('PopupCanvas',{Base={
+AutoClose=false,Scroll=false,Visible=true,Spacing=UDim.new(0,1),AutomaticSize=
+Enum.AutomaticSize.XY,MaxSizeY=150,MinSizeX=100,MaxSizeX=math.huge,OnClosed=i},
+Create=function(t,u)local v,w,x,y,A,B,C=u.RelativeTo,u.MaxSizeY,u.MinSizeX,u.
+MaxSizeX,u.Visible,u.AutoClose,u.NoAnimation u.Parent=aa.Container.Overlays
+local D,E=t:OverlayScroll(u)local F=E.UIStroke local G,H,I,J,K,L,M=F.Thickness,E
+.Parent.AbsolutePosition,(aa:DetectHover(E,{MouseOnly=true,OnInput=function(G,H)
+if G then return end if not E.Visible then return end u:OnFocusLost()end}))
+function u:FetchScales()local N=D:GetCanvasSize()J=v.AbsolutePosition K=v.
+AbsoluteSize L=math.clamp(N.Y,K.Y,w)M=math.clamp(K.X,x,y)end function u:
+UpdatePosition()E.Position=UDim2.fromOffset(J.X-H.X+G,J.Y-H.Y+K.Y)end function u
+:GetScale(N)local O,P=UDim2.fromOffset(M,L),UDim2.fromOffset(M,0)return N and O
+or P end function u:IsMouseHovering()return I.Hovering end function u:
+OnFocusLost()local N=self.OnClosed self:SetPopupVisible(false)N(self)if B then
+self:ClosePopup()end end function u:ClosePopup(N)self:SetPopupVisible(false,C,N)
+I:Disconnect()E:Remove()end function u:SetPopupVisible(N,O)if E.Visible==N then
+return end v.Interactable=not N self:UpdateScales(N,C,O)self.Visible=N end
+function u:UpdateScales(N,O,P)local Q=D:GetThemeKey'AnimationTweenInfo'N=N==nil
+and E.Visible or N u:FetchScales()u:UpdatePosition()local R=ae:Tween{Tweeninfo=Q
+,Object=E,NoAnimation=O,EndProperties={Size=u:GetScale(N),Visible=N}}if R and P
+then R.Completed:Wait()end end u:UpdateScales(false,true)u:SetPopupVisible(A)D.
+OnChildChange:Connect(u.UpdateScales)return D,E end})aa:DefineElement(
+'PopupModal',{Export=true,Base={NoAnimation=false,NoCollapse=true,NoClose=true,
+NoResize=true,NoSelect=true,NoAutoFlags=true,NoWindowRegistor=true,NoScroll=true
+},Create=function(t,u)local v,w,x=t.WindowClass,(u.NoAnimation)u.Parent=aa.
+Container.Overlays if v then x=v:GetThemeKey'ModalWindowDimTweenInfo'u.Theme=v.
+Theme end local y=aa:InsertPrefab('ModalEffect',u)local A=t:Window(Copy(u,{
+NoAutoFlags=false,Parent=y,AnchorPoint=Vector2.new(0.5,0.5),Position=UDim2.
+fromScale(0.5,0.5),Size=UDim2.fromOffset(372,38),AutomaticSize=Enum.
+AutomaticSize.Y}))function u:ClosePopup()ae:Tween{Object=y,Tweeninfo=x,
+NoAnimation=w,EndProperties={BackgroundTransparency=1},Completed=function()y:
+Destroy()end}A:Close()end ae:Tween{Object=y,Tweeninfo=x,NoAnimation=w,
+StartProperties={BackgroundTransparency=1},EndProperties={BackgroundTransparency
+=0.8}}t:TagElements{[y]='ModalWindowDim'}local B=aa:MergeMetatables(u,A)return B
+,y end})p('InputInt2','InputInt',2,{NoButtons=true})p('InputInt3','InputInt',3,{
+NoButtons=true})p('InputInt4','InputInt',4,{NoButtons=true})p('SliderInt2',
+'SliderInt',2)p('SliderInt3','SliderInt',3)p('SliderInt4','SliderInt',4)p(
+'SliderFloat2','SliderFloat',2)p('SliderFloat3','SliderFloat',3)p('SliderFloat4'
+,'SliderFloat',4)p('DragInt2','DragInt',2)p('DragInt3','DragInt',3)p('DragInt4',
+'DragInt',4)p('DragFloat2','DragFloat',2)p('DragFloat3','DragFloat',3)p(
+'DragFloat4','DragFloat',4)q('InputColor3','InputInt3')q('SliderColor3',
+'SliderInt3')q('DragColor3','DragInt3')r('InputCFrame','InputInt3')r(
+'SliderCFrame','SliderInt3')r('DragCFrame','DragInt3')return aa

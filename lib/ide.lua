@@ -1031,19 +1031,21 @@ Lib.CodeFrame = (function()
 		editBox.Visible = false
 		editBox.Parent = frame
 		editBox.TextSize = self.FontSize
+		editBox.FontFace = self.FontFace
 
 		lineTweens.Invis = TweenService:Create(cursor,TweenInfo.new(0,Enum.EasingStyle.Quart,Enum.EasingDirection.Out),{BackgroundTransparency = 1})
 		lineTweens.Vis = TweenService:Create(cursor,TweenInfo.new(0,Enum.EasingStyle.Quart,Enum.EasingDirection.Out),{BackgroundTransparency = 0})
 
+		local scrcfrm = Instance.new('Frame')
+		scrcfrm.BackgroundColor3=Color3.new(0.15686275064945,0.15686275064945,0.15686275064945);scrcfrm.BorderSizePixel=0;scrcfrm.Name="ScrollCorner";scrcfrm.Position=UDim2.new(1,-10,1,-10);scrcfrm.Size=UDim2.new(0,10,0,10);scrcfrm.Visible=false;
+		
+		elems.ScrollCorner = scrcfrm
 		elems.LinesFrame = linesFrame
 		elems.LineNumbersLabel = lineNumbersLabel
 		elems.Cursor = cursor
 		elems.EditBox = editBox
-		local scrcfrm = Instance.new('Frame')
-		scrcfrm.BackgroundColor3=Color3.new(0.15686275064945,0.15686275064945,0.15686275064945);scrcfrm.BorderSizePixel=0;scrcfrm.Name="ScrollCorner";scrcfrm.Position=UDim2.new(1,-10,1,-10);scrcfrm.Size=UDim2.new(0,10,0,10);scrcfrm.Visible=false;
-		elems.ScrollCorner = scrcfrm
-
 		elems.ScrollCorner.Parent = frame
+		
 		linesFrame.InputBegan:Connect(function(input)
 			if input.UserInputType == Enum.UserInputType.MouseButton1 then
 				self:SetEditing(true,input)

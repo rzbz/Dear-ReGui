@@ -6478,20 +6478,21 @@ ReGui:DefineElement("Window", {
 		--// Update selection
 		Class:SetFocused()
 
+		--// Append to Windows array
+		if not NoWindowRegistor then
+			table.insert(Windows, WindowClass)
+		end
+
 		--// Register elements into Window Class
 		local ResizeGrab = ResizeConnection.Grab
 		ReGui:SetAnimation(ResizeGrab, "TextButtons")
+		ReGui:SetFocusedWindow(WindowClass)
 
 		WindowClass:TagElements({
 			[ResizeGrab] = "ResizeGrab",
 			[TitleBar] = "TitleBar",
 			[CanvasFrame] = "Window"
 		})
-
-		--// Append to Windows array
-		if not NoWindowRegistor then
-			table.insert(Windows, WindowClass)
-		end
 
 		return WindowClass, Window
 	end,
