@@ -4,6 +4,7 @@ This is perfect for beginners and performance.
 
 <!-- > Demo place: https://www.roblox.com/games/136436665525145/ReGui-Demo \ -->
 > Documentation: https://depso.gitbook.io/regui
+> Discord: https://discord.gg/s9ngmUDWgb
 
 ## Notices
 - For suggestions or questions, please visit the [discussions page](https://github.com/depthso/Dear-ReGui/discussions)
