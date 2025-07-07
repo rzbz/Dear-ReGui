@@ -874,73 +874,74 @@ BackgroundColor3='SliderGrab'},Button={BackgroundColor3='ButtonsBg',TextColor3=
 'TextFont',TextSize='TextSize',TextColor3='CollapsingHeaderText',
 BackgroundColor3='CollapsingHeaderBg'},Checkbox={BackgroundColor3='FrameBg'},
 CheckMark={ImageColor3='CheckMark',BackgroundColor3='CheckMark'},RadioButton={
-BackgroundColor3='ButtonsBg'}}aa.Styles={RadioButton={Animation='RadioButtons',
-CornerRadius=UDim.new(1,0)},Button={Animation='Buttons'},CollapsingHeader={
-Animation='Buttons'},TreeNode={Animation='TransparentButtons'},TransparentButton
-={Animation='TransparentButtons'}}aa.Animations={Invisible={Connections={
-MouseEnter={Visible=true},MouseLeave={Visible=false}},Init='MouseLeave'},Buttons
-={Connections={MouseEnter={BackgroundTransparency=0.3},MouseLeave={
-BackgroundTransparency=0.7}},Init='MouseLeave'},TextButtons={Connections={
-MouseEnter={TextTransparency=0.3},MouseLeave={TextTransparency=0.7}},Init=
-'MouseLeave'},TransparentButtons={Connections={MouseEnter={
-BackgroundTransparency=0.3},MouseLeave={BackgroundTransparency=1}},Init=
-'MouseLeave'},RadioButtons={Connections={MouseEnter={BackgroundTransparency=0.5}
-,MouseLeave={BackgroundTransparency=1}},Init='MouseLeave'},Inputs={Connections={
-MouseEnter={BackgroundTransparency=0},MouseLeave={BackgroundTransparency=0.5}},
-Init='MouseLeave'},Plots={Connections={MouseEnter={BackgroundTransparency=0.3},
-MouseLeave={BackgroundTransparency=0}},Init='MouseLeave'},Border={Connections={
-Selected={Transparency=0,Thickness=1},Deselected={Transparency=0.7,Thickness=1}}
-,Init='Selected'}}return aa end end local aa,ab,ad,ae,af={Version='1.4.5',Author
-='Depso',License='MIT',Repository='https://github.com/depthso/Dear-ReGui/',Debug
-=false,PrefabsId=71968920594655,DefaultTitle='ReGui',ContainerName='ReGui',
-DoubleClickThreshold=0.3,TooltipOffset=15,IniToSave={'Value'},ClassIgnored={
-'Visible'},Container=nil,Prefabs=nil,FocusedWindow=nil,HasTouchScreen=false,
-Services=nil,Elements={},_FlagCache={},_ErrorCache={},Windows={},ActiveTooltips=
-{},IniSettings={},AnimationConnections={}},a.load'a',a.load'b',a.load'c',a.load
-'d'aa.DemoWindow=a.load'e'aa.Services=ad.Services aa.Animation=ae aa.Icons=a.
-load'f'aa.Accent=a.load'g'aa.ThemeConfigs=a.load'h'aa.ElementFlags=a.load'i'
-local ag=a.load'j'aa.ElementColors=ag.Coloring aa.Animations=ag.Animations aa.
-Styles=ag.Styles ad:CallOnInitConnections(aa)aa.DynamicImages={[aa.Icons.Arrow]=
-'ImageFollowsText',[aa.Icons.Close]='ImageFollowsText',[aa.Icons.Dot]=
-'ImageFollowsText'}local ah=aa.Services local c,d,e,f,g=ah.HttpService,ah.
-Players,ah.UserInputService,ah.RunService,ah.InsertService local h=d.LocalPlayer
-aa.PlayerGui=h.PlayerGui aa.Mouse=h:GetMouse()local i=function()end function
-GetAndRemove(j,k)local l=k[j]if l then k[j]=nil end return l end function
-MoveTableItem(j,k,l)local p=table.find(j,k)if not p then return end local q=
-table.remove(j,p)table.insert(j,l,q)end function Merge(j,k)for l,p in next,k do
-j[l]=p end end function Copy(j,k)local l=table.clone(j)if k then Merge(l,k)end
-return l end function aa:Warn(...)warn('[ReGui]::',...)end function aa:Error(...
-)local j=aa:Concat({...},' ')local k=`\n[ReGui]:: {j}`coroutine.wrap(error)(k)
-end function aa:IsDoubleClick(j)local k=self.DoubleClickThreshold return j<k end
-function aa:StyleContainers()local j=self.Container local k,l=j.Overlays,j.
-Windows self:SetProperties(l,{OnTopOfCoreBlur=true})self:SetProperties(k,{
-OnTopOfCoreBlur=true})end function aa:Init(j)j=j or{}if self.Initialised then
-return end Merge(self,j)Merge(self,{Initialised=true,HasGamepad=self:
-IsConsoleDevice(),HasTouchScreen=self:IsMobileDevice()})self:CheckConfig(self,{
-ContainerParent=function()return ad:ResolveUIParent()end,Prefabs=function()
-return self:LoadPrefabs()end},true)self:CheckConfig(self,{Container=function()
-return self:InsertPrefab('Container',{Parent=self.ContainerParent,Name=self.
-ContainerName})end},true)local k,l,p=self.Container,self.TooltipOffset,self.
-ActiveTooltips local q,r=k.Overlays,0 self:StyleContainers()self.
-TooltipsContainer=self.Elements:Overlay{Parent=q}e.InputBegan:Connect(function(s
-)if not self:IsMouseEvent(s,true)then return end local t=tick()local u=t-r local
-v=self:IsDoubleClick(u)r=v and 0 or t self:UpdateWindowFocuses()end)local s=
-function()local s,t=self.TooltipsContainer,#p>0 s.Visible=t if not t then return
-end local u,v=aa:GetMouseLocation()local w=q.AbsolutePosition s.Position=UDim2.
-fromOffset(u-w.X+l,v-w.Y+l)end f:BindToRenderStep('ReGui_InputUpdate',Enum.
-RenderPriority.Input.Value,s)end function aa:CheckImportState()if self.
-Initialised then return end local j=self.PrefabsId local k=ad:CheckAssetUrl(j)
-local l,p=pcall(function()return g:LoadLocalAsset(k)end)self:Init{Prefabs=l and
-p or nil}end function aa:GetVersion()return self.Version end function aa:
-IsMobileDevice()return e.TouchEnabled end function aa:IsConsoleDevice()return e.
-GamepadEnabled end function aa:GetScreenSize()return workspace.CurrentCamera.
-ViewportSize end function aa:LoadPrefabs()local j,k=self.PlayerGui,
-'ReGui-Prefabs'local l=script:WaitForChild(k,2)if l then return l end local p=j:
-WaitForChild(k,2)if p then return p end return nil end function aa:CheckConfig(j
-,k,l,p)return ad:CheckConfig(j,k,l,p)end function aa:CreateInstance(j,k,l)local
-p=Instance.new(j,k)if l then local q=l.UsePropertiesList if not q then self:
-SetProperties(p,l)else self:ApplyFlags{Object=p,Class=l}end end return p end
-function aa:ConnectMouseEvent(j,k)local l,p,q,r,s=k.Callback,k.DoubleClick,k.
+BackgroundColor3='ButtonsBg',TextColor3='Text',FontFace='TextFont',TextSize=
+'TextSize'}}aa.Styles={RadioButton={Animation='RadioButtons',CornerRadius=UDim.
+new(1,0)},Button={Animation='Buttons'},CollapsingHeader={Animation='Buttons'},
+TreeNode={Animation='TransparentButtons'},TransparentButton={Animation=
+'TransparentButtons'}}aa.Animations={Invisible={Connections={MouseEnter={Visible
+=true},MouseLeave={Visible=false}},Init='MouseLeave'},Buttons={Connections={
+MouseEnter={BackgroundTransparency=0.3},MouseLeave={BackgroundTransparency=0.7}}
+,Init='MouseLeave'},TextButtons={Connections={MouseEnter={TextTransparency=0.3},
+MouseLeave={TextTransparency=0.7}},Init='MouseLeave'},TransparentButtons={
+Connections={MouseEnter={BackgroundTransparency=0.3},MouseLeave={
+BackgroundTransparency=1}},Init='MouseLeave'},RadioButtons={Connections={
+MouseEnter={BackgroundTransparency=0.5},MouseLeave={BackgroundTransparency=1}},
+Init='MouseLeave'},Inputs={Connections={MouseEnter={BackgroundTransparency=0},
+MouseLeave={BackgroundTransparency=0.5}},Init='MouseLeave'},Plots={Connections={
+MouseEnter={BackgroundTransparency=0.3},MouseLeave={BackgroundTransparency=0}},
+Init='MouseLeave'},Border={Connections={Selected={Transparency=0,Thickness=1},
+Deselected={Transparency=0.7,Thickness=1}},Init='Selected'}}return aa end end
+local aa,ab,ad,ae,af={Version='1.4.6',Author='Depso',License='MIT',Repository=
+'https://github.com/depthso/Dear-ReGui/',Debug=false,PrefabsId=71968920594655,
+DefaultTitle='ReGui',ContainerName='ReGui',DoubleClickThreshold=0.3,
+TooltipOffset=15,IniToSave={'Value'},ClassIgnored={'Visible','Text'},Container=
+nil,Prefabs=nil,FocusedWindow=nil,HasTouchScreen=false,Services=nil,Elements={},
+_FlagCache={},_ErrorCache={},Windows={},ActiveTooltips={},IniSettings={},
+AnimationConnections={}},a.load'a',a.load'b',a.load'c',a.load'd'aa.DemoWindow=a.
+load'e'aa.Services=ad.Services aa.Animation=ae aa.Icons=a.load'f'aa.Accent=a.
+load'g'aa.ThemeConfigs=a.load'h'aa.ElementFlags=a.load'i'local ag=a.load'j'aa.
+ElementColors=ag.Coloring aa.Animations=ag.Animations aa.Styles=ag.Styles ad:
+CallOnInitConnections(aa)aa.DynamicImages={[aa.Icons.Arrow]='ImageFollowsText',[
+aa.Icons.Close]='ImageFollowsText',[aa.Icons.Dot]='ImageFollowsText'}local ah=aa
+.Services local c,d,e,f,g=ah.HttpService,ah.Players,ah.UserInputService,ah.
+RunService,ah.InsertService local h=d.LocalPlayer aa.PlayerGui=h.PlayerGui aa.
+Mouse=h:GetMouse()local i=function()end function GetAndRemove(j,k)local l=k[j]if
+l then k[j]=nil end return l end function MoveTableItem(j,k,l)local p=table.
+find(j,k)if not p then return end local q=table.remove(j,p)table.insert(j,l,q)
+end function Merge(j,k)for l,p in next,k do j[l]=p end end function Copy(j,k)
+local l=table.clone(j)if k then Merge(l,k)end return l end function aa:Warn(...)
+warn('[ReGui]::',...)end function aa:Error(...)local j=aa:Concat({...},' ')local
+k=`\n[ReGui]:: {j}`coroutine.wrap(error)(k)end function aa:IsDoubleClick(j)local
+k=self.DoubleClickThreshold return j<k end function aa:StyleContainers()local j=
+self.Container local k,l=j.Overlays,j.Windows self:SetProperties(l,{
+OnTopOfCoreBlur=true})self:SetProperties(k,{OnTopOfCoreBlur=true})end function
+aa:Init(j)j=j or{}if self.Initialised then return end Merge(self,j)Merge(self,{
+Initialised=true,HasGamepad=self:IsConsoleDevice(),HasTouchScreen=self:
+IsMobileDevice()})self:CheckConfig(self,{ContainerParent=function()return ad:
+ResolveUIParent()end,Prefabs=function()return self:LoadPrefabs()end},true)self:
+CheckConfig(self,{Container=function()return self:InsertPrefab('Container',{
+Parent=self.ContainerParent,Name=self.ContainerName})end},true)local k,l,p=self.
+Container,self.TooltipOffset,self.ActiveTooltips local q,r=k.Overlays,0 self:
+StyleContainers()self.TooltipsContainer=self.Elements:Overlay{Parent=q}e.
+InputBegan:Connect(function(s)if not self:IsMouseEvent(s,true)then return end
+local t=tick()local u=t-r local v=self:IsDoubleClick(u)r=v and 0 or t self:
+UpdateWindowFocuses()end)local s=function()local s,t=self.TooltipsContainer,#p>0
+s.Visible=t if not t then return end local u,v=aa:GetMouseLocation()local w=q.
+AbsolutePosition s.Position=UDim2.fromOffset(u-w.X+l,v-w.Y+l)end f:
+BindToRenderStep('ReGui_InputUpdate',Enum.RenderPriority.Input.Value,s)end
+function aa:CheckImportState()if self.Initialised then return end local j=self.
+PrefabsId local k=ad:CheckAssetUrl(j)local l,p=pcall(function()return g:
+LoadLocalAsset(k)end)self:Init{Prefabs=l and p or nil}end function aa:GetVersion
+()return self.Version end function aa:IsMobileDevice()return e.TouchEnabled end
+function aa:IsConsoleDevice()return e.GamepadEnabled end function aa:
+GetScreenSize()return workspace.CurrentCamera.ViewportSize end function aa:
+LoadPrefabs()local j,k=self.PlayerGui,'ReGui-Prefabs'local l=script:
+WaitForChild(k,2)if l then return l end local p=j:WaitForChild(k,2)if p then
+return p end return nil end function aa:CheckConfig(j,k,l,p)return ad:
+CheckConfig(j,k,l,p)end function aa:CreateInstance(j,k,l)local p=Instance.new(j,
+k)if l then local q=l.UsePropertiesList if not q then self:SetProperties(p,l)
+else self:ApplyFlags{Object=p,Class=l}end end return p end function aa:
+ConnectMouseEvent(j,k)local l,p,q,r,s=k.Callback,k.DoubleClick,k.
 OnlyMouseHovering,0 if q then s=self:DetectHover(q)end j.Activated:Connect(
 function(...)local t=tick()local u=t-r if s and not s.Hovering then return end
 if p then if not aa:IsDoubleClick(u)then r=t return end r=0 end l(...)end)end
@@ -1157,38 +1158,39 @@ local q=l.Callback return q(p,...)end)return p end})aa:DefineElement(
 'VideoPlayer',{Base={Video='',Callback=i},Create=function(k,l)local p=l.Video l.
 Video=ad:CheckAssetUrl(p)local q=aa:InsertPrefab('VideoPlayer',l)return q end})
 aa:DefineElement('Button',{Base={Text='Button',DoubleClick=false,Callback=i},
-Create=function(k,l)local p,q=aa:InsertPrefab('Button',l),l.DoubleClick aa:
-ConnectMouseEvent(p,{DoubleClick=q,Callback=function(...)local r=l.Callback
-return r(p,...)end})return p end})aa:DefineElement('Selectable',{Base={Text=
-'Selectable',Callback=i,Selected=false,Disabled=false,Size=UDim2.fromScale(1,0),
-AutomaticSize=Enum.AutomaticSize.Y,TextXAlignment=Enum.TextXAlignment.Left,
-AnimationTags={Selected='Buttons',Unselected='TransparentButtons'}},Create=
-function(k,l)local p,q,r,s=k.Class.AfterClick,l.Selected,l.Disabled,aa:
-InsertPrefab('Button',l)local t=aa:MergeMetatables(l,s)s.Activated:Connect(
-function(...)local u=l.Callback u(s,...)if p then p(s,...)end end)function l:
-SetSelected(u)local v=self.AnimationTags local w=u and v.Selected or v.
-Unselected self.Selected=u aa:SetAnimation(s,w)return self end function l:
-SetDisabled(u)self.Disabled=u s.Interactable=not u return self end l:
-SetSelected(q)l:SetDisabled(r)return t,s end})aa:DefineElement('ImageButton',{
-Base={ElementStyle='Button',Callback=i},Create=j.Image})aa:DefineElement(
-'SmallButton',{Base={Text='Button',PaddingTop=UDim.new(),PaddingBottom=UDim.new(
-),PaddingLeft=UDim.new(0,2),PaddingRight=UDim.new(0,2),ColorTag='Button',
-ElementStyle='Button',Callback=i},Create=j.Button})aa:DefineElement('Keybind',{
-Base={Label='Keybind',ColorTag='Frame',Value=nil,DeleteKey=Enum.KeyCode.
-Backspace,IgnoreGameProcessed=true,Enabled=true,Disabled=false,Callback=i,
-OnKeybindSet=i,OnBlacklistedKeybindSet=i,KeyBlacklist={},UiPadding=UDim.new(),
-AutomaticSize=Enum.AutomaticSize.None,Size=UDim2.new(0.3,0,0,19)},Create=
-function(k,l)local p,q,r,s,t=l.Value,l.Label,l.Disabled,l.KeyBlacklist,aa:
-InsertPrefab('Button',l)local u,v,w,x=aa:MergeMetatables(l,t),k:Label{Parent=t,
-Text=q,Position=UDim2.new(1,4,0.5),AnchorPoint=Vector2.new(0,0.5)},function(u,
-...)return u(t,...)end,function(u)return table.find(s,u)end function l:
-SetDisabled(y)self.Disabled=y t.Interactable=not y k:SetColorTags({[v]=y and
-'LabelDisabled'or'Label'},true)return self end function l:SetValue(y)local A,B=
-self.OnKeybindSet,self.DeleteKey if y==B then y=nil end self.Value=y t.Text=y
-and y.Name or'Not set'w(A,y)return self end function l:WaitForNewKey()self.
-_WaitingForNewKey=true t.Text='...'t.Interactable=false end local y=function(y)
-local A,B=y.KeyCode,y.UserInputType if B~=Enum.UserInputType.Keyboard then
-return B end return A end local A=function(A)local B,C,D=l.
+Create=function(k,l)local p=aa:InsertPrefab('Button',l)local q,r=aa:
+MergeMetatables(l,p),l.DoubleClick function l:SetDisabled(s)self.Disabled=s end
+aa:ConnectMouseEvent(p,{DoubleClick=r,Callback=function(...)if l.Disabled then
+return end local s=l.Callback return s(l,...)end})return q,p end})aa:
+DefineElement('Selectable',{Base={Text='Selectable',Callback=i,Selected=false,
+Disabled=false,Size=UDim2.fromScale(1,0),AutomaticSize=Enum.AutomaticSize.Y,
+TextXAlignment=Enum.TextXAlignment.Left,AnimationTags={Selected='Buttons',
+Unselected='TransparentButtons'}},Create=function(k,l)local p,q,r,s=k.Class.
+AfterClick,l.Selected,l.Disabled,aa:InsertPrefab('Button',l)local t=aa:
+MergeMetatables(l,s)s.Activated:Connect(function(...)local u=l.Callback u(s,...)
+if p then p(s,...)end end)function l:SetSelected(u)local v=self.AnimationTags
+local w=u and v.Selected or v.Unselected self.Selected=u aa:SetAnimation(s,w)
+return self end function l:SetDisabled(u)self.Disabled=u s.Interactable=not u
+return self end l:SetSelected(q)l:SetDisabled(r)return t,s end})aa:
+DefineElement('ImageButton',{Base={ElementStyle='Button',Callback=i},Create=j.
+Image})aa:DefineElement('SmallButton',{Base={Text='Button',PaddingTop=UDim.new()
+,PaddingBottom=UDim.new(),PaddingLeft=UDim.new(0,2),PaddingRight=UDim.new(0,2),
+ColorTag='Button',ElementStyle='Button',Callback=i},Create=j.Button})aa:
+DefineElement('Keybind',{Base={Label='Keybind',ColorTag='Frame',Value=nil,
+DeleteKey=Enum.KeyCode.Backspace,IgnoreGameProcessed=true,Enabled=true,Disabled=
+false,Callback=i,OnKeybindSet=i,OnBlacklistedKeybindSet=i,KeyBlacklist={},
+UiPadding=UDim.new(),AutomaticSize=Enum.AutomaticSize.None,Size=UDim2.new(0.3,0,
+0,19)},Create=function(k,l)local p,q,r,s,t=l.Value,l.Label,l.Disabled,l.
+KeyBlacklist,aa:InsertPrefab('Button',l)local u,v,w,x=aa:MergeMetatables(l,t),k:
+Label{Parent=t,Text=q,Position=UDim2.new(1,4,0.5),AnchorPoint=Vector2.new(0,0.5)
+},function(u,...)return u(t,...)end,function(u)return table.find(s,u)end
+function l:SetDisabled(y)self.Disabled=y t.Interactable=not y k:SetColorTags({[v
+]=y and'LabelDisabled'or'Label'},true)return self end function l:SetValue(y)
+local A,B=self.OnKeybindSet,self.DeleteKey if y==B then y=nil end self.Value=y t
+.Text=y and y.Name or'Not set'w(A,y)return self end function l:WaitForNewKey()
+self._WaitingForNewKey=true t.Text='...'t.Interactable=false end local y=
+function(y)local A,B=y.KeyCode,y.UserInputType if B~=Enum.UserInputType.Keyboard
+then return B end return A end local A=function(A)local B,C,D=l.
 OnBlacklistedKeybindSet,l.Value,y(A)if not e.WindowFocused then return end if x(
 D)then w(B,D)return end t.Interactable=true l._WaitingForNewKey=false if D.Name
 =='Unknown'then return l:SetValue(C)end l:SetValue(D)return end local B=function

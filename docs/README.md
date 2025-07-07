@@ -3,13 +3,12 @@ Dear ReGui is a retained dear ImGui library remake designed to be used on Roblox
 This is perfect for beginners and performance.
 
 <!-- > Demo place: https://www.roblox.com/games/136436665525145/ReGui-Demo \ -->
-> Documentation: https://depso.gitbook.io/regui \
+> Documentation: https://depso.gitbook.io/regui
 
 ## Notices
-- For suggestions, please visit the [discussions page](https://github.com/depthso/Dear-ReGui/discussions)
+- For suggestions or questions, please visit the [discussions page](https://github.com/depthso/Dear-ReGui/discussions)
 - If you would like to fork this, please read the [Forking](#forking) section
 - Technical documentation and addional infomation such as commonly asked questions can be found on the [Gitbook documentation](https://depso.gitbook.io/regui)
-- Feel free to join my [Discord](https://discord.gg/s9ngmUDWgb)
 
 ## Demo
 The best way to learn ReGUI is to look through the Demo window which comes bundled with ReGUI.

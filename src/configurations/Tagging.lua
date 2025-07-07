@@ -123,6 +123,9 @@ Tags.Coloring = {
 	},
 	["RadioButton"] = {
 		BackgroundColor3 = "ButtonsBg",
+		TextColor3 = "Text",
+		FontFace = "TextFont",
+		TextSize = "TextSize"
 	}
 }
 

@@ -13,7 +13,7 @@
 
 local ReGui = {
 	--// Package data
-	Version = "1.4.5",
+	Version = "1.4.6",
 	Author = "Depso",
 	License = "MIT",
 	Repository = "https://github.com/depthso/Dear-ReGui/",
@@ -29,7 +29,8 @@ local ReGui = {
 		"Value"
 	},
 	ClassIgnored = {
-		"Visible"
+		"Visible",
+		"Text"
 	},
 
 	--// Objects
@@ -2055,6 +2056,8 @@ export type Button = {
 	Text: string?,
 	DoubleClick: boolean?,
 	Callback: ((...any) -> unknown)?,
+	Disabled: boolean?,
+	SetDisabled: (Button, Disabled: boolean) -> Button
 }
 ReGui:DefineElement("Button", {
 	Base = {
@@ -2065,19 +2068,24 @@ ReGui:DefineElement("Button", {
 	Create = function(self, Config: Button): TextButton
 		--// Create button object
 		local Object = ReGui:InsertPrefab("Button", Config)
+		local Class = ReGui:MergeMetatables(Config, Object)
 
 		local DoubleClick = Config.DoubleClick
+		function Config:SetDisabled(Disabled: boolean)
+			self.Disabled = Disabled
+		end
 
 		--// MouseEvents
 		ReGui:ConnectMouseEvent(Object, {
 			DoubleClick = DoubleClick,
 			Callback = function(...)
+				if Config.Disabled then return end
 				local Func = Config.Callback
-				return Func(Object, ...)
+				return Func(Config, ...)
 			end,
 		})
 
-		return Object
+		return Class, Object
 	end,
 })
 
