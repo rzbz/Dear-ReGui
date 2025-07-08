@@ -1217,10 +1217,10 @@ function ReGui:GetContentSize(Object: GuiObject, IngoreUIList: boolean?): Vector
 	return ContentSize
 end
 
-function ReGui:PatchSelf(Self, Func)
+function ReGui:PatchSelf(Self, Func, ...)
 	--// Check if the passed value is a function
 	if typeof(Func) ~= "function" then 
-		return Func
+		return Func, ...
 	end
 
 	return function(_, ...)
@@ -2081,7 +2081,7 @@ ReGui:DefineElement("Button", {
 			Callback = function(...)
 				if Config.Disabled then return end
 				local Func = Config.Callback
-				return Func(Config, ...)
+				return Func(Class, ...)
 			end,
 		})
 

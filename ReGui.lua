@@ -1051,49 +1051,49 @@ local l,p,q,r=j:FindFirstChildOfClass'UIListLayout',j:FindFirstChildOfClass
 AbsoluteContentSize else r=j.AbsoluteSize end if p then local s,t,u,v=p.
 PaddingTop.Offset,p.PaddingBottom.Offset,p.PaddingLeft.Offset,p.PaddingRight.
 Offset r+=Vector2.new(u+v,s+t)end if q then local s=q.Thickness r+=Vector2.new(s
-/2,s/2)end return r end function aa:PatchSelf(j,k)if typeof(k)~='function'then
-return k end return function(l,...)return k(j,...)end end function aa:MakeCanvas
-(j)local k,l,p,q,r,s,t=self.Elements,self.Debug,j.Element,j.WindowClass,j.Class,
-j.OnChildChange,af:NewSignal()if s then t:Connect(s)end if not q and l then self
-:Warn(`No WindowClass for {p}`)self:Warn(j)end local u=ad:NewClass(k,{Class=r,
-RawObject=p,WindowClass=q or false,OnChildChange=t,Elements={}})local v={__index
-=function(v,w)local x=u[w]if x~=nil then return self:PatchSelf(u,x)end local y=r
-[w]if y~=nil then return self:PatchSelf(r,y)end local A=p[w]return self:
-PatchSelf(p,A)end,__newindex=function(v,w,x)local y=r[w]~=nil if y then r[w]=x
-else p[w]=x end end}return setmetatable({},v)end function aa:GetIniData(j)local
-k,l=self.IniToSave,{}for p,q in next,k do l[q]=j[q]end return l end function aa:
-DumpIni(j)local k,l=self.IniSettings,{}for p,q in next,k do l[p]=self:
-GetIniData(q)end if j then return c:JSONEncode(l)end return l end function aa:
-LoadIniIntoElement(j,k)local l={Value=function(l)j:SetValue(l)end}for p,q in
-next,k do local r=l[p]if r then r(q)continue end j[p]=q end end function aa:
-LoadIni(j,k)local l=self.IniSettings assert(j,'No Ini configuration was passed')
-if k then j=c:JSONDecode(j)end for p,q in next,j do local r=l[p]self:
-LoadIniIntoElement(r,q)end end function aa:AddIniFlag(j,k)local l=self.
-IniSettings l[j]=k end function aa:OnElementCreate(j)local k,l,p,q,r=self.
-_FlagCache,j.Flags,j.Object,j.Canvas,j.Class local s,t,u,v,w,x=q.WindowClass,l.
-NoAutoTag,l.NoAutoFlags,l.ColorTag,l.NoStyle,l.IniFlag k[p]=l if x then self:
-AddIniFlag(x,r)end if w then return end if not t and s then s:TagElements{[p]=v}
-end if s then s:LoadStylesIntoElement(j)end if not u then self:ApplyFlags{Object
-=p,Class=l,WindowClass=s}end end function aa:VisualError(j,k,l)local p=self.
-Initialised and j.Error if not p then self:Error('Class:',l)return end j:Error{
-Parent=k,Text=l}end function aa:WrapGeneration(j,k)local l,p,q=self._ErrorCache,
-k.Base,k.IgnoreDefaults return function(r,s,...)s=s or{}self:CheckConfig(s,p)
-local t=s.CloneTable if t then s=table.clone(s)end local u,v,w=r.RawObject,r.
-Elements,r.OnChildChange self:CheckConfig(s,{Parent=u,Name=s.ColorTag},nil,q)if
-r==self then r=self.Elements end local x,y,A=pcall(j,r,s,...)if x==false then if
-u then if l[u]then return end l[u]=y end self:VisualError(r,u,y)self:Error(
-'Class:',y)self:Error(debug.traceback())end if A==nil then A=y end if w then w:
-Fire(y)end if A then if v then table.insert(v,A)end self:OnElementCreate{Object=
-A,Flags=s,Class=y,Canvas=r}end return y,A end end function aa:DefineElement(j,k)
-local l,p,q=self.Elements,self.ThemeConfigs,self.ElementColors local r,s,t,u,v,w
-=p.DarkTheme,k.Base,k.Create,k.Export,k.ThemeTags,k.ColorData self:CheckConfig(s
-,{ColorTag=j,ElementStyle=j})if v then Merge(r,v)end if w then Merge(q,w)end
-local x=self:WrapGeneration(t,k)if u then self[j]=x end l[j]=x return x end
-function aa:DefineGlobalFlag(j)local k=self.ElementFlags table.insert(k,j)end
-function aa:DefineTheme(j,k)local l=self.ThemeConfigs self:CheckConfig(k,{
-BaseTheme=l.DarkTheme})local p=GetAndRemove('BaseTheme',k)local q={BaseTheme=p,
-Values=k}l[j]=q return q end function aa:GetMouseLocation()local j=self.Mouse
-return j.X,j.Y end function aa:SetWindowFocusesEnabled(j)self.
+/2,s/2)end return r end function aa:PatchSelf(j,k,...)if typeof(k)~='function'
+then return k,...end return function(l,...)return k(j,...)end end function aa:
+MakeCanvas(j)local k,l,p,q,r,s,t=self.Elements,self.Debug,j.Element,j.
+WindowClass,j.Class,j.OnChildChange,af:NewSignal()if s then t:Connect(s)end if
+not q and l then self:Warn(`No WindowClass for {p}`)self:Warn(j)end local u=ad:
+NewClass(k,{Class=r,RawObject=p,WindowClass=q or false,OnChildChange=t,Elements=
+{}})local v={__index=function(v,w)local x=u[w]if x~=nil then return self:
+PatchSelf(u,x)end local y=r[w]if y~=nil then return self:PatchSelf(r,y)end local
+A=p[w]return self:PatchSelf(p,A)end,__newindex=function(v,w,x)local y=r[w]~=nil
+if y then r[w]=x else p[w]=x end end}return setmetatable({},v)end function aa:
+GetIniData(j)local k,l=self.IniToSave,{}for p,q in next,k do l[q]=j[q]end return
+l end function aa:DumpIni(j)local k,l=self.IniSettings,{}for p,q in next,k do l[
+p]=self:GetIniData(q)end if j then return c:JSONEncode(l)end return l end
+function aa:LoadIniIntoElement(j,k)local l={Value=function(l)j:SetValue(l)end}
+for p,q in next,k do local r=l[p]if r then r(q)continue end j[p]=q end end
+function aa:LoadIni(j,k)local l=self.IniSettings assert(j,
+'No Ini configuration was passed')if k then j=c:JSONDecode(j)end for p,q in next
+,j do local r=l[p]self:LoadIniIntoElement(r,q)end end function aa:AddIniFlag(j,k
+)local l=self.IniSettings l[j]=k end function aa:OnElementCreate(j)local k,l,p,q
+,r=self._FlagCache,j.Flags,j.Object,j.Canvas,j.Class local s,t,u,v,w,x=q.
+WindowClass,l.NoAutoTag,l.NoAutoFlags,l.ColorTag,l.NoStyle,l.IniFlag k[p]=l if x
+then self:AddIniFlag(x,r)end if w then return end if not t and s then s:
+TagElements{[p]=v}end if s then s:LoadStylesIntoElement(j)end if not u then self
+:ApplyFlags{Object=p,Class=l,WindowClass=s}end end function aa:VisualError(j,k,l
+)local p=self.Initialised and j.Error if not p then self:Error('Class:',l)return
+end j:Error{Parent=k,Text=l}end function aa:WrapGeneration(j,k)local l,p,q=self.
+_ErrorCache,k.Base,k.IgnoreDefaults return function(r,s,...)s=s or{}self:
+CheckConfig(s,p)local t=s.CloneTable if t then s=table.clone(s)end local u,v,w=r
+.RawObject,r.Elements,r.OnChildChange self:CheckConfig(s,{Parent=u,Name=s.
+ColorTag},nil,q)if r==self then r=self.Elements end local x,y,A=pcall(j,r,s,...)
+if x==false then if u then if l[u]then return end l[u]=y end self:VisualError(r,
+u,y)self:Error('Class:',y)self:Error(debug.traceback())end if A==nil then A=y
+end if w then w:Fire(y)end if A then if v then table.insert(v,A)end self:
+OnElementCreate{Object=A,Flags=s,Class=y,Canvas=r}end return y,A end end
+function aa:DefineElement(j,k)local l,p,q=self.Elements,self.ThemeConfigs,self.
+ElementColors local r,s,t,u,v,w=p.DarkTheme,k.Base,k.Create,k.Export,k.ThemeTags
+,k.ColorData self:CheckConfig(s,{ColorTag=j,ElementStyle=j})if v then Merge(r,v)
+end if w then Merge(q,w)end local x=self:WrapGeneration(t,k)if u then self[j]=x
+end l[j]=x return x end function aa:DefineGlobalFlag(j)local k=self.ElementFlags
+table.insert(k,j)end function aa:DefineTheme(j,k)local l=self.ThemeConfigs self:
+CheckConfig(k,{BaseTheme=l.DarkTheme})local p=GetAndRemove('BaseTheme',k)local q
+={BaseTheme=p,Values=k}l[j]=q return q end function aa:GetMouseLocation()local j
+=self.Mouse return j.X,j.Y end function aa:SetWindowFocusesEnabled(j)self.
 WindowFocusesEnabled=j end function aa:UpdateWindowFocuses()local j,k=self.
 Windows,self.WindowFocusesEnabled if not k then return end for l,p in j do local
 q=p.HoverConnection if not q then continue end local r=q.Hovering if r then self
@@ -1161,7 +1161,7 @@ aa:DefineElement('Button',{Base={Text='Button',DoubleClick=false,Callback=i},
 Create=function(k,l)local p=aa:InsertPrefab('Button',l)local q,r=aa:
 MergeMetatables(l,p),l.DoubleClick function l:SetDisabled(s)self.Disabled=s end
 aa:ConnectMouseEvent(p,{DoubleClick=r,Callback=function(...)if l.Disabled then
-return end local s=l.Callback return s(l,...)end})return q,p end})aa:
+return end local s=l.Callback return s(q,...)end})return q,p end})aa:
 DefineElement('Selectable',{Base={Text='Selectable',Callback=i,Selected=false,
 Disabled=false,Size=UDim2.fromScale(1,0),AutomaticSize=Enum.AutomaticSize.Y,
 TextXAlignment=Enum.TextXAlignment.Left,AnimationTags={Selected='Buttons',
