@@ -9,162 +9,158 @@ fromRGB(132,214,247),LocalMethod=Color3.fromRGB(253,251,172),LocalProperty=
 Color3.fromRGB(97,161,241),Nil=Color3.fromRGB(255,198,0),Bool=Color3.fromRGB(255
 ,198,0),Function=Color3.fromRGB(248,109,124),Local=Color3.fromRGB(248,109,124),
 Self=Color3.fromRGB(248,109,124),FunctionName=Color3.fromRGB(253,251,172),
-Bracket=Color3.fromRGB(204,204,204)}}}local e,f=setmetatable({},{__index=
-function(e,f)local g=game:GetService(f)return c(g)end}),Instance.new'Frame'local
-g,h,i,j=e.Players,e.UserInputService,e.RunService,e.TweenService local k=g.
-LocalPlayer local l,m,n=k:GetMouse(),function(l,m)for n,o in next,m do l[n]=o
-end return l end,{}n.CheckMouseInGui=function(o)if o==nil then return false end
-local p,q=o.AbsolutePosition,o.AbsoluteSize return l.X>=p.X and l.X<p.X+q.X and
-l.Y>=p.Y and l.Y<p.Y+q.Y end n.Signal=(function()local o,p={},function(o)local p
-=table.find(o.Signal.Connections,o)if p then table.remove(o.Signal.Connections,p
-)end end o.Connect=function(q,r)if type(r)~='function'then error
-'Attempt to connect a non-function'end local s={Signal=q,Func=r,Disconnect=p}q.
-Connections[#q.Connections+1]=s return s end o.Fire=function(q,...)for r,s in
-next,q.Connections do xpcall(coroutine.wrap(s.Func),function(t)warn(t..'\n'..
-debug.traceback())end,...)end end local q={__index=o,__tostring=function(q)
-return'Signal: '..tostring(#q.Connections)..' Connections'end}local r=function()
-local r={}r.Connections={}return setmetatable(r,q)end return{new=r}end)()local o
-=function(o,p)local q=Instance.new(o)for r,s in next,p do q[r]=s end return q
-end n.CreateArrow=function(p,q,r)local s,t=q,o('Frame',{BackgroundTransparency=1
-,Name='Arrow',Size=UDim2.new(0,p,0,p)})if r=='up'then for u=1,q do o('Frame',{
+Bracket=Color3.fromRGB(204,204,204)}}}local e,f,g=setmetatable({},{__index=
+function(e,f)local g=game:GetService(f)return c(g)end}),{StartAndEnd={Enum.
+UserInputType.MouseButton1,Enum.UserInputType.Touch},Movement={Enum.
+UserInputType.MouseMovement,Enum.UserInputType.Touch}},Instance.new'Frame'local
+h,i,j,k=e.Players,e.UserInputService,e.RunService,e.TweenService local l=h.
+LocalPlayer local m,n,o,p=l:GetMouse(),function(m,n)for o,p in next,n do m[o]=p
+end return m end,function(m,n)local o=m.UserInputType return table.find(f[n],o)
+end,{}p.CheckMouseInGui=function(q)if q==nil then return false end local r,s=q.
+AbsolutePosition,q.AbsoluteSize return m.X>=r.X and m.X<r.X+s.X and m.Y>=r.Y and
+m.Y<r.Y+s.Y end p.Signal=(function()local q,r={},function(q)local r=table.find(q
+.Signal.Connections,q)if r then table.remove(q.Signal.Connections,r)end end q.
+Connect=function(s,t)if type(t)~='function'then error
+'Attempt to connect a non-function'end local u={Signal=s,Func=t,Disconnect=r}s.
+Connections[#s.Connections+1]=u return u end q.Fire=function(s,...)for t,u in
+next,s.Connections do xpcall(coroutine.wrap(u.Func),function(v)warn(v..'\n'..
+debug.traceback())end,...)end end local s={__index=q,__tostring=function(s)
+return'Signal: '..tostring(#s.Connections)..' Connections'end}local t=function()
+local t={}t.Connections={}return setmetatable(t,s)end return{new=t}end)()local q
+=function(q,r)local s=Instance.new(q)for t,u in next,r do s[t]=u end return s
+end p.CreateArrow=function(r,s,t)local u,v=s,q('Frame',{BackgroundTransparency=1
+,Name='Arrow',Size=UDim2.new(0,r,0,r)})if t=='up'then for w=1,s do q('Frame',{
 BackgroundColor3=Color3.new(0.8627450980392157,0.8627450980392157,
-0.8627450980392157),BorderSizePixel=0,Position=UDim2.new(0,math.floor(p/2)-(u-1)
-,0,math.floor(p/2)+u-math.floor(s/2)-1),Size=UDim2.new(0,u+(u-1),0,1),Parent=t})
-end return t elseif r=='down'then for u=1,q do o('Frame',{BackgroundColor3=
+0.8627450980392157),BorderSizePixel=0,Position=UDim2.new(0,math.floor(r/2)-(w-1)
+,0,math.floor(r/2)+w-math.floor(u/2)-1),Size=UDim2.new(0,w+(w-1),0,1),Parent=v})
+end return v elseif t=='down'then for w=1,s do q('Frame',{BackgroundColor3=
 Color3.new(0.8627450980392157,0.8627450980392157,0.8627450980392157),
-BorderSizePixel=0,Position=UDim2.new(0,math.floor(p/2)-(u-1),0,math.floor(p/2)-u
-+math.floor(s/2)+1),Size=UDim2.new(0,u+(u-1),0,1),Parent=t})end return t elseif
-r=='left'then for u=1,q do o('Frame',{BackgroundColor3=Color3.new(
+BorderSizePixel=0,Position=UDim2.new(0,math.floor(r/2)-(w-1),0,math.floor(r/2)-w
++math.floor(u/2)+1),Size=UDim2.new(0,w+(w-1),0,1),Parent=v})end return v elseif
+t=='left'then for w=1,s do q('Frame',{BackgroundColor3=Color3.new(
 0.8627450980392157,0.8627450980392157,0.8627450980392157),BorderSizePixel=0,
-Position=UDim2.new(0,math.floor(p/2)+u-math.floor(s/2)-1,0,math.floor(p/2)-(u-1)
-),Size=UDim2.new(0,1,0,u+(u-1)),Parent=t})end return t elseif r=='right'then for
-u=1,q do o('Frame',{BackgroundColor3=Color3.new(0.8627450980392157,
+Position=UDim2.new(0,math.floor(r/2)+w-math.floor(u/2)-1,0,math.floor(r/2)-(w-1)
+),Size=UDim2.new(0,1,0,w+(w-1)),Parent=v})end return v elseif t=='right'then for
+w=1,s do q('Frame',{BackgroundColor3=Color3.new(0.8627450980392157,
 0.8627450980392157,0.8627450980392157),BorderSizePixel=0,Position=UDim2.new(0,
-math.floor(p/2)-u+math.floor(s/2)+1,0,math.floor(p/2)-(u-1)),Size=UDim2.new(0,1,
-0,u+(u-1)),Parent=t})end return t end error''end n.FastWait=(function(p)task.
-wait(p)end)n.ScrollBar=(function()local p,q,r,s={},n.CheckMouseInGui,n.
-CreateArrow,function(p)local q,r,s,t=p.TotalSpace,p.VisibleSpace,p.GuiElems.
-ScrollThumb,p.GuiElems.ScrollThumbFrame if not(p:CanScrollUp()or p:
-CanScrollDown())then s.Visible=false else s.Visible=true end if p.Horizontal
-then s.Size=UDim2.new(r/q,0,1,0)if s.AbsoluteSize.X<10 then s.Size=UDim2.new(0,
-10,1,0)end local u,v=t.AbsoluteSize.X,s.AbsoluteSize.X s.Position=UDim2.new(p:
-GetScrollPercent()*(u-v)/u,0,0,0)else s.Size=UDim2.new(1,0,r/q,0)if s.
-AbsoluteSize.Y<10 then s.Size=UDim2.new(1,0,0,10)end local u,v=t.AbsoluteSize.Y,
-s.AbsoluteSize.Y s.Position=UDim2.new(0,0,p:GetScrollPercent()*(u-v)/u,0)end end
-local t=function(t)local u,v,w=(o('Frame',{Style=0,Active=true,AnchorPoint=
+math.floor(r/2)-w+math.floor(u/2)+1,0,math.floor(r/2)-(w-1)),Size=UDim2.new(0,1,
+0,w+(w-1)),Parent=v})end return v end error''end p.FastWait=(function(r)task.
+wait(r)end)p.ScrollBar=(function()local r,s,t,u={},p.CheckMouseInGui,p.
+CreateArrow,function(r)local s,t,u,v=r.TotalSpace,r.VisibleSpace,r.GuiElems.
+ScrollThumb,r.GuiElems.ScrollThumbFrame if not(r:CanScrollUp()or r:
+CanScrollDown())then u.Visible=false else u.Visible=true end if r.Horizontal
+then u.Size=UDim2.new(t/s,0,1,0)if u.AbsoluteSize.X<10 then u.Size=UDim2.new(0,
+10,1,0)end local w,x=v.AbsoluteSize.X,u.AbsoluteSize.X u.Position=UDim2.new(r:
+GetScrollPercent()*(w-x)/w,0,0,0)else u.Size=UDim2.new(1,0,t/s,0)if u.
+AbsoluteSize.Y<10 then u.Size=UDim2.new(1,0,0,10)end local w,x=v.AbsoluteSize.Y,
+u.AbsoluteSize.Y u.Position=UDim2.new(0,0,r:GetScrollPercent()*(w-x)/w,0)end end
+local v=function(v)local w,x,y=(q('Frame',{Style=0,Active=true,AnchorPoint=
 Vector2.new(0,0),BackgroundColor3=Color3.new(0.35294118523598,0.35294118523598,
 0.35294118523598),BackgroundTransparency=0,BorderColor3=Color3.new(
 0.10588236153126,0.16470588743687,0.20784315466881),BorderSizePixel=0,
 ClipsDescendants=false,Draggable=false,Position=UDim2.new(1,-10,0,0),Rotation=0,
 Selectable=false,Size=UDim2.new(0,10,1,0),SizeConstraint=0,Visible=true,ZIndex=1
-,Name='ScrollBar'}))if t.Horizontal then u.Size=UDim2.new(1,0,0,10)v=o(
-'ImageButton',{Parent=u,Name='Left',Size=UDim2.new(0,10,0,10),
-BackgroundTransparency=1,BorderSizePixel=0,AutoButtonColor=false})r(10,4,'left')
-.Parent=v w=o('ImageButton',{Parent=u,Name='Right',Position=UDim2.new(1,-10,0,0)
+,Name='ScrollBar'}))if v.Horizontal then w.Size=UDim2.new(1,0,0,10)x=q(
+'ImageButton',{Parent=w,Name='Left',Size=UDim2.new(0,10,0,10),
+BackgroundTransparency=1,BorderSizePixel=0,AutoButtonColor=false})t(10,4,'left')
+.Parent=x y=q('ImageButton',{Parent=w,Name='Right',Position=UDim2.new(1,-10,0,0)
 ,Size=UDim2.new(0,10,0,10),BackgroundTransparency=1,BorderSizePixel=0,
-AutoButtonColor=false})r(10,4,'right').Parent=w else u.Size=UDim2.new(0,10,1,0)v
-=o('ImageButton',{Parent=u,Name='Up',Size=UDim2.new(0,10,0,10),
-BackgroundTransparency=1,BorderSizePixel=0,AutoButtonColor=false})r(10,4,'up').
-Parent=v w=o('ImageButton',{Parent=u,Name='Down',Position=UDim2.new(0,0,1,-10),
+AutoButtonColor=false})t(10,4,'right').Parent=y else w.Size=UDim2.new(0,10,1,0)x
+=q('ImageButton',{Parent=w,Name='Up',Size=UDim2.new(0,10,0,10),
+BackgroundTransparency=1,BorderSizePixel=0,AutoButtonColor=false})t(10,4,'up').
+Parent=x y=q('ImageButton',{Parent=w,Name='Down',Position=UDim2.new(0,0,1,-10),
 Size=UDim2.new(0,10,0,10),BackgroundTransparency=1,BorderSizePixel=0,
-AutoButtonColor=false})r(10,4,'down').Parent=w end local x=o('Frame',{
-BackgroundTransparency=1,Parent=u})if t.Horizontal then x.Position=UDim2.new(0,
-10,0,0)x.Size=UDim2.new(1,-20,1,0)else x.Position=UDim2.new(0,0,0,10)x.Size=
-UDim2.new(1,0,1,-20)end local y,z,A,B,C=o('Frame',{BackgroundColor3=Color3.new(
+AutoButtonColor=false})t(10,4,'down').Parent=y end local z=q('Frame',{
+BackgroundTransparency=1,Parent=w})if v.Horizontal then z.Position=UDim2.new(0,
+10,0,0)z.Size=UDim2.new(1,-20,1,0)else z.Position=UDim2.new(0,0,0,10)z.Size=
+UDim2.new(1,0,1,-20)end local A,B,C,D,E=q('Frame',{BackgroundColor3=Color3.new(
 0.47058823529411764,0.47058823529411764,0.47058823529411764),BorderSizePixel=0,
-Parent=x}),o('Frame',{BackgroundTransparency=1,Name='Markers',Size=UDim2.new(1,0
-,1,0),Parent=x}),false,false,false v.InputBegan:Connect(function(D)if D.
-UserInputType==Enum.UserInputType.MouseMovement and not A and t:CanScrollUp()
-then v.BackgroundTransparency=0.8 end if D.UserInputType~=Enum.UserInputType.
-MouseButton1 or not t:CanScrollUp()then return end A=true v.
-BackgroundTransparency=0.5 if t:CanScrollUp()then t:ScrollUp()t.Scrolled:Fire()
-end local E,F=(tick())F=h.InputEnded:Connect(function(G)if G.UserInputType~=Enum
-.UserInputType.MouseButton1 then return end F:Disconnect()if q(v)and t:
-CanScrollUp()then v.BackgroundTransparency=0.8 else v.BackgroundTransparency=1
-end A=false end)while A do if tick()-E>=0.3 and t:CanScrollUp()then t:ScrollUp()
-t.Scrolled:Fire()end wait()end end)v.InputEnded:Connect(function(D)if D.
-UserInputType==Enum.UserInputType.MouseMovement and not A then v.
-BackgroundTransparency=1 end end)w.InputBegan:Connect(function(D)if D.
-UserInputType==Enum.UserInputType.MouseMovement and not A and t:CanScrollDown()
-then w.BackgroundTransparency=0.8 end if D.UserInputType~=Enum.UserInputType.
-MouseButton1 or not t:CanScrollDown()then return end A=true w.
-BackgroundTransparency=0.5 if t:CanScrollDown()then t:ScrollDown()t.Scrolled:
-Fire()end local E,F=(tick())F=h.InputEnded:Connect(function(G)if G.UserInputType
-~=Enum.UserInputType.MouseButton1 then return end F:Disconnect()if q(w)and t:
-CanScrollDown()then w.BackgroundTransparency=0.8 else w.BackgroundTransparency=1
-end A=false end)while A do if tick()-E>=0.3 and t:CanScrollDown()then t:
-ScrollDown()t.Scrolled:Fire()end wait()end end)w.InputEnded:Connect(function(D)
-if D.UserInputType==Enum.UserInputType.MouseMovement and not A then w.
-BackgroundTransparency=1 end end)y.InputBegan:Connect(function(D)if D.
-UserInputType==Enum.UserInputType.MouseMovement and not B then y.
-BackgroundTransparency=0.2 y.BackgroundColor3=t.ThumbSelectColor end if D.
-UserInputType~=Enum.UserInputType.MouseButton1 then return end local E,F=t.
-Horizontal and'X'or'Y'A=false C=false B=true y.BackgroundTransparency=0 local G,
-H,I=(l[E]-y.AbsolutePosition[E])H=h.InputEnded:Connect(function(J)if J.
-UserInputType~=Enum.UserInputType.MouseButton1 then return end H:Disconnect()if
-I then I:Disconnect()end if q(y)then y.BackgroundTransparency=0.2 else y.
-BackgroundTransparency=0 y.BackgroundColor3=t.ThumbColor end B=false end)t:
-Update()I=h.InputChanged:Connect(function(J)if J.UserInputType==Enum.
-UserInputType.MouseMovement and B and H.Connected then local K,L=x.AbsoluteSize[
-E]-y.AbsoluteSize[E],l[E]-x.AbsolutePosition[E]-G if L>K then L=K elseif L<0
-then L=0 end if F~=L then F=L t:ScrollTo(math.floor(0.5+L/K*(t.TotalSpace-t.
-VisibleSpace)))end wait()end end)end)y.InputEnded:Connect(function(D)if D.
-UserInputType==Enum.UserInputType.MouseMovement and not B then y.
-BackgroundTransparency=0 y.BackgroundColor3=t.ThumbColor end end)x.InputBegan:
-Connect(function(D)if D.UserInputType~=Enum.UserInputType.MouseButton1 or q(y)
-then return end local E,F=t.Horizontal and'X'or'Y',0 if l[E]>=y.AbsolutePosition
-[E]+y.AbsoluteSize[E]then F=1 end local G=function()local G=t.VisibleSpace-1 if
-F==0 and l[E]<y.AbsolutePosition[E]then t:ScrollTo(t.Index-G)elseif F==1 and l[E
-]>=y.AbsolutePosition[E]+y.AbsoluteSize[E]then t:ScrollTo(t.Index+G)end end B=
-false C=true G()local H,I=(tick())I=h.InputEnded:Connect(function(J)if J.
-UserInputType~=Enum.UserInputType.MouseButton1 then return end I:Disconnect()C=
-false end)while C do if tick()-H>=0.3 and q(x)then G()end wait()end end)u.
-MouseWheelForward:Connect(function()t:ScrollTo(t.Index-t.WheelIncrement)end)u.
-MouseWheelBackward:Connect(function()t:ScrollTo(t.Index+t.WheelIncrement)end)t.
-GuiElems.ScrollThumb=y t.GuiElems.ScrollThumbFrame=x t.GuiElems.Button1=v t.
-GuiElems.Button2=w t.GuiElems.MarkerFrame=z return u end p.Update=function(u,v)
-local w,x,y,z=u.TotalSpace,u.VisibleSpace,u.GuiElems.Button1,u.GuiElems.Button2
-u.Index=math.clamp(u.Index,0,math.max(0,w-x))if u.LastTotalSpace~=u.TotalSpace
-then u.LastTotalSpace=u.TotalSpace u:UpdateMarkers()end if u:CanScrollUp()then
-for A,B in pairs(y.Arrow:GetChildren())do B.BackgroundTransparency=0 end else y.
-BackgroundTransparency=1 for A,B in pairs(y.Arrow:GetChildren())do B.
-BackgroundTransparency=0.5 end end if u:CanScrollDown()then for A,B in pairs(z.
-Arrow:GetChildren())do B.BackgroundTransparency=0 end else z.
-BackgroundTransparency=1 for A,B in pairs(z.Arrow:GetChildren())do B.
-BackgroundTransparency=0.5 end end s(u)end p.UpdateMarkers=function(u)local v=u.
-GuiElems.MarkerFrame v:ClearAllChildren()for w,x in pairs(u.Markers)do if w<u.
-TotalSpace then o('Frame',{BackgroundTransparency=0,BackgroundColor3=x,
-BorderSizePixel=0,Position=u.Horizontal and UDim2.new(w/u.TotalSpace,0,1,-6)or
-UDim2.new(1,-6,w/u.TotalSpace,0),Size=u.Horizontal and UDim2.new(0,1,0,6)or
-UDim2.new(0,6,0,1),Name='Marker'..tostring(w),Parent=v})end end end p.AddMarker=
-function(u,v,w)u.Markers[v]=w or Color3.new(0,0,0)end p.ScrollTo=function(u,v,w)
-u.Index=v u:Update()if not w then u.Scrolled:Fire()end end p.ScrollUp=function(u
-)u.Index=u.Index-u.Increment u:Update()end p.ScrollDown=function(u)u.Index=u.
-Index+u.Increment u:Update()end p.CanScrollUp=function(u)return u.Index>0 end p.
-CanScrollDown=function(u)return u.Index+u.VisibleSpace<u.TotalSpace end p.
-GetScrollPercent=function(u)return u.Index/(u.TotalSpace-u.VisibleSpace)end p.
-SetScrollPercent=function(u,v)u.Index=math.floor(v*(u.TotalSpace-u.VisibleSpace)
-)u:Update()end p.Texture=function(u,v)u.ThumbColor=v.ThumbColor or Color3.new(0,
-0,0)u.ThumbSelectColor=v.ThumbSelectColor or Color3.new(0,0,0)u.GuiElems.
-ScrollThumb.BackgroundColor3=v.ThumbColor or Color3.new(0,0,0)u.Gui.
-BackgroundColor3=v.FrameColor or Color3.new(0,0,0)u.GuiElems.Button1.
-BackgroundColor3=v.ButtonColor or Color3.new(0,0,0)u.GuiElems.Button2.
-BackgroundColor3=v.ButtonColor or Color3.new(0,0,0)for w,x in pairs(u.GuiElems.
-Button1.Arrow:GetChildren())do x.BackgroundColor3=v.ArrowColor or Color3.new(0,0
-,0)end for w,x in pairs(u.GuiElems.Button2.Arrow:GetChildren())do x.
-BackgroundColor3=v.ArrowColor or Color3.new(0,0,0)end end p.SetScrollFrame=
-function(u,v)if u.ScrollUpEvent then u.ScrollUpEvent:Disconnect()u.ScrollUpEvent
-=nil end if u.ScrollDownEvent then u.ScrollDownEvent:Disconnect()u.
-ScrollDownEvent=nil end u.ScrollUpEvent=v.MouseWheelForward:Connect(function()u:
-ScrollTo(u.Index-u.WheelIncrement)end)u.ScrollDownEvent=v.MouseWheelBackward:
-Connect(function()u:ScrollTo(u.Index+u.WheelIncrement)end)end local u={}u.
-__index=p local v=function(v)local w=setmetatable({Index=0,VisibleSpace=0,
-TotalSpace=0,Increment=1,WheelIncrement=1,Markers={},GuiElems={},Horizontal=v,
-LastTotalSpace=0,Scrolled=n.Signal.new()},u)w.Gui=t(w)w:Texture{ThumbColor=
+Parent=z}),q('Frame',{BackgroundTransparency=1,Name='Markers',Size=UDim2.new(1,0
+,1,0),Parent=z}),false,false,false x.InputBegan:Connect(function(F)if o(F,
+'Movement')and not C and v:CanScrollUp()then x.BackgroundTransparency=0.8 end if
+not o(F,'StartAndEnd')or not v:CanScrollUp()then return end C=true x.
+BackgroundTransparency=0.5 if v:CanScrollUp()then v:ScrollUp()v.Scrolled:Fire()
+end local G,H=(tick())H=i.InputEnded:Connect(function(I)if not o(I,'StartAndEnd'
+)then return end H:Disconnect()if s(x)and v:CanScrollUp()then x.
+BackgroundTransparency=0.8 else x.BackgroundTransparency=1 end C=false end)while
+C do if tick()-G>=0.3 and v:CanScrollUp()then v:ScrollUp()v.Scrolled:Fire()end
+wait()end end)x.InputEnded:Connect(function(F)if o(F,'Movement')and not C then x
+.BackgroundTransparency=1 end end)y.InputBegan:Connect(function(F)if o(F,
+'Movement')and not C and v:CanScrollDown()then y.BackgroundTransparency=0.8 end
+if not o(F,'StartAndEnd')or not v:CanScrollDown()then return end C=true y.
+BackgroundTransparency=0.5 if v:CanScrollDown()then v:ScrollDown()v.Scrolled:
+Fire()end local G,H=(tick())H=i.InputEnded:Connect(function(I)if not o(I,
+'StartAndEnd')then return end H:Disconnect()if s(y)and v:CanScrollDown()then y.
+BackgroundTransparency=0.8 else y.BackgroundTransparency=1 end C=false end)while
+C do if tick()-G>=0.3 and v:CanScrollDown()then v:ScrollDown()v.Scrolled:Fire()
+end wait()end end)y.InputEnded:Connect(function(F)if o(F,'Movement')and not C
+then y.BackgroundTransparency=1 end end)A.InputBegan:Connect(function(F)if o(F,
+'Movement')and not D then A.BackgroundTransparency=0.2 A.BackgroundColor3=v.
+ThumbSelectColor end if not o(F,'StartAndEnd')then return end local G,H=v.
+Horizontal and'X'or'Y'C=false E=false D=true A.BackgroundTransparency=0 local I,
+J,K=(m[G]-A.AbsolutePosition[G])J=i.InputEnded:Connect(function(L)if not o(L,
+'StartAndEnd')then return end J:Disconnect()if K then K:Disconnect()end if s(A)
+then A.BackgroundTransparency=0.2 else A.BackgroundTransparency=0 A.
+BackgroundColor3=v.ThumbColor end D=false end)v:Update()K=i.InputChanged:
+Connect(function(L)if o(L,'Movement')and D and J.Connected then local M,N=z.
+AbsoluteSize[G]-A.AbsoluteSize[G],m[G]-z.AbsolutePosition[G]-I if N>M then N=M
+elseif N<0 then N=0 end if H~=N then H=N v:ScrollTo(math.floor(0.5+N/M*(v.
+TotalSpace-v.VisibleSpace)))end wait()end end)end)A.InputEnded:Connect(function(
+F)if o(F,'Movement')and not D then A.BackgroundTransparency=0 A.BackgroundColor3
+=v.ThumbColor end end)z.InputBegan:Connect(function(F)if not o(F,'StartAndEnd')
+or s(A)then return end local G,H=v.Horizontal and'X'or'Y',0 if m[G]>=A.
+AbsolutePosition[G]+A.AbsoluteSize[G]then H=1 end local I=function()local I=v.
+VisibleSpace-1 if H==0 and m[G]<A.AbsolutePosition[G]then v:ScrollTo(v.Index-I)
+elseif H==1 and m[G]>=A.AbsolutePosition[G]+A.AbsoluteSize[G]then v:ScrollTo(v.
+Index+I)end end D=false E=true I()local J,K=(tick())K=i.InputEnded:Connect(
+function(L)if not o(L,'StartAndEnd')then return end K:Disconnect()E=false end)
+while E do if tick()-J>=0.3 and s(z)then I()end wait()end end)w.
+MouseWheelForward:Connect(function()v:ScrollTo(v.Index-v.WheelIncrement)end)w.
+MouseWheelBackward:Connect(function()v:ScrollTo(v.Index+v.WheelIncrement)end)v.
+GuiElems.ScrollThumb=A v.GuiElems.ScrollThumbFrame=z v.GuiElems.Button1=x v.
+GuiElems.Button2=y v.GuiElems.MarkerFrame=B return w end r.Update=function(w,x)
+local y,z,A,B=w.TotalSpace,w.VisibleSpace,w.GuiElems.Button1,w.GuiElems.Button2
+w.Index=math.clamp(w.Index,0,math.max(0,y-z))if w.LastTotalSpace~=w.TotalSpace
+then w.LastTotalSpace=w.TotalSpace w:UpdateMarkers()end if w:CanScrollUp()then
+for C,D in pairs(A.Arrow:GetChildren())do D.BackgroundTransparency=0 end else A.
+BackgroundTransparency=1 for C,D in pairs(A.Arrow:GetChildren())do D.
+BackgroundTransparency=0.5 end end if w:CanScrollDown()then for C,D in pairs(B.
+Arrow:GetChildren())do D.BackgroundTransparency=0 end else B.
+BackgroundTransparency=1 for C,D in pairs(B.Arrow:GetChildren())do D.
+BackgroundTransparency=0.5 end end u(w)end r.UpdateMarkers=function(w)local x=w.
+GuiElems.MarkerFrame x:ClearAllChildren()for y,z in pairs(w.Markers)do if y<w.
+TotalSpace then q('Frame',{BackgroundTransparency=0,BackgroundColor3=z,
+BorderSizePixel=0,Position=w.Horizontal and UDim2.new(y/w.TotalSpace,0,1,-6)or
+UDim2.new(1,-6,y/w.TotalSpace,0),Size=w.Horizontal and UDim2.new(0,1,0,6)or
+UDim2.new(0,6,0,1),Name='Marker'..tostring(y),Parent=x})end end end r.AddMarker=
+function(w,x,y)w.Markers[x]=y or Color3.new(0,0,0)end r.ScrollTo=function(w,x,y)
+w.Index=x w:Update()if not y then w.Scrolled:Fire()end end r.ScrollUp=function(w
+)w.Index=w.Index-w.Increment w:Update()end r.ScrollDown=function(w)w.Index=w.
+Index+w.Increment w:Update()end r.CanScrollUp=function(w)return w.Index>0 end r.
+CanScrollDown=function(w)return w.Index+w.VisibleSpace<w.TotalSpace end r.
+GetScrollPercent=function(w)return w.Index/(w.TotalSpace-w.VisibleSpace)end r.
+SetScrollPercent=function(w,x)w.Index=math.floor(x*(w.TotalSpace-w.VisibleSpace)
+)w:Update()end r.Texture=function(w,x)w.ThumbColor=x.ThumbColor or Color3.new(0,
+0,0)w.ThumbSelectColor=x.ThumbSelectColor or Color3.new(0,0,0)w.GuiElems.
+ScrollThumb.BackgroundColor3=x.ThumbColor or Color3.new(0,0,0)w.Gui.
+BackgroundColor3=x.FrameColor or Color3.new(0,0,0)w.GuiElems.Button1.
+BackgroundColor3=x.ButtonColor or Color3.new(0,0,0)w.GuiElems.Button2.
+BackgroundColor3=x.ButtonColor or Color3.new(0,0,0)for y,z in pairs(w.GuiElems.
+Button1.Arrow:GetChildren())do z.BackgroundColor3=x.ArrowColor or Color3.new(0,0
+,0)end for y,z in pairs(w.GuiElems.Button2.Arrow:GetChildren())do z.
+BackgroundColor3=x.ArrowColor or Color3.new(0,0,0)end end r.SetScrollFrame=
+function(w,x)if w.ScrollUpEvent then w.ScrollUpEvent:Disconnect()w.ScrollUpEvent
+=nil end if w.ScrollDownEvent then w.ScrollDownEvent:Disconnect()w.
+ScrollDownEvent=nil end w.ScrollUpEvent=x.MouseWheelForward:Connect(function()w:
+ScrollTo(w.Index-w.WheelIncrement)end)w.ScrollDownEvent=x.MouseWheelBackward:
+Connect(function()w:ScrollTo(w.Index+w.WheelIncrement)end)end local w={}w.
+__index=r local x=function(x)local y=setmetatable({Index=0,VisibleSpace=0,
+TotalSpace=0,Increment=1,WheelIncrement=1,Markers={},GuiElems={},Horizontal=x,
+LastTotalSpace=0,Scrolled=p.Signal.new()},w)y.Gui=v(y)y:Texture{ThumbColor=
 Color3.fromRGB(60,60,60),ThumbSelectColor=Color3.fromRGB(75,75,75),ArrowColor=
 Color3.new(1,1,1),FrameColor=Color3.fromRGB(40,40,40),ButtonColor=Color3.
-fromRGB(75,75,75)}return w end return{new=v}end)()n.CodeFrame=(function()local p
-,q,r,s,t,u,v,w={},{[1]='String',[2]='String',[3]='String',[4]='Comment',[5]=
+fromRGB(75,75,75)}return y end return{new=x}end)()p.CodeFrame=(function()local r
+,s,t,u,v,w,x,y={},{[1]='String',[2]='String',[3]='String',[4]='Comment',[5]=
 'Operator',[6]='Number',[7]='Keyword',[8]='BuiltIn',[9]='LocalMethod',[10]=
 'LocalProperty',[11]='Nil',[12]='Bool',[13]='Function',[14]='Local',[15]='Self',
 [16]='FunctionName',[17]='Bracket'},{['nil']=11,['true']=12,['false']=12,[
@@ -202,508 +198,507 @@ setreadonly=true,isreadonly=true,getsenv=true,getcallingscript=true,getgenv=true
 getscripts=true,getloadedmodules=true,getconnections=true,firesignal=true,
 fireclickdetector=true,firetouchinterest=true,fireproximityprompt=true},false,{[
 "'"]='&apos;',['"']='&quot;',['<']='&lt;',['>']='&gt;',['&']='&amp;'},'\u{cd}'
-local x,y,z,A,B,C=(' %s%s '):format(w,w),{[('[^%s] %s'):format(w,w)]=0,[(' %s%s'
-):format(w,w)]=-1,[('%s%s '):format(w,w)]=2,[('%s [^%s]'):format(w,w)]=1},{},
-function()local x,y,z=getfenv(),type,tostring for A,B in next,t do local C=x[A]
-if y(C)=='table'then local D={}for E,F in next,C do D[E]=true end t[A]=D end end
-local A,B={},Enum:GetEnums()for C=1,#B do A[z(B[C])]=true end t.Enum=A u=true
-end,function(x)local y=x.GuiElems.EditBox y.Focused:Connect(function()x:
-ConnectEditBoxEvent()x.Editing=true end)y.FocusLost:Connect(function()x:
-DisconnectEditBoxEvent()x.Editing=false end)y:GetPropertyChangedSignal'Text':
-Connect(function()local z=y.Text if#z==0 or x.EditBoxCopying then return end z=z
-:gsub('\t','    ')y.Text=''x:AppendText(z)end)end,function(x)local y,z=x.
-GuiElems.LinesFrame,x.Lines y.InputBegan:Connect(function(A)if A.UserInputType==
-Enum.UserInputType.MouseButton1 then local B,C,D,E=math.ceil(x.FontSize/2),x.
-FontSize,l.X-y.AbsolutePosition.X,l.Y-y.AbsolutePosition.Y local F,G,H,I,J,K,L=
-math.round(D/B)+x.ViewX,math.floor(E/C)+x.ViewY,0,0 G=math.min(#z-1,G)local M=z[
-G+1]or''F=math.min(#M,F+x:TabAdjust(F,G))x.SelectionRange={{-1,-1},{-1,-1}}x:
-MoveCursor(F,G)x.FloatCursorX=F local N=function()local N,O=l.X-y.
-AbsolutePosition.X,l.Y-y.AbsolutePosition.Y local P,Q=math.max(0,math.round(N/B)
-+x.ViewX),math.max(0,math.floor(O/C)+x.ViewY)Q=math.min(#z-1,Q)local R=z[Q+1]or
-''P=math.min(#R,P+x:TabAdjust(P,Q))if Q<G or(Q==G and P<F)then x.SelectionRange=
-{{P,Q},{F,G}}else x.SelectionRange={{F,G},{P,Q}}end x:MoveCursor(P,Q)x.
-FloatCursorX=P x:Refresh()end J=h.InputEnded:Connect(function(O)if O.
-UserInputType==Enum.UserInputType.MouseButton1 then J:Disconnect()K:Disconnect()
-L:Disconnect()x:SetCopyableSelection()end end)K=h.InputChanged:Connect(function(
-O)if O.UserInputType==Enum.UserInputType.MouseMovement then local P,Q,R,S=l.Y-y.
-AbsolutePosition.Y,l.Y-y.AbsolutePosition.Y-y.AbsoluteSize.Y,l.X-y.
-AbsolutePosition.X,l.X-y.AbsolutePosition.X-y.AbsoluteSize.X H=0 I=0 if Q>0 then
-H=math.floor(Q*0.05)+1 elseif P<0 then H=math.ceil(P*0.05)-1 end if S>0 then I=
-math.floor(S*0.05)+1 elseif R<0 then I=math.ceil(R*0.05)-1 end N()end end)L=i.
-RenderStepped:Connect(function()if H~=0 or I~=0 then x:ScrollDelta(I,H)N()end
-end)x:Refresh()end end)end function p.MakeEditorFrame(D)local E=Instance.new
-'TextButton'E.BackgroundTransparency=1 E.TextTransparency=1 E.BackgroundColor3=
-Color3.fromRGB(40,40,40)E.BorderSizePixel=0 E.Size=UDim2.fromOffset(100,100)E.
-Visible=true local F,G={},Instance.new'Frame'G.Name='Lines'G.
-BackgroundTransparency=1 G.Size=UDim2.new(1,0,1,0)G.ClipsDescendants=true G.
-Parent=E local H=Instance.new'TextLabel'H.Name='LineNumbers'H.
-BackgroundTransparency=1 H.FontFace=D.FontFace H.TextXAlignment=Enum.
-TextXAlignment.Right H.TextYAlignment=Enum.TextYAlignment.Top H.ClipsDescendants
-=true H.RichText=true H.Parent=E f.Name='Cursor'f.BackgroundColor3=Color3.
-fromRGB(220,220,220)f.BorderSizePixel=0 f.Parent=E local I=Instance.new'TextBox'
-I.Name='EditBox'I.MultiLine=true I.Visible=false I.Parent=E I.TextSize=D.
-FontSize I.FontFace=D.FontFace z.Invis=j:Create(f,TweenInfo.new(0,Enum.
-EasingStyle.Quart,Enum.EasingDirection.Out),{BackgroundTransparency=1})z.Vis=j:
-Create(f,TweenInfo.new(0,Enum.EasingStyle.Quart,Enum.EasingDirection.Out),{
-BackgroundTransparency=0})local J=Instance.new'Frame'J.BackgroundColor3=Color3.
-new(0.15686275064945,0.15686275064945,0.15686275064945)J.BorderSizePixel=0 J.
-Name='ScrollCorner'J.Position=UDim2.new(1,-10,1,-10)J.Size=UDim2.new(0,10,0,10)J
-.Visible=false F.ScrollCorner=J F.LinesFrame=G F.LineNumbersLabel=H F.Cursor=f F
-.EditBox=I F.ScrollCorner.Parent=E G.InputBegan:Connect(function(K)if K.
-UserInputType==Enum.UserInputType.MouseButton1 then D:SetEditing(true,K)end end)
-D.Frame=E D.Gui=E D.GuiElems=F B(D)C(D)return E end p.GetSelectionText=function(
-D)if not D:IsValidRange()then return''end local E=D.SelectionRange local F,G,H,I
-=E[1][1],E[1][2],E[2][1],E[2][2]local J,K=I-G,D.Lines if not K[G+1]or not K[I+1]
-then return''end if J==0 then return D:ConvertText(K[G+1]:sub(F+1,H),false)end
-local L,M=K[G+1]:sub(F+1),K[I+1]:sub(1,H)local N=L..'\n'for O=G+1,I-1 do N=N..K[
-O+1]..'\n'end N=N..M return D:ConvertText(N,false)end p.SetCopyableSelection=
-function(D)local E,F=D:GetSelectionText(),D.GuiElems.EditBox D.EditBoxCopying=
-true F.Text=E F.SelectionStart=1 F.CursorPosition=#F.Text+1 D.EditBoxCopying=
-false end p.ConnectEditBoxEvent=function(D)if D.EditBoxEvent then D.EditBoxEvent
-:Disconnect()end D.EditBoxEvent=h.InputBegan:Connect(function(E)if E.
-UserInputType~=Enum.UserInputType.Keyboard then return end local F,G,H=Enum.
-KeyCode,E.KeyCode,function(F,G)local H,I H=h.InputEnded:Connect(function(J)if J.
-KeyCode~=F then return end H:Disconnect()I=true end)G()n.FastWait(0.5)while not
-I do G()n.FastWait(0.03)end end if G==F.Down then H(F.Down,function()D.CursorX=D
-.FloatCursorX D.CursorY=D.CursorY+1 D:UpdateCursor()D:JumpToCursor()end)elseif G
-==F.Up then H(F.Up,function()D.CursorX=D.FloatCursorX D.CursorY=D.CursorY-1 D:
-UpdateCursor()D:JumpToCursor()end)elseif G==F.Left then H(F.Left,function()local
-I=D.Lines[D.CursorY+1]or''D.CursorX=D.CursorX-1-(I:sub(D.CursorX-3,D.CursorX)==x
-and 3 or 0)if D.CursorX<0 then D.CursorY=D.CursorY-1 local J=D.Lines[D.CursorY+1
-]or''D.CursorX=#J end D.FloatCursorX=D.CursorX D:UpdateCursor()D:JumpToCursor()
-end)elseif G==F.Right then H(F.Right,function()local I=D.Lines[D.CursorY+1]or''D
-.CursorX=D.CursorX+1+(I:sub(D.CursorX+1,D.CursorX+4)==x and 3 or 0)if D.CursorX>
-#I then D.CursorY=D.CursorY+1 D.CursorX=0 end D.FloatCursorX=D.CursorX D:
-UpdateCursor()D:JumpToCursor()end)elseif G==F.Backspace then H(F.Backspace,
-function()local I,J if D:IsValidRange()then I=D.SelectionRange[1]J=D.
-SelectionRange[2]else J={D.CursorX,D.CursorY}end if not I then local K=D.Lines[D
-.CursorY+1]or''D.CursorX=D.CursorX-1-(K:sub(D.CursorX-3,D.CursorX)==x and 3 or 0
-)if D.CursorX<0 then D.CursorY=D.CursorY-1 local L=D.Lines[D.CursorY+1]or''D.
-CursorX=#L end D.FloatCursorX=D.CursorX D:UpdateCursor()I=I or{D.CursorX,D.
-CursorY}end D:DeleteRange({I,J},false,true)D:ResetSelection(true)D:JumpToCursor(
-)end)elseif G==F.Delete then H(F.Delete,function()local I,J if D:IsValidRange()
-then I=D.SelectionRange[1]J=D.SelectionRange[2]else I={D.CursorX,D.CursorY}end
-if not J then local K=D.Lines[D.CursorY+1]or''local L,M=D.CursorX+1+(K:sub(D.
-CursorX+1,D.CursorX+4)==x and 3 or 0),D.CursorY if L>#K then M=M+1 L=0 end D:
-UpdateCursor()J=J or{L,M}end D:DeleteRange({I,J},false,true)D:ResetSelection(
-true)D:JumpToCursor()end)elseif h:IsKeyDown(Enum.KeyCode.LeftControl)then if G==
-F.A then D.SelectionRange={{0,5},{#D.Lines[#D.Lines],#D.Lines-1}}D:
-SetCopyableSelection()D:Refresh()end end end)end p.DisconnectEditBoxEvent=
-function(D)if D.EditBoxEvent then D.EditBoxEvent:Disconnect()f.
-BackgroundTransparency=1 p.CursorAnim(D,false)end end p.ResetSelection=function(
-D,E)D.SelectionRange={{-1,-1},{-1,-1}}if not E then D:Refresh()end end p.
-IsValidRange=function(D,E)local F=E or D.SelectionRange local G,H,I,J=F[1][1],F[
-1][2],F[2][1],F[2][2]if G==-1 or(G==I and H==J)then return false end return true
-end p.DeleteRange=function(D,E,F,G)E=E or D.SelectionRange if not D:
-IsValidRange(E)then return end local H,I,J,K,L=D.Lines,E[1][1],E[1][2],E[2][1],E
-[2][2]local M=L-J if not H[J+1]or not H[L+1]then return end local N,O=H[J+1]:
-sub(1,I),H[L+1]:sub(K+1)H[J+1]=N..O local P=table.remove for Q=1,M do P(H,J+2)
-end if E==D.SelectionRange then D.SelectionRange={{-1,-1},{-1,-1}}end if G then
-D.CursorX=I D.CursorY=J D:UpdateCursor()end if not F then D:ProcessTextChange()
-end end p.AppendText=function(D,E)D:DeleteRange(nil,true,true)local F,G,H=D.
-Lines,D.CursorX,D.CursorY local I=F[H+1]local J,K=I:sub(1,G),I:sub(G+1)E=E:gsub(
-'\r\n','\n')E=D:ConvertText(E,true)local L,M=E:split'\n',table.insert for N=1,#L
-do local O=H+N if N>1 then M(F,O,'')end local P,Q,R=L[N],(N==1 and J or''),(N==#
-L and K or'')F[O]=Q..P..R end if#L>1 then G=0 end D:ProcessTextChange()D.CursorX
-=G+#L[#L]D.CursorY=H+#L-1 D:UpdateCursor()end p.ScrollDelta=function(D,E,F)D.
-ScrollV:ScrollTo(D.ScrollV.Index+F)D.ScrollH:ScrollTo(D.ScrollH.Index+E)end p.
-TabAdjust=function(D,E,F)local G=D.Lines local H=G[F+1]E=E+1 if H then local I,J
-,K=H:sub(E-1,E-1),H:sub(E,E),H:sub(E+1,E+1)local L=(#I>0 and I or' ')..(#J>0 and
-J or' ')..(#K>0 and K or' ')for M,N in pairs(y)do if L:find(M)then return N end
-end end return 0 end p.SetEditing=function(D,E,F)if F then D:UpdateCursor(F)end
-if E then if D.Editable then D.GuiElems.EditBox.Text=''D.GuiElems.EditBox:
-CaptureFocus()end else D.GuiElems.EditBox:ReleaseFocus()end end p.CursorAnim=
-function(D,E)local F,G=D.GuiElems.Cursor,tick()D.LastAnimTime=G if not E then
-return end z.Invis:Cancel()z.Vis:Cancel()F.BackgroundTransparency=0 coroutine.
-wrap(function()while D.Editable do n.FastWait(0.5)if D.LastAnimTime~=G then
-return end z.Invis:Play()n.FastWait(0.5)if D.LastAnimTime~=G then return end z.
-Vis:Play()end end)()end p.MoveCursor=function(D,E,F)D.CursorX=E D.CursorY=F D:
-UpdateCursor()D:JumpToCursor()end p.JumpToCursor=function(D)D:Refresh()end p.
-UpdateCursor=function(D,E)local F,G=D.GuiElems.LinesFrame,D.GuiElems.Cursor
-local H,I=math.max(0,F.AbsoluteSize.X),math.max(0,F.AbsoluteSize.Y)local J,K,L,M
-,N,O=math.ceil(I/D.FontSize),math.ceil(H/math.ceil(D.FontSize/2)),D.ViewX,D.
-ViewY,tostring(#D.Lines),math.ceil(D.FontSize/2)local P=#N*O+4*O if E then local
-Q=D.GuiElems.LinesFrame local R,S,T,U,V,W=Q.AbsolutePosition.X,Q.
-AbsolutePosition.Y,E.Position.X,E.Position.Y,math.ceil(D.FontSize/2),D.FontSize
-D.CursorX=D.ViewX+math.round((T-R)/V)D.CursorY=D.ViewY+math.floor((U-S)/W)end
-local Q,R=D.CursorX,D.CursorY local S=D.Lines[R+1]or''if Q>#S then Q=#S elseif Q
-<0 then Q=0 end if R>=#D.Lines then R=math.max(0,#D.Lines-1)elseif R<0 then R=0
-end Q=Q+D:TabAdjust(Q,R)D.CursorX=Q D.CursorY=R local T=(Q>=L)and(R>=M)and(Q<=L+
-K)and(R<=M+J)if T then local U,V=(Q-L),(R-M)G.Position=UDim2.new(0,P+U*math.
-ceil(D.FontSize/2)-1,0,V*D.FontSize)G.Size=UDim2.new(0,1,0,D.FontSize+2)G.
-Visible=true D:CursorAnim(true)else G.Visible=false end end p.MapNewLines=
-function(D)local E,F,G,H,I={},1,D.Text,string.find,1 local J=H(G,'\n',I,true)
-while J do E[F]=J F=F+1 I=J+1 J=H(G,'\n',I,true)end D.NewLines=E end p.
-PreHighlight=function(D)local E=D.Text:gsub('\\\\','  ')local F,G,H,I,J,K=#E,{},
-{},{},string.find,string.sub D.ColoredLines={}local L=function(L,M,N,O)local P,Q
-=#G+1,1 local R,S,T=J(L,M,Q,O)while R do G[P]=R H[R]=N if T then I[R]=T end P=P+
-1 Q=S+1 R,S,T=J(L,M,Q,O)end end L(E,'"',1,true)L(E,"'",2,true)L(E,'%[(=*)%[',3)
-L(E,'--',4,true)table.sort(G)local M,N,O,P,Q=D.NewLines,0,0,0,{}for R=1,#G do
-local S=G[R]if S<=P then continue end local T,U=S,H[S]if U==1 then T=J(E,'"',S+1
-,true)while T and K(E,T-1,T-1)=='\\'do T=J(E,'"',T+1,true)end if not T then T=F
-end elseif U==2 then T=J(E,"'",S+1,true)while T and K(E,T-1,T-1)=='\\'do T=J(E,
-"'",T+1,true)end if not T then T=F end elseif U==3 then _,T=J(E,']'..I[S]..']',S
-+1,true)if not T then T=F end elseif U==4 then local V=H[S+2]if V==3 then _,T=J(
-E,']'..I[S+2]..']',S+1,true)if not T then T=F end else T=J(E,'\n',S+1,true)or F
-end end while S>O do N=N+1 O=M[N]or F+1 end while true do local V=Q[N]if not V
-then V={}Q[N]=V end V[S]={U,T}if T>O then N=N+1 O=M[N]or F+1 else break end end
-P=T end D.PreHighlights=Q end p.HighlightLine=function(D,E)local F=D.
-ColoredLines[E]if F then return F end local G,H,I,J,K,L,M,N,O,P,Q,R,S=string.sub
-,string.find,string.match,{},D.PreHighlights[E]or{},D.Lines[E]or'',0,0,false,0,D
-.NewLines[E-1]or 0,{}for T,U in next,K do local V=T-Q if V<1 then N=U[1]M=U[2]-Q
-else R[V]={U[1],U[2]-Q}end end for T=1,#L do if T<=M then J[T]=N continue end
-local U=R[T]if U then N=U[1]M=U[2]J[T]=N O=false S=nil P=0 else local V=G(L,T,T)
-if H(V,'[%a_]')then local W=I(L,'[%a%d_]+',T)local X=(s[W]and 7)or(t[W]and 8)M=T
-+#W-1 if X~=7 then if O then local Y=S and t[S]X=(Y and type(Y)=='table'and Y[W]
-and 8)or 10 end if X~=8 then local Y,Z,_=H(L,'^%s*([%({"\'])',M+1)if Y then X=(P
->0 and _=='('and 16)or 9 P=0 end end else X=r[W]or X P=(W=='function'and 1 or 0)
-end S=W O=false if P>0 then P=1 end if X then N=X J[T]=N else N=nil end elseif
-H(V,'%p')then local W=(V=='.')local X=W and H(G(L,T+1,T+1),'%d')J[T]=(X and 6 or
-5)if not X then local Y=W and I(L,'%.%.?%.?',T)if Y and#Y>1 then N=5 M=T+#Y-1 O=
-false S=nil P=0 else if W then if O then S=nil else O=true end else O=false S=
-nil end P=((W or V==':')and P==1 and 2)or 0 end end elseif H(V,'%d')then local W
-,X=H(L,'%x+',T)local Y=G(L,X,X+1)if(Y=='e+'or Y=='e-')and H(G(L,X+2,X+2),'%d')
-then X=X+1 end N=6 M=X J[T]=6 O=false S=nil P=0 else J[T]=N local W,X=H(L,'%s+',
-T)if X then M=X end end end end D.ColoredLines[E]=J return J end p.Refresh=
-function(D)local E=D.Frame.Lines local F,G=math.max(0,E.AbsoluteSize.X),math.
-max(0,E.AbsoluteSize.Y)local H,I,J,K,L,M,N=math.ceil(G/D.FontSize),math.ceil(F/
-math.ceil(D.FontSize/2)),string.gsub,string.sub,D.ViewX,D.ViewY,''for O=1,H do
-local P=D.LineFrames[O]if not P then P=Instance.new'Frame'P.Name='Line'P.
-Position=UDim2.new(0,0,0,(O-1)*D.FontSize)P.Size=UDim2.new(1,0,0,D.FontSize)P.
-BorderSizePixel=0 P.BackgroundTransparency=1 local Q=Instance.new'Frame'Q.Name=
-'SelectionHighlight'Q.BorderSizePixel=0 Q.BackgroundColor3=d.Theme.Syntax.
-SelectionBack Q.Parent=P Q.BackgroundTransparency=0.7 local R=Instance.new
-'TextLabel'R.Name='Label'R.BackgroundTransparency=1 R.FontFace=D.FontFace R.
-TextSize=D.FontSize R.Size=UDim2.new(1,0,0,D.FontSize)R.RichText=true R.
-TextXAlignment=Enum.TextXAlignment.Left R.TextColor3=D.Colors.Text R.ZIndex=2 R.
-Parent=P P.Parent=E D.LineFrames[O]=P end local Q=M+O local R,S,T,U,V=D.Lines[Q]
-or'','',D:HighlightLine(Q),L+1,D.RichTemplates local W,X,Y=V.Text,V.Selection,T[
-U]local Z,_=V[q[Y] ]or W,D.SelectionRange local aa,ab,ac=_[1],_[2],Q-1 if ac>=aa
-[2]and ac<=ab[2]then local ad,ae=math.ceil(D.FontSize/2),(ac==aa[2]and aa[1]or 0
-)-L local af=(ac==ab[2]and ab[1]-ae-L or I+L)P.SelectionHighlight.Position=UDim2
-.new(0,ae*ad,0,0)P.SelectionHighlight.Size=UDim2.new(0,af*ad,1,0)P.
+local z,A,B,C,D,E=(' %s%s '):format(y,y),{[('[^%s] %s'):format(y,y)]=0,[(' %s%s'
+):format(y,y)]=-1,[('%s%s '):format(y,y)]=2,[('%s [^%s]'):format(y,y)]=1},{},
+function()local z,A,B=getfenv(),type,tostring for C,D in next,v do local E=z[C]
+if A(E)=='table'then local F={}for G,H in next,E do F[G]=true end v[C]=F end end
+local C,D={},Enum:GetEnums()for E=1,#D do C[B(D[E])]=true end v.Enum=C w=true
+end,function(z)local A=z.GuiElems.EditBox A.Focused:Connect(function()z:
+ConnectEditBoxEvent()z.Editing=true end)A.FocusLost:Connect(function()z:
+DisconnectEditBoxEvent()z.Editing=false end)A:GetPropertyChangedSignal'Text':
+Connect(function()local B=A.Text if#B==0 or z.EditBoxCopying then return end B=B
+:gsub('\t','    ')A.Text=''z:AppendText(B)end)end,function(z)local A,B=z.
+GuiElems.LinesFrame,z.Lines A.InputBegan:Connect(function(C)if o(C,'StartAndEnd'
+)then local D,E,F,G=math.ceil(z.FontSize/2),z.FontSize,m.X-A.AbsolutePosition.X,
+m.Y-A.AbsolutePosition.Y local H,I,J,K,L,M,N=math.round(F/D)+z.ViewX,math.floor(
+G/E)+z.ViewY,0,0 I=math.min(#B-1,I)local O=B[I+1]or''H=math.min(#O,H+z:
+TabAdjust(H,I))z.SelectionRange={{-1,-1},{-1,-1}}z:MoveCursor(H,I)z.FloatCursorX
+=H local P=function()local P,Q=m.X-A.AbsolutePosition.X,m.Y-A.AbsolutePosition.Y
+local R,S=math.max(0,math.round(P/D)+z.ViewX),math.max(0,math.floor(Q/E)+z.ViewY
+)S=math.min(#B-1,S)local T=B[S+1]or''R=math.min(#T,R+z:TabAdjust(R,S))if S<I or(
+S==I and R<H)then z.SelectionRange={{R,S},{H,I}}else z.SelectionRange={{H,I},{R,
+S}}end z:MoveCursor(R,S)z.FloatCursorX=R z:Refresh()end L=i.InputEnded:Connect(
+function(Q)if o(Q,'StartAndEnd')then L:Disconnect()M:Disconnect()N:Disconnect()z
+:SetCopyableSelection()end end)M=i.InputChanged:Connect(function(Q)if o(Q,
+'Movement')then local R,S,T,U=m.Y-A.AbsolutePosition.Y,m.Y-A.AbsolutePosition.Y-
+A.AbsoluteSize.Y,m.X-A.AbsolutePosition.X,m.X-A.AbsolutePosition.X-A.
+AbsoluteSize.X J=0 K=0 if S>0 then J=math.floor(S*0.05)+1 elseif R<0 then J=math
+.ceil(R*0.05)-1 end if U>0 then K=math.floor(U*0.05)+1 elseif T<0 then K=math.
+ceil(T*0.05)-1 end P()end end)N=j.RenderStepped:Connect(function()if J~=0 or K~=
+0 then z:ScrollDelta(K,J)P()end end)z:Refresh()end end)end function r.
+MakeEditorFrame(F)local G=Instance.new'TextButton'G.BackgroundTransparency=1 G.
+TextTransparency=1 G.BackgroundColor3=Color3.fromRGB(40,40,40)G.BorderSizePixel=
+0 G.Size=UDim2.fromOffset(100,100)G.Visible=true local H,I={},Instance.new
+'Frame'I.Name='Lines'I.BackgroundTransparency=1 I.Size=UDim2.new(1,0,1,0)I.
+ClipsDescendants=true I.Parent=G local J=Instance.new'TextLabel'J.Name=
+'LineNumbers'J.BackgroundTransparency=1 J.FontFace=F.FontFace J.TextXAlignment=
+Enum.TextXAlignment.Right J.TextYAlignment=Enum.TextYAlignment.Top J.
+ClipsDescendants=true J.RichText=true J.Parent=G g.Name='Cursor'g.
+BackgroundColor3=Color3.fromRGB(220,220,220)g.BorderSizePixel=0 g.Parent=G local
+K=Instance.new'TextBox'K.Name='EditBox'K.MultiLine=true K.Visible=false K.Parent
+=G K.TextSize=F.FontSize K.FontFace=F.FontFace B.Invis=k:Create(g,TweenInfo.new(
+0,Enum.EasingStyle.Quart,Enum.EasingDirection.Out),{BackgroundTransparency=1})B.
+Vis=k:Create(g,TweenInfo.new(0,Enum.EasingStyle.Quart,Enum.EasingDirection.Out),
+{BackgroundTransparency=0})local L=Instance.new'Frame'L.BackgroundColor3=Color3.
+new(0.15686275064945,0.15686275064945,0.15686275064945)L.BorderSizePixel=0 L.
+Name='ScrollCorner'L.Position=UDim2.new(1,-10,1,-10)L.Size=UDim2.new(0,10,0,10)L
+.Visible=false H.ScrollCorner=L H.LinesFrame=I H.LineNumbersLabel=J H.Cursor=g H
+.EditBox=K H.ScrollCorner.Parent=G I.InputBegan:Connect(function(M)if o(M,
+'StartAndEnd')then F:SetEditing(true,M)end end)F.Frame=G F.Gui=G F.GuiElems=H D(
+F)E(F)return G end r.GetSelectionText=function(F)if not F:IsValidRange()then
+return''end local G=F.SelectionRange local H,I,J,K=G[1][1],G[1][2],G[2][1],G[2][
+2]local L,M=K-I,F.Lines if not M[I+1]or not M[K+1]then return''end if L==0 then
+return F:ConvertText(M[I+1]:sub(H+1,J),false)end local N,O=M[I+1]:sub(H+1),M[K+1
+]:sub(1,J)local P=N..'\n'for Q=I+1,K-1 do P=P..M[Q+1]..'\n'end P=P..O return F:
+ConvertText(P,false)end r.SetCopyableSelection=function(F)local G,H=F:
+GetSelectionText(),F.GuiElems.EditBox F.EditBoxCopying=true H.Text=G H.
+SelectionStart=1 H.CursorPosition=#H.Text+1 F.EditBoxCopying=false end r.
+ConnectEditBoxEvent=function(F)if F.EditBoxEvent then F.EditBoxEvent:Disconnect(
+)end F.EditBoxEvent=i.InputBegan:Connect(function(G)if G.UserInputType~=Enum.
+UserInputType.Keyboard then return end local H,I,J=Enum.KeyCode,G.KeyCode,
+function(H,I)local J,K J=i.InputEnded:Connect(function(L)if L.KeyCode~=H then
+return end J:Disconnect()K=true end)I()p.FastWait(0.5)while not K do I()p.
+FastWait(0.03)end end if I==H.Down then J(H.Down,function()F.CursorX=F.
+FloatCursorX F.CursorY=F.CursorY+1 F:UpdateCursor()F:JumpToCursor()end)elseif I
+==H.Up then J(H.Up,function()F.CursorX=F.FloatCursorX F.CursorY=F.CursorY-1 F:
+UpdateCursor()F:JumpToCursor()end)elseif I==H.Left then J(H.Left,function()local
+K=F.Lines[F.CursorY+1]or''F.CursorX=F.CursorX-1-(K:sub(F.CursorX-3,F.CursorX)==z
+and 3 or 0)if F.CursorX<0 then F.CursorY=F.CursorY-1 local L=F.Lines[F.CursorY+1
+]or''F.CursorX=#L end F.FloatCursorX=F.CursorX F:UpdateCursor()F:JumpToCursor()
+end)elseif I==H.Right then J(H.Right,function()local K=F.Lines[F.CursorY+1]or''F
+.CursorX=F.CursorX+1+(K:sub(F.CursorX+1,F.CursorX+4)==z and 3 or 0)if F.CursorX>
+#K then F.CursorY=F.CursorY+1 F.CursorX=0 end F.FloatCursorX=F.CursorX F:
+UpdateCursor()F:JumpToCursor()end)elseif I==H.Backspace then J(H.Backspace,
+function()local K,L if F:IsValidRange()then K=F.SelectionRange[1]L=F.
+SelectionRange[2]else L={F.CursorX,F.CursorY}end if not K then local M=F.Lines[F
+.CursorY+1]or''F.CursorX=F.CursorX-1-(M:sub(F.CursorX-3,F.CursorX)==z and 3 or 0
+)if F.CursorX<0 then F.CursorY=F.CursorY-1 local N=F.Lines[F.CursorY+1]or''F.
+CursorX=#N end F.FloatCursorX=F.CursorX F:UpdateCursor()K=K or{F.CursorX,F.
+CursorY}end F:DeleteRange({K,L},false,true)F:ResetSelection(true)F:JumpToCursor(
+)end)elseif I==H.Delete then J(H.Delete,function()local K,L if F:IsValidRange()
+then K=F.SelectionRange[1]L=F.SelectionRange[2]else K={F.CursorX,F.CursorY}end
+if not L then local M=F.Lines[F.CursorY+1]or''local N,O=F.CursorX+1+(M:sub(F.
+CursorX+1,F.CursorX+4)==z and 3 or 0),F.CursorY if N>#M then O=O+1 N=0 end F:
+UpdateCursor()L=L or{N,O}end F:DeleteRange({K,L},false,true)F:ResetSelection(
+true)F:JumpToCursor()end)elseif i:IsKeyDown(Enum.KeyCode.LeftControl)then if I==
+H.A then F.SelectionRange={{0,5},{#F.Lines[#F.Lines],#F.Lines-1}}F:
+SetCopyableSelection()F:Refresh()end end end)end r.DisconnectEditBoxEvent=
+function(F)if F.EditBoxEvent then F.EditBoxEvent:Disconnect()g.
+BackgroundTransparency=1 r.CursorAnim(F,false)end end r.ResetSelection=function(
+F,G)F.SelectionRange={{-1,-1},{-1,-1}}if not G then F:Refresh()end end r.
+IsValidRange=function(F,G)local H=G or F.SelectionRange local I,J,K,L=H[1][1],H[
+1][2],H[2][1],H[2][2]if I==-1 or(I==K and J==L)then return false end return true
+end r.DeleteRange=function(F,G,H,I)G=G or F.SelectionRange if not F:
+IsValidRange(G)then return end local J,K,L,M,N=F.Lines,G[1][1],G[1][2],G[2][1],G
+[2][2]local O=N-L if not J[L+1]or not J[N+1]then return end local P,Q=J[L+1]:
+sub(1,K),J[N+1]:sub(M+1)J[L+1]=P..Q local R=table.remove for S=1,O do R(J,L+2)
+end if G==F.SelectionRange then F.SelectionRange={{-1,-1},{-1,-1}}end if I then
+F.CursorX=K F.CursorY=L F:UpdateCursor()end if not H then F:ProcessTextChange()
+end end r.AppendText=function(F,G)F:DeleteRange(nil,true,true)local H,I,J=F.
+Lines,F.CursorX,F.CursorY local K=H[J+1]local L,M=K:sub(1,I),K:sub(I+1)G=G:gsub(
+'\r\n','\n')G=F:ConvertText(G,true)local N,O=G:split'\n',table.insert for P=1,#N
+do local Q=J+P if P>1 then O(H,Q,'')end local R,S,T=N[P],(P==1 and L or''),(P==#
+N and M or'')H[Q]=S..R..T end if#N>1 then I=0 end F:ProcessTextChange()F.CursorX
+=I+#N[#N]F.CursorY=J+#N-1 F:UpdateCursor()end r.ScrollDelta=function(F,G,H)F.
+ScrollV:ScrollTo(F.ScrollV.Index+H)F.ScrollH:ScrollTo(F.ScrollH.Index+G)end r.
+TabAdjust=function(F,G,H)local I=F.Lines local J=I[H+1]G=G+1 if J then local K,L
+,M=J:sub(G-1,G-1),J:sub(G,G),J:sub(G+1,G+1)local N=(#K>0 and K or' ')..(#L>0 and
+L or' ')..(#M>0 and M or' ')for O,P in pairs(A)do if N:find(O)then return P end
+end end return 0 end r.SetEditing=function(F,G,H)if H then F:UpdateCursor(H)end
+if G then if F.Editable then F.GuiElems.EditBox.Text=''F.GuiElems.EditBox:
+CaptureFocus()end else F.GuiElems.EditBox:ReleaseFocus()end end r.CursorAnim=
+function(F,G)local H,I=F.GuiElems.Cursor,tick()F.LastAnimTime=I if not G then
+return end B.Invis:Cancel()B.Vis:Cancel()H.BackgroundTransparency=0 coroutine.
+wrap(function()while F.Editable do p.FastWait(0.5)if F.LastAnimTime~=I then
+return end B.Invis:Play()p.FastWait(0.5)if F.LastAnimTime~=I then return end B.
+Vis:Play()end end)()end r.MoveCursor=function(F,G,H)F.CursorX=G F.CursorY=H F:
+UpdateCursor()F:JumpToCursor()end r.JumpToCursor=function(F)F:Refresh()end r.
+UpdateCursor=function(F,G)local H,I=F.GuiElems.LinesFrame,F.GuiElems.Cursor
+local J,K=math.max(0,H.AbsoluteSize.X),math.max(0,H.AbsoluteSize.Y)local L,M,N,O
+,P,Q=math.ceil(K/F.FontSize),math.ceil(J/math.ceil(F.FontSize/2)),F.ViewX,F.
+ViewY,tostring(#F.Lines),math.ceil(F.FontSize/2)local R=#P*Q+4*Q if G then local
+S=F.GuiElems.LinesFrame local T,U,V,W,X,Y=S.AbsolutePosition.X,S.
+AbsolutePosition.Y,G.Position.X,G.Position.Y,math.ceil(F.FontSize/2),F.FontSize
+F.CursorX=F.ViewX+math.round((V-T)/X)F.CursorY=F.ViewY+math.floor((W-U)/Y)end
+local S,T=F.CursorX,F.CursorY local U=F.Lines[T+1]or''if S>#U then S=#U elseif S
+<0 then S=0 end if T>=#F.Lines then T=math.max(0,#F.Lines-1)elseif T<0 then T=0
+end S=S+F:TabAdjust(S,T)F.CursorX=S F.CursorY=T local V=(S>=N)and(T>=O)and(S<=N+
+M)and(T<=O+L)if V then local W,X=(S-N),(T-O)I.Position=UDim2.new(0,R+W*math.
+ceil(F.FontSize/2)-1,0,X*F.FontSize)I.Size=UDim2.new(0,1,0,F.FontSize+2)I.
+Visible=true F:CursorAnim(true)else I.Visible=false end end r.MapNewLines=
+function(F)local G,H,I,J,K={},1,F.Text,string.find,1 local L=J(I,'\n',K,true)
+while L do G[H]=L H=H+1 K=L+1 L=J(I,'\n',K,true)end F.NewLines=G end r.
+PreHighlight=function(F)local G=F.Text:gsub('\\\\','  ')local H,I,J,K,L,M=#G,{},
+{},{},string.find,string.sub F.ColoredLines={}local N=function(N,O,P,Q)local R,S
+=#I+1,1 local T,U,V=L(N,O,S,Q)while T do I[R]=T J[T]=P if V then K[T]=V end R=R+
+1 S=U+1 T,U,V=L(N,O,S,Q)end end N(G,'"',1,true)N(G,"'",2,true)N(G,'%[(=*)%[',3)
+N(G,'--',4,true)table.sort(I)local O,P,Q,R,S=F.NewLines,0,0,0,{}for T=1,#I do
+local U=I[T]if U<=R then continue end local V,W=U,J[U]if W==1 then V=L(G,'"',U+1
+,true)while V and M(G,V-1,V-1)=='\\'do V=L(G,'"',V+1,true)end if not V then V=H
+end elseif W==2 then V=L(G,"'",U+1,true)while V and M(G,V-1,V-1)=='\\'do V=L(G,
+"'",V+1,true)end if not V then V=H end elseif W==3 then _,V=L(G,']'..K[U]..']',U
++1,true)if not V then V=H end elseif W==4 then local X=J[U+2]if X==3 then _,V=L(
+G,']'..K[U+2]..']',U+1,true)if not V then V=H end else V=L(G,'\n',U+1,true)or H
+end end while U>Q do P=P+1 Q=O[P]or H+1 end while true do local X=S[P]if not X
+then X={}S[P]=X end X[U]={W,V}if V>Q then P=P+1 Q=O[P]or H+1 else break end end
+R=V end F.PreHighlights=S end r.HighlightLine=function(F,G)local H=F.
+ColoredLines[G]if H then return H end local I,J,K,L,M,N,O,P,Q,R,S,T,U=string.sub
+,string.find,string.match,{},F.PreHighlights[G]or{},F.Lines[G]or'',0,0,false,0,F
+.NewLines[G-1]or 0,{}for V,W in next,M do local X=V-S if X<1 then P=W[1]O=W[2]-S
+else T[X]={W[1],W[2]-S}end end for V=1,#N do if V<=O then L[V]=P continue end
+local W=T[V]if W then P=W[1]O=W[2]L[V]=P Q=false U=nil R=0 else local X=I(N,V,V)
+if J(X,'[%a_]')then local Y=K(N,'[%a%d_]+',V)local Z=(u[Y]and 7)or(v[Y]and 8)O=V
++#Y-1 if Z~=7 then if Q then local _=U and v[U]Z=(_ and type(_)=='table'and _[Y]
+and 8)or 10 end if Z~=8 then local _,aa,ab=J(N,'^%s*([%({"\'])',O+1)if _ then Z=
+(R>0 and ab=='('and 16)or 9 R=0 end end else Z=t[Y]or Z R=(Y=='function'and 1 or
+0)end U=Y Q=false if R>0 then R=1 end if Z then P=Z L[V]=P else P=nil end elseif
+J(X,'%p')then local aa=(X=='.')local ab=aa and J(I(N,V+1,V+1),'%d')L[V]=(ab and
+6 or 5)if not ab then local Y=aa and K(N,'%.%.?%.?',V)if Y and#Y>1 then P=5 O=V+
+#Y-1 Q=false U=nil R=0 else if aa then if Q then U=nil else Q=true end else Q=
+false U=nil end R=((aa or X==':')and R==1 and 2)or 0 end end elseif J(X,'%d')
+then local aa,ab=J(N,'%x+',V)local Y=I(N,ab,ab+1)if(Y=='e+'or Y=='e-')and J(I(N,
+ab+2,ab+2),'%d')then ab=ab+1 end P=6 O=ab L[V]=6 Q=false U=nil R=0 else L[V]=P
+local aa,ab=J(N,'%s+',V)if ab then O=ab end end end end F.ColoredLines[G]=L
+return L end r.Refresh=function(aa)local ab=aa.Frame.Lines local F,G=math.max(0,
+ab.AbsoluteSize.X),math.max(0,ab.AbsoluteSize.Y)local H,I,J,K,L,M,N=math.ceil(G/
+aa.FontSize),math.ceil(F/math.ceil(aa.FontSize/2)),string.gsub,string.sub,aa.
+ViewX,aa.ViewY,''for O=1,H do local P=aa.LineFrames[O]if not P then P=Instance.
+new'Frame'P.Name='Line'P.Position=UDim2.new(0,0,0,(O-1)*aa.FontSize)P.Size=UDim2
+.new(1,0,0,aa.FontSize)P.BorderSizePixel=0 P.BackgroundTransparency=1 local Q=
+Instance.new'Frame'Q.Name='SelectionHighlight'Q.BorderSizePixel=0 Q.
+BackgroundColor3=d.Theme.Syntax.SelectionBack Q.Parent=P Q.
+BackgroundTransparency=0.7 local R=Instance.new'TextLabel'R.Name='Label'R.
+BackgroundTransparency=1 R.FontFace=aa.FontFace R.TextSize=aa.FontSize R.Size=
+UDim2.new(1,0,0,aa.FontSize)R.RichText=true R.TextXAlignment=Enum.TextXAlignment
+.Left R.TextColor3=aa.Colors.Text R.ZIndex=2 R.Parent=P P.Parent=ab aa.
+LineFrames[O]=P end local Q=M+O local R,S,T,U,V=aa.Lines[Q]or'','',aa:
+HighlightLine(Q),L+1,aa.RichTemplates local W,X,Y=V.Text,V.Selection,T[U]local Z
+,_=V[s[Y] ]or W,aa.SelectionRange local ac,ad,ae=_[1],_[2],Q-1 if ae>=ac[2]and
+ae<=ad[2]then local af,ag=math.ceil(aa.FontSize/2),(ae==ac[2]and ac[1]or 0)-L
+local ah=(ae==ad[2]and ad[1]-ag-L or I+L)P.SelectionHighlight.Position=UDim2.
+new(0,ag*af,0,0)P.SelectionHighlight.Size=UDim2.new(0,ah*af,1,0)P.
 SelectionHighlight.Visible=true else P.SelectionHighlight.Visible=false end for
-ad=2,I do local ae=L+ad local af=T[ae]if af~=Y then local ag=V[q[af] ]or W if ag
-~=Z then local ah=J(K(R,U,ae-1),'[\'"<>&]',v)S=S..(Z~=W and(Z..ah..'</font>')or
-ah)U=ae Z=ag end Y=af end end local ad=J(K(R,U,L+I),'[\'"<>&]',v)if#ad>0 then S=
-S..(Z~=W and(Z..ad..'</font>')or ad)end if D.Lines[Q]then N=N..(Q-1==D.CursorY
-and('<b>'..Q..'</b>\n')or Q..'\n')end P.Label.Text=S end for aa=H+1,#D.
-LineFrames do D.LineFrames[aa]:Destroy()D.LineFrames[aa]=nil end D.Frame.
-LineNumbers.Text=N D:UpdateCursor()end p.UpdateView=function(aa)local ab,ac=
+af=2,I do local ag=L+af local ah=T[ag]if ah~=Y then local ai=V[s[ah] ]or W if ai
+~=Z then local aj=J(K(R,U,ag-1),'[\'"<>&]',x)S=S..(Z~=W and(Z..aj..'</font>')or
+aj)U=ag Z=ai end Y=ah end end local af=J(K(R,U,L+I),'[\'"<>&]',x)if#af>0 then S=
+S..(Z~=W and(Z..af..'</font>')or af)end if aa.Lines[Q]then N=N..(Q-1==aa.CursorY
+and('<b>'..Q..'</b>\n')or Q..'\n')end P.Label.Text=S end for ac=H+1,#aa.
+LineFrames do aa.LineFrames[ac]:Destroy()aa.LineFrames[ac]=nil end aa.Frame.
+LineNumbers.Text=N aa:UpdateCursor()end r.UpdateView=function(aa)local ab,ac=
 tostring(#aa.Lines),math.ceil(aa.FontSize/2)local ad,ae=#ab*ac+4*ac,aa.Frame.
-Lines local af,ag=ae.AbsoluteSize.X,ae.AbsoluteSize.Y local ah,D,E,F=math.ceil(
-ag/aa.FontSize),aa.MaxTextCols*ac,aa.ScrollV,aa.ScrollH E.VisibleSpace=ah E.
-TotalSpace=#aa.Lines+1 F.VisibleSpace=math.ceil(af/ac)F.TotalSpace=aa.
-MaxTextCols+1 E.Gui.Visible=#aa.Lines+1>ah F.Gui.Visible=D>af local G=aa.
-FrameOffsets aa.FrameOffsets=Vector2.new(E.Gui.Visible and-10 or 0,F.Gui.Visible
-and-10 or 0)if G~=aa.FrameOffsets then aa:UpdateView()else E:ScrollTo(aa.ViewY,
-true)F:ScrollTo(aa.ViewX,true)if E.Gui.Visible and F.Gui.Visible then E.Gui.Size
-=UDim2.new(0,10,1,-10)F.Gui.Size=UDim2.new(1,-10,0,10)aa.GuiElems.ScrollCorner.
-Visible=true else E.Gui.Size=UDim2.new(0,10,1,0)F.Gui.Size=UDim2.new(1,0,0,10)aa
-.GuiElems.ScrollCorner.Visible=false end aa.ViewY=E.Index aa.ViewX=F.Index aa.
-Frame.Lines.Position=UDim2.new(0,ad,0,0)aa.Frame.Lines.Size=UDim2.new(1,-ad+G.X,
-1,G.Y)aa.Frame.LineNumbers.Position=UDim2.new(0,ac,0,0)aa.Frame.LineNumbers.Size
-=UDim2.new(0,#ab*ac,1,G.Y)aa.Frame.LineNumbers.TextSize=aa.FontSize end end p.
-ProcessTextChange=function(aa)local ab,ac=0,aa.Lines for ad=1,#ac do local ae=#
-ac[ad]if ae>ab then ab=ae end end aa.MaxTextCols=ab aa:UpdateView()aa.Text=table
-.concat(aa.Lines,'\n')aa:MapNewLines()aa:PreHighlight()aa:Refresh()end p.
-ConvertText=function(aa,ab,ac)if ac then local ad=ab:gsub('\t','    ')return ad:
-gsub('\t',(' %s%s '):format(w,w))else return ab:gsub((' %s%s '):format(w,w),'\t'
-)end end p.GetText=function(aa)local ab=table.concat(aa.Lines,'\n')return aa:
-ConvertText(ab,false)end p.SetText=function(aa,ab)ab=aa:ConvertText(ab,true)
-local ac=aa.Lines table.clear(ac)local ad=1 for ae in ab:gmatch
-'([^\n\r]*)[\n\r]?'do ac[ad]=ae ad=ad+1 end aa:ProcessTextChange()end p.
+Lines local af,ag=ae.AbsoluteSize.X,ae.AbsoluteSize.Y local ah,ai,aj,F=math.
+ceil(ag/aa.FontSize),aa.MaxTextCols*ac,aa.ScrollV,aa.ScrollH aj.VisibleSpace=ah
+aj.TotalSpace=#aa.Lines+1 F.VisibleSpace=math.ceil(af/ac)F.TotalSpace=aa.
+MaxTextCols+1 aj.Gui.Visible=#aa.Lines+1>ah F.Gui.Visible=ai>af local G=aa.
+FrameOffsets aa.FrameOffsets=Vector2.new(aj.Gui.Visible and-10 or 0,F.Gui.
+Visible and-10 or 0)if G~=aa.FrameOffsets then aa:UpdateView()else aj:ScrollTo(
+aa.ViewY,true)F:ScrollTo(aa.ViewX,true)if aj.Gui.Visible and F.Gui.Visible then
+aj.Gui.Size=UDim2.new(0,10,1,-10)F.Gui.Size=UDim2.new(1,-10,0,10)aa.GuiElems.
+ScrollCorner.Visible=true else aj.Gui.Size=UDim2.new(0,10,1,0)F.Gui.Size=UDim2.
+new(1,0,0,10)aa.GuiElems.ScrollCorner.Visible=false end aa.ViewY=aj.Index aa.
+ViewX=F.Index aa.Frame.Lines.Position=UDim2.new(0,ad,0,0)aa.Frame.Lines.Size=
+UDim2.new(1,-ad+G.X,1,G.Y)aa.Frame.LineNumbers.Position=UDim2.new(0,ac,0,0)aa.
+Frame.LineNumbers.Size=UDim2.new(0,#ab*ac,1,G.Y)aa.Frame.LineNumbers.TextSize=aa
+.FontSize end end r.ProcessTextChange=function(aa)local ab,ac=0,aa.Lines for ad=
+1,#ac do local ae=#ac[ad]if ae>ab then ab=ae end end aa.MaxTextCols=ab aa:
+UpdateView()aa.Text=table.concat(aa.Lines,'\n')aa:MapNewLines()aa:PreHighlight()
+aa:Refresh()end r.ConvertText=function(aa,ab,ac)if ac then local ad=ab:gsub('\t'
+,'    ')return ad:gsub('\t',(' %s%s '):format(y,y))else return ab:gsub((' %s%s '
+):format(y,y),'\t')end end r.GetText=function(aa)local ab=table.concat(aa.Lines,
+'\n')return aa:ConvertText(ab,false)end r.SetText=function(aa,ab)ab=aa:
+ConvertText(ab,true)local ac=aa.Lines table.clear(ac)local ad=1 for ae in ab:
+gmatch'([^\n\r]*)[\n\r]?'do ac[ad]=ae ad=ad+1 end aa:ProcessTextChange()end r.
 ClearText=function(aa)local ab,ac=aa:ConvertText('',true),aa.Lines table.clear(
 ac)local ad=1 for ae in ab:gmatch'([^\n\r]*)[\n\r]?'do ac[ad]=ae ad=ad+1 end aa:
-ProcessTextChange()end p.CompileText=function(aa)local ab=pcall(function()local
+ProcessTextChange()end r.CompileText=function(aa)local ab=pcall(function()local
 ab=table.concat(aa.Lines,'\n')local ac=aa:ConvertText(ab,false)loadstring(ac)()
-end)return ab end p.ReturnErrors=function(aa)local ab,ac=pcall(function()local
+end)return ab end r.ReturnErrors=function(aa)local ab,ac=pcall(function()local
 ab=table.concat(aa.Lines,'\n')local ac=aa:ConvertText(ab,false)loadstring(ac)()
-end)return not ab and ac or nil end p.GetVersion=function(aa)return b end p.
+end)return not ab and ac or nil end r.GetVersion=function(aa)return b end r.
 MakeRichTemplates=function(aa)local ab,ac=math.floor,{}for ad,ae in pairs(aa.
 Colors)do ac[ad]=('<font color="rgb(%s,%s,%s)">'):format(ab(ae.r*255),ab(ae.g*
-255),ab(ae.b*255))end aa.RichTemplates=ac end p.ApplyTheme=function(aa)local ab=
+255),ab(ae.b*255))end aa.RichTemplates=ac end r.ApplyTheme=function(aa)local ab=
 d.Theme.Syntax aa.Colors=ab aa.Frame.LineNumbers.TextColor3=ab.Text aa.Frame.
-BackgroundColor3=ab.Background end local aa={__index=p}local ab=function(ab)ab=
-ab or{}if not u then A()end local ac,ad=n.ScrollBar.new(),n.ScrollBar.new(true)
+BackgroundColor3=ab.Background end local aa={__index=r}local ab=function(ab)ab=
+ab or{}if not w then C()end local ac,ad=p.ScrollBar.new(),p.ScrollBar.new(true)
 ad.Gui.Position=UDim2.new(0,0,1,-10)local ae={FontFace=Font.fromEnum(Enum.Font.
 Code),FontSize=14,ViewX=0,ViewY=0,Colors=d.Theme.Syntax,ColoredLines={},Lines={
 ''},LineFrames={},Editable=true,Editing=false,CursorX=0,CursorY=0,FloatCursorX=0
 ,Text='',PreHighlights={},SelectionRange={{-1,-1},{-1,-1}},NewLines={},
-FrameOffsets=Vector2.new(0,0),MaxTextCols=0,ScrollV=ac,ScrollH=ad}local af=m(ae,
-ab)local ag=setmetatable(af,aa)p.SetTextMultiplier=(function(ah)ag.FontSize=ah
-end)p.GetTextMultiplier=(function()return ag.FontSize end)ac.WheelIncrement=3 ad
+FrameOffsets=Vector2.new(0,0),MaxTextCols=0,ScrollV=ac,ScrollH=ad}local af=n(ae,
+ab)local ag=setmetatable(af,aa)r.SetTextMultiplier=(function(ah)ag.FontSize=ah
+end)r.GetTextMultiplier=(function()return ag.FontSize end)ac.WheelIncrement=3 ad
 .Increment=2 ad.WheelIncrement=7 ac.Scrolled:Connect(function()ag.ViewY=ac.Index
 ag:Refresh()end)ad.Scrolled:Connect(function()ag.ViewX=ad.Index ag:Refresh()end)
 ag:MakeEditorFrame(ag)ag:MakeRichTemplates()ag:ApplyTheme()ac:SetScrollFrame(ag.
 Frame.Lines)ac.Gui.Parent=ag.Frame ad.Gui.Parent=ag.Frame ag:UpdateView()ag:
 SetText(af.Text)ag.Frame:GetPropertyChangedSignal'AbsoluteSize':Connect(function
-()ag:UpdateView()ag:Refresh()end)return ag end return{new=ab}end)()return n end
+()ag:UpdateView()ag:Refresh()end)return ag end return{new=ab}end)()return p end
 function a.b()local aa,ab,ac={Services={},OnInitConnections={}},get_hidden_gui
 or gethui,cloneref or function(aa)return aa end local ad=aa.Services
 setmetatable(ad,{__index=function(ae,af)local ag=game:GetService(af)return ac(ag
 )end})local ae,af=(ad.CoreGui)function aa:AddOnInit(ag)local ah=self.
 OnInitConnections table.insert(ah,ag)end function aa:CallOnInitConnections(ag,
-...)local ah=self.OnInitConnections af=ag for b,c in next,ah do c(af,...)end end
-function aa:SetProperties(ag,ah)for b,c in next,ah do pcall(function()ag[b]=c
-end)end end function aa:NewClass(ag,ah)ah=ah or{}ag.__index=ag return
-setmetatable(ah,ag)end function aa:CheckConfig(ag,ah,b,c)if not ag then return
-end for d,e in next,ah do if ag[d]~=nil then continue end if c then if table.
-find(c,d)then continue end end if b then e=e()end ag[d]=e end return ag end
-function aa:ResolveUIParent()local ag,ah=af.PlayerGui,af.Debug local b,c={[1]=
-function()local b=ab()if b.Parent==ae then return end return b end,[2]=function(
-)return ae end,[3]=function()return ag end},af:CreateInstance'ScreenGui'for d,e
-in next,b do local f,g=pcall(e)if not f or not g then continue end local h=
-pcall(function()c.Parent=g end)if not h then continue end if ah then af:Warn(`Step: {
-d} was chosen as the parent!: {g}`)end return g end af:Warn
-'The ReGui container does not have a parent defined'return nil end function aa:
-GetChildOfClass(ag,ah)local b=ag:FindFirstChildOfClass(ah)if not b then b=af:
-CreateInstance(ah,ag)end return b end function aa:CheckAssetUrl(ag)if tonumber(
-ag)then return`rbxassetid://{ag}`end return ag end function aa:SetPadding(ag,ah)
-if not ag then return end self:SetProperties(ag,{PaddingBottom=ah,PaddingLeft=ah
-,PaddingRight=ah,PaddingTop=ah})end return aa end function a.c()local aa,ab=a.
-load'b',{DefaultTweenInfo=TweenInfo.new(0.08)}local ac=aa.Services local ad=ac.
-TweenService function ab:Tween(ae)local af,ag,ah=self.DefaultTweenInfo,ae.Object
-,ae.NoAnimation local b,c,d,e=ae.Tweeninfo or af,ae.EndProperties,ae.
-StartProperties,ae.Completed if d then aa:SetProperties(ag,d)end if ah then aa:
-SetProperties(ag,c)if e then e()end return end local f for g,h in next,c do
-local i={[g]=h}local j,k=pcall(function()return ad:Create(ag,b,i)end)if not j
-then aa:SetProperties(ag,i)continue end if not f then f=k end k:Play()end if e
-then if f then f.Completed:Connect(e)else e()end end return f end function ab:
-Animate(ae)local af,ag,ah,b,c=ae.NoAnimation,ae.Objects,ae.Tweeninfo,(ae.
-Completed)for d,e in next,ag do local f=self:Tween{NoAnimation=af,Object=d,
-Tweeninfo=ah,EndProperties=e}if not c then c=f end end if b then c.Completed:
-Connect(b)end return c end function ab:HeaderCollapseToggle(ae)aa:CheckConfig(ae
-,{Rotations={Open=90,Closed=0}})local af,ag,ah,b,c=ae.Toggle,ae.NoAnimation,ae.
-Rotations,ae.Collapsed,ae.Tweeninfo local d=b and ah.Closed or ah.Open self:
-Tween{Tweeninfo=c,NoAnimation=ag,Object=af,EndProperties={Rotation=d}}end
-function ab:HeaderCollapse(ae)local af,ag,ah,b,c,d,e,f,g,h,i=ae.Tweeninfo,ae.
-Collapsed,ae.ClosedSize,ae.OpenSize,ae.Toggle,ae.Resize,ae.Hide,ae.NoAnimation,
-ae.NoAutomaticSize,ae.IconRotations,ae.Completed if not g then d.AutomaticSize=
-Enum.AutomaticSize.None end if not ag then e.Visible=true end self:
-HeaderCollapseToggle{Tweeninfo=af,Collapsed=ag,NoAnimation=f,Toggle=c,Rotations=
-h}local j=self:Tween{Tweeninfo=af,NoAnimation=f,Object=d,StartProperties={Size=
-ag and b or ah},EndProperties={Size=ag and ah or b},Completed=function()e.
-Visible=not ag if i then i()end if ag then return end if g then return end d.
-Size=UDim2.fromScale(1,0)d.AutomaticSize=Enum.AutomaticSize.Y end}return j end
-return ab end function a.d()local aa={}aa.__index=aa local ab=a.load'b'function
-aa:Fire(...)local ac=self:GetConnections()if#ac<=0 then return end for ad,ae in
-next,ac do ae(...)end end function aa:GetConnections()local ac=self.Connections
-return ac end function aa:Connect(ac)local ad=self:GetConnections()table.insert(
-ad,ac)end function aa:DisconnectConnections()local ac=self:GetConnections()table
-.clear(ac)end function aa:NewSignal()return ab:NewClass(aa,{Connections={}})end
-return aa end function a.e()return function(aa)local ab=aa:Window{Title=
-'Configuration saving',Size=UDim2.fromOffset(300,200)}local ac,ad=(ab:Row())ac:
-Button{Text='Dump Ini',Callback=function()print(aa:DumpIni(true))end}ac:Button{
-Text='Save Ini',Callback=function()ad=aa:DumpIni(true)end}ac:Button{Text=
-'Load Ini',Callback=function()if not ad then warn'No save data!'return end aa:
-LoadIni(ad,true)end}ab:Separator()ab:SliderInt{IniFlag='MySlider',Value=5,
-Minimum=1,Maximum=32}ab:Checkbox{IniFlag='MyCheckbox',Value=true}ab:InputText{
-IniFlag='MyInput',Value='Hello world!'}ab:Keybind{IniFlag='MyKeybind',Label=
-'Keybind (w/ Q & Left-Click blacklist)',KeyBlacklist={Enum.UserInputType.
-MouseButton1,Enum.KeyCode.Q}}local ae=aa:TabsWindow{Title='Tabs window!',Visible
-=false,Size=UDim2.fromOffset(300,200)}for af,ag in{'Avocado','Broccoli',
-'Cucumber'}do local ah=ae:CreateTab{Name=ag}ah:Label{Text=`This is the {ag} tab!`
-}end local af=aa.Elements:Label{Parent=aa.Container.Windows,Visible=false,
-UiPadding=UDim.new(0,8),CornerRadius=UDim.new(0,2),Position=UDim2.fromOffset(10,
-10),Size=UDim2.fromOffset(250,50),Border=true,BorderThickness=1,BorderColor=aa.
-Accent.Gray,BackgroundTransparency=0.4,BackgroundColor3=aa.Accent.Black}game:
-GetService'RunService'.RenderStepped:Connect(function(ag)local ah,b,c=math.
-round(1/ag),DateTime.now():FormatLocalTime('dddd h:mm:ss A','en-us'),`ReGui {aa:
-GetVersion()}\n`c..=`FPS: {ah}\n`c..=`The time is {b}`af.Text=c end)local ag=aa:
-Window{Title='Dear ReGui Demo',Size=UDim2.new(0,400,0,300),NoScroll=true}:
-Center()local ah=ag:MenuBar()local b=ah:MenuItem{Text='Menu'}b:Selectable{Text=
-'New'}b:Selectable{Text='Open'}b:Selectable{Text='Save'}b:Selectable{Text=
-'Save as'}b:Selectable{Text='Exit',Callback=function()ag:Close()end}local c=ah:
-MenuItem{Text='Examples'}c:Selectable{Text='Print hello world',Callback=function
-()print'Hello world!'end}c:Selectable{Text='Tabs window',Callback=function()ae:
-ToggleVisibility()end}c:Selectable{Text='Configuration saving',Callback=function
-()ab:ToggleVisibility()end}c:Selectable{Text='Watermark',Callback=function()af.
-Visible=not af.Visible end}ag:Label{Text=`Dear ReGui says hello! ({aa:
-GetVersion()})`}local d=ag:ScrollingCanvas{Fill=true,UiPadding=UDim.new(0,0)}
-local e=d:CollapsingHeader{Title='Help'}e:Separator{Text='ABOUT THIS DEMO:'}e:
+...)local ah=self.OnInitConnections af=ag for ai,aj in next,ah do aj(af,...)end
+end function aa:SetProperties(ag,ah)for ai,aj in next,ah do pcall(function()ag[
+ai]=aj end)end end function aa:NewClass(ag,ah)ah=ah or{}ag.__index=ag return
+setmetatable(ah,ag)end function aa:CheckConfig(ag,ah,ai,aj)if not ag then return
+end for b,c in next,ah do if ag[b]~=nil then continue end if aj then if table.
+find(aj,b)then continue end end if ai then c=c()end ag[b]=c end return ag end
+function aa:ResolveUIParent()local ag,ah=af.PlayerGui,af.Debug local ai,aj={[1]=
+function()local ai=ab()if ai.Parent==ae then return end return ai end,[2]=
+function()return ae end,[3]=function()return ag end},af:CreateInstance
+'ScreenGui'for b,c in next,ai do local d,e=pcall(c)if not d or not e then
+continue end local f=pcall(function()aj.Parent=e end)if not f then continue end
+if ah then af:Warn(`Step: {b} was chosen as the parent!: {e}`)end return e end
+af:Warn'The ReGui container does not have a parent defined'return nil end
+function aa:GetChildOfClass(ag,ah)local ai=ag:FindFirstChildOfClass(ah)if not ai
+then ai=af:CreateInstance(ah,ag)end return ai end function aa:CheckAssetUrl(ag)
+if tonumber(ag)then return`rbxassetid://{ag}`end return ag end function aa:
+SetPadding(ag,ah)if not ag then return end self:SetProperties(ag,{PaddingBottom=
+ah,PaddingLeft=ah,PaddingRight=ah,PaddingTop=ah})end return aa end function a.c(
+)local aa,ab=a.load'b',{DefaultTweenInfo=TweenInfo.new(0.08)}local ac=aa.
+Services local ad=ac.TweenService function ab:Tween(ae)local af,ag,ah=self.
+DefaultTweenInfo,ae.Object,ae.NoAnimation local ai,aj,b,c=ae.Tweeninfo or af,ae.
+EndProperties,ae.StartProperties,ae.Completed if b then aa:SetProperties(ag,b)
+end if ah then aa:SetProperties(ag,aj)if c then c()end return end local d for e,
+f in next,aj do local g={[e]=f}local h,i=pcall(function()return ad:Create(ag,ai,
+g)end)if not h then aa:SetProperties(ag,g)continue end if not d then d=i end i:
+Play()end if c then if d then d.Completed:Connect(c)else c()end end return d end
+function ab:Animate(ae)local af,ag,ah,ai,aj=ae.NoAnimation,ae.Objects,ae.
+Tweeninfo,(ae.Completed)for b,c in next,ag do local d=self:Tween{NoAnimation=af,
+Object=b,Tweeninfo=ah,EndProperties=c}if not aj then aj=d end end if ai then aj.
+Completed:Connect(ai)end return aj end function ab:HeaderCollapseToggle(ae)aa:
+CheckConfig(ae,{Rotations={Open=90,Closed=0}})local af,ag,ah,ai,aj=ae.Toggle,ae.
+NoAnimation,ae.Rotations,ae.Collapsed,ae.Tweeninfo local b=ai and ah.Closed or
+ah.Open self:Tween{Tweeninfo=aj,NoAnimation=ag,Object=af,EndProperties={Rotation
+=b}}end function ab:HeaderCollapse(ae)local af,ag,ah,ai,aj,b,c,d,e,f,g=ae.
+Tweeninfo,ae.Collapsed,ae.ClosedSize,ae.OpenSize,ae.Toggle,ae.Resize,ae.Hide,ae.
+NoAnimation,ae.NoAutomaticSize,ae.IconRotations,ae.Completed if not e then b.
+AutomaticSize=Enum.AutomaticSize.None end if not ag then c.Visible=true end self
+:HeaderCollapseToggle{Tweeninfo=af,Collapsed=ag,NoAnimation=d,Toggle=aj,
+Rotations=f}local h=self:Tween{Tweeninfo=af,NoAnimation=d,Object=b,
+StartProperties={Size=ag and ai or ah},EndProperties={Size=ag and ah or ai},
+Completed=function()c.Visible=not ag if g then g()end if ag then return end if e
+then return end b.Size=UDim2.fromScale(1,0)b.AutomaticSize=Enum.AutomaticSize.Y
+end}return h end return ab end function a.d()local aa={}aa.__index=aa local ab=a
+.load'b'function aa:Fire(...)local ac=self:GetConnections()if#ac<=0 then return
+end for ad,ae in next,ac do ae(...)end end function aa:GetConnections()local ac=
+self.Connections return ac end function aa:Connect(ac)local ad=self:
+GetConnections()table.insert(ad,ac)end function aa:DisconnectConnections()local
+ac=self:GetConnections()table.clear(ac)end function aa:NewSignal()return ab:
+NewClass(aa,{Connections={}})end return aa end function a.e()return function(aa)
+local ab=aa:Window{Title='Configuration saving',Size=UDim2.fromOffset(300,200)}
+local ac,ad=(ab:Row())ac:Button{Text='Dump Ini',Callback=function()print(aa:
+DumpIni(true))end}ac:Button{Text='Save Ini',Callback=function()ad=aa:DumpIni(
+true)end}ac:Button{Text='Load Ini',Callback=function()if not ad then warn
+'No save data!'return end aa:LoadIni(ad,true)end}ab:Separator()ab:SliderInt{
+IniFlag='MySlider',Value=5,Minimum=1,Maximum=32}ab:Checkbox{IniFlag='MyCheckbox'
+,Value=true}ab:InputText{IniFlag='MyInput',Value='Hello world!'}ab:Keybind{
+IniFlag='MyKeybind',Label='Keybind (w/ Q & Left-Click blacklist)',KeyBlacklist={
+Enum.UserInputType.MouseButton1,Enum.KeyCode.Q}}local ae=aa:TabsWindow{Title=
+'Tabs window!',Visible=false,Size=UDim2.fromOffset(300,200)}for af,ag in{
+'Avocado','Broccoli','Cucumber'}do local ah=ae:CreateTab{Name=ag}ah:Label{Text=`This is the {
+ag} tab!`}end local af=aa.Elements:Label{Parent=aa.Container.Windows,Visible=
+false,UiPadding=UDim.new(0,8),CornerRadius=UDim.new(0,2),Position=UDim2.
+fromOffset(10,10),Size=UDim2.fromOffset(250,50),Border=true,BorderThickness=1,
+BorderColor=aa.Accent.Gray,BackgroundTransparency=0.4,BackgroundColor3=aa.Accent
+.Black}game:GetService'RunService'.RenderStepped:Connect(function(ag)local ah,ai
+,aj=math.round(1/ag),DateTime.now():FormatLocalTime('dddd h:mm:ss A','en-us'),`ReGui {
+aa:GetVersion()}\n`aj..=`FPS: {ah}\n`aj..=`The time is {ai}`af.Text=aj end)local
+ag=aa:Window{Title='Dear ReGui Demo',Size=UDim2.new(0,400,0,300),NoScroll=true}:
+Center()local ah=ag:MenuBar()local ai=ah:MenuItem{Text='Menu'}ai:Selectable{Text
+='New'}ai:Selectable{Text='Open'}ai:Selectable{Text='Save'}ai:Selectable{Text=
+'Save as'}ai:Selectable{Text='Exit',Callback=function()ag:Close()end}local aj=ah
+:MenuItem{Text='Examples'}aj:Selectable{Text='Print hello world',Callback=
+function()print'Hello world!'end}aj:Selectable{Text='Tabs window',Callback=
+function()ae:ToggleVisibility()end}aj:Selectable{Text='Configuration saving',
+Callback=function()ab:ToggleVisibility()end}aj:Selectable{Text='Watermark',
+Callback=function()af.Visible=not af.Visible end}ag:Label{Text=`Dear ReGui says hello! ({
+aa:GetVersion()})`}local b=ag:ScrollingCanvas{Fill=true,UiPadding=UDim.new(0,0)}
+local c=b:CollapsingHeader{Title='Help'}c:Separator{Text='ABOUT THIS DEMO:'}c:
 BulletText{Rows={
-[[Sections below are demonstrating many aspects of the library.]]}}e:Separator{
-Text='PROGRAMMER GUIDE:'}e:BulletText{Rows={
+[[Sections below are demonstrating many aspects of the library.]]}}c:Separator{
+Text='PROGRAMMER GUIDE:'}c:BulletText{Rows={
 [[See example FAQ, examples, and documentation at https://depso.gitbook.io/regui]]
-}}e:Indent():BulletText{Rows={'See example applications in the /demo folder.'}}
-local f=d:CollapsingHeader{Title='Configuration'}local g=f:TreeNode{Title=
-'Backend Flags'}g:Checkbox{Label='ReGui:IsMobileDevice',Disabled=true,Value=aa:
-IsMobileDevice()}g:Checkbox{Label='ReGui:IsConsoleDevice',Disabled=true,Value=aa
-:IsConsoleDevice()}local h=f:TreeNode{Title='Style'}h:Combo{Selected='DarkTheme'
-,Label='Colors',Items=aa.ThemeConfigs,Callback=function(i,j)ag:SetTheme(j)end}
-local i,j=d:CollapsingHeader{Title='Window options'}:Table{MaxColumns=3}:
+}}c:Indent():BulletText{Rows={'See example applications in the /demo folder.'}}
+local d=b:CollapsingHeader{Title='Configuration'}local e=d:TreeNode{Title=
+'Backend Flags'}e:Checkbox{Label='ReGui:IsMobileDevice',Disabled=true,Value=aa:
+IsMobileDevice()}e:Checkbox{Label='ReGui:IsConsoleDevice',Disabled=true,Value=aa
+:IsConsoleDevice()}local f=d:TreeNode{Title='Style'}f:Combo{Selected='DarkTheme'
+,Label='Colors',Items=aa.ThemeConfigs,Callback=function(g,h)ag:SetTheme(h)end}
+local g,h=b:CollapsingHeader{Title='Window options'}:Table{MaxColumns=3}:
 NextRow(),{NoResize=false,NoTitleBar=false,NoClose=false,NoCollapse=false,
 OpenOnDoubleClick=true,NoBringToFrontOnFocus=false,NoMove=false,NoSelect=false,
-NoScrollBar=false,NoBackground=false}for k,l in pairs(j)do local m=i:NextColumn(
-)m:Checkbox{Value=l,Label=k,Callback=function(n,o)ag:UpdateConfig{[k]=o}end}end
-local k,l,p=d:CollapsingHeader{Title='Widgets'},{'Basic','Tooltips','Tree Nodes'
+NoScrollBar=false,NoBackground=false}for i,j in pairs(h)do local k=g:NextColumn(
+)k:Checkbox{Value=j,Label=i,Callback=function(l,m)ag:UpdateConfig{[i]=m}end}end
+local i,j,n=b:CollapsingHeader{Title='Widgets'},{'Basic','Tooltips','Tree Nodes'
 ,'Collapsing Headers','Bullets','Text','Images','Videos','Combo','Tabs',
 'Plot widgets','Multi-component Widgets','Progress Bars','Picker Widgets',
 'Code editor','Console','List layout','Indent','Viewport','Keybinds','Input',
-'Text Input'},{Basic=function(k)k:Separator{Text='General'}local l=k:Row()local
-m=l:Label{Text='Thanks for clicking me!',Visible=false,LayoutOrder=2}l:Button{
-Callback=function()m.Visible=not m.Visible end}k:Checkbox()local n=k:Row()n:
-Radiobox{Label='radio a'}n:Radiobox{Label='radio b'}n:Radiobox{Label='radio c'}
-local o=k:Row()for p=1,7 do local q=p/7 o:Button{Text='Click',BackgroundColor3=
-Color3.fromHSV(q,0.6,0.6)}end local p=k:Button{Text='Tooltip'}aa:SetItemTooltip(
-p,function(q)q:Label{Text='I am a tooltip'}end)k:Separator{Text='Inputs'}k:
-InputText{Value='Hello world!'}k:InputText{Placeholder='Enter text here',Label=
-'Input text (w/ hint)',Value=''}k:InputInt{Value=50}k:InputInt{Label=
-'Input Int (w/ limit)',Value=5,Maximum=10,Minimum=1}k:Separator{Text='Drags'}k:
-DragInt()k:DragInt{Maximum=100,Minimum=0,Label='Drag Int 0..100',Format='%d%%'}k
-:DragFloat{Maximum=1,Minimum=0,Value=0.5}k:Separator{Text='Sliders'}k:SliderInt{
-Format='%.d/%s',Value=5,Minimum=1,Maximum=32,ReadOnly=false}:SetValue(8)k:
-SliderInt{Label='Slider Int (w/ snap)',Value=1,Minimum=1,Maximum=8,Type='Snap'}k
-:SliderFloat{Label='Slider Float',Minimum=0,Maximum=1,Format='Ratio = %.3f'}k:
-SliderFloat{Label='Slider Angle',Minimum=-360,Maximum=360,Format='%.f deg'}k:
-SliderEnum{Items={'Fire','Earth','Air','Water'},Value=2}k:SliderEnum{Items={
-'Fire','Earth','Air','Water'},Value=2,Disabled=true,Label='Disabled Enum'}k:
-SliderProgress{Label='Progress Slider',Value=8,Minimum=1,Maximum=32}k:Separator{
-Text='Selectors/Pickers'}k:InputColor3{Value=aa.Accent.Light,Label='Color 1'}k:
-SliderColor3{Value=aa.Accent.Light,Label='Color 2'}k:InputCFrame{Value=CFrame.
+'Text Input'},{Basic=function(i)i:Separator{Text='General'}local j=i:Row()local
+k=j:Label{Text='Thanks for clicking me!',Visible=false,LayoutOrder=2}j:Button{
+Callback=function()k.Visible=not k.Visible end}i:Checkbox()local l=i:Row()l:
+Radiobox{Label='radio a'}l:Radiobox{Label='radio b'}l:Radiobox{Label='radio c'}
+local m=i:Row()for n=1,7 do local o=n/7 m:Button{Text='Click',BackgroundColor3=
+Color3.fromHSV(o,0.6,0.6)}end local n=i:Button{Text='Tooltip'}aa:SetItemTooltip(
+n,function(o)o:Label{Text='I am a tooltip'}end)i:Separator{Text='Inputs'}i:
+InputText{Value='Hello world!'}i:InputText{Placeholder='Enter text here',Label=
+'Input text (w/ hint)',Value=''}i:InputInt{Value=50}i:InputInt{Label=
+'Input Int (w/ limit)',Value=5,Maximum=10,Minimum=1}i:Separator{Text='Drags'}i:
+DragInt()i:DragInt{Maximum=100,Minimum=0,Label='Drag Int 0..100',Format='%d%%'}i
+:DragFloat{Maximum=1,Minimum=0,Value=0.5}i:Separator{Text='Sliders'}i:SliderInt{
+Format='%.d/%s',Value=5,Minimum=1,Maximum=32,ReadOnly=false}:SetValue(8)i:
+SliderInt{Label='Slider Int (w/ snap)',Value=1,Minimum=1,Maximum=8,Type='Snap'}i
+:SliderFloat{Label='Slider Float',Minimum=0,Maximum=1,Format='Ratio = %.3f'}i:
+SliderFloat{Label='Slider Angle',Minimum=-360,Maximum=360,Format='%.f deg'}i:
+SliderEnum{Items={'Fire','Earth','Air','Water'},Value=2}i:SliderEnum{Items={
+'Fire','Earth','Air','Water'},Value=2,Disabled=true,Label='Disabled Enum'}i:
+SliderProgress{Label='Progress Slider',Value=8,Minimum=1,Maximum=32}i:Separator{
+Text='Selectors/Pickers'}i:InputColor3{Value=aa.Accent.Light,Label='Color 1'}i:
+SliderColor3{Value=aa.Accent.Light,Label='Color 2'}i:InputCFrame{Value=CFrame.
 new(1,1,1),Minimum=CFrame.new(0,0,0),Maximum=CFrame.new(200,100,50),Label=
-'CFrame 1'}k:SliderCFrame{Value=CFrame.new(1,1,1),Minimum=CFrame.new(0,0,0),
-Maximum=CFrame.new(200,100,50),Label='CFrame 2'}k:Combo{Selected=1,Items={'AAAA'
+'CFrame 1'}i:SliderCFrame{Value=CFrame.new(1,1,1),Minimum=CFrame.new(0,0,0),
+Maximum=CFrame.new(200,100,50),Label='CFrame 2'}i:Combo{Selected=1,Items={'AAAA'
 ,'BBBB','CCCC','DDDD','EEEE','FFFF','GGGG','HHHH','IIIIIII','JJJJ','KKKKKKK'}}
-end,Tooltips=function(k)k:Separator{Text='General'}local l=k:Button{Text='Basic'
-,Size=UDim2.fromScale(1,0)}aa:SetItemTooltip(l,function(m)m:Label{Text=
-'I am a tooltip'}end)local m=k:Button{Text='Fancy',Size=UDim2.fromScale(1,0)}aa:
-SetItemTooltip(m,function(n)n:Label{Text='I am a fancy tooltip'}n:Image{Image=
-18395893036}local o=n:Label()while wait()do o.Text=`Sin(time) = {math.sin(tick()
-)}`end end)local n=k:Button{Text='Double tooltip',Size=UDim2.fromScale(1,0)}for
-o=1,3 do aa:SetItemTooltip(n,function(p)p:Label{Text=`I am tooltip {o}`}end)end
-end,Videos=function(k)local l=k:VideoPlayer{Video=5608327482,Looped=true,Ratio=
+end,Tooltips=function(i)i:Separator{Text='General'}local j=i:Button{Text='Basic'
+,Size=UDim2.fromScale(1,0)}aa:SetItemTooltip(j,function(k)k:Label{Text=
+'I am a tooltip'}end)local k=i:Button{Text='Fancy',Size=UDim2.fromScale(1,0)}aa:
+SetItemTooltip(k,function(l)l:Label{Text='I am a fancy tooltip'}l:Image{Image=
+18395893036}local m=l:Label()while wait()do m.Text=`Sin(time) = {math.sin(tick()
+)}`end end)local l=i:Button{Text='Double tooltip',Size=UDim2.fromScale(1,0)}for
+m=1,3 do aa:SetItemTooltip(l,function(n)n:Label{Text=`I am tooltip {m}`}end)end
+end,Videos=function(i)local j=i:VideoPlayer{Video=5608327482,Looped=true,Ratio=
 1.7777777777777777,RatioAspectType=Enum.AspectType.FitWithinMaxSize,RatioAxis=
-Enum.DominantAxis.Width,Size=UDim2.fromScale(1,1)}l:Play()local n=k:Row{Expanded
-=true}n:Button{Text='Pause',Callback=function()l:Pause()end}n:Button{Text='Play'
-,Callback=function()l:Play()end}if not l.IsLoaded then l.Loaded:Wait()end local
-o=n:SliderInt{Format='%.f',Value=0,Minimum=0,Maximum=l.TimeLength,Callback=
-function(o,p)l.TimePosition=p end}game:GetService'RunService'.RenderStepped:
-Connect(function(p)o:SetValue(l.TimePosition)end)end,['Tree Nodes']=function(k)
-for l=1,5 do local n=k:TreeNode{Title=`Child {l}`,Collapsed=l~=1}local o=n:Row()
-o:Label{Text='Blah blah'}o:SmallButton{Text='Button'}end k:TreeNode{Title=`With icon & NoArrow`
-,NoArrow=true,Icon=aa.Icons.Image}end,['Collapsing Headers']=function(k)local l
-k:Checkbox{Value=true,Label='Show 2nd header',Callback=function(n,o)if l then l:
-SetVisible(o)end end}k:Checkbox{Value=true,Label='2nd has arrow',Callback=
-function(n,o)if l then l:SetArrowVisible(o)end end}local n=k:CollapsingHeader{
-Title='Header'}for o=1,5 do n:Label{Text=`Some content {o}`}end l=k:
-CollapsingHeader{Title='Second Header'}for o=1,5 do l:Label{Text=`More content {
-o}`}end end,Bullets=function(k)k:BulletText{Rows={'Bullet point 1',
-'Bullet point 2\nOn multiple lines'}}k:TreeNode():BulletText{Rows={
-'Another bullet point'}}k:Bullet():Label{Text='Bullet point 3 (two calls)'}k:
-Bullet():SmallButton()end,Text=function(k)local l=k:TreeNode{Title=
-'Colorful Text'}l:Label{TextColor3=Color3.fromRGB(255,0,255),Text='Pink',NoTheme
-=true}l:Label{TextColor3=Color3.fromRGB(255,255,0),Text='Yellow',NoTheme=true}l:
-Label{TextColor3=Color3.fromRGB(59,59,59),Text='Disabled',NoTheme=true}local n=k
-:TreeNode{Title='Word Wrapping'}n:Label{Text=
+Enum.DominantAxis.Width,Size=UDim2.fromScale(1,1)}j:Play()local l=i:Row{Expanded
+=true}l:Button{Text='Pause',Callback=function()j:Pause()end}l:Button{Text='Play'
+,Callback=function()j:Play()end}if not j.IsLoaded then j.Loaded:Wait()end local
+m=l:SliderInt{Format='%.f',Value=0,Minimum=0,Maximum=j.TimeLength,Callback=
+function(m,n)j.TimePosition=n end}game:GetService'RunService'.RenderStepped:
+Connect(function(n)m:SetValue(j.TimePosition)end)end,['Tree Nodes']=function(i)
+for j=1,5 do local l=i:TreeNode{Title=`Child {j}`,Collapsed=j~=1}local m=l:Row()
+m:Label{Text='Blah blah'}m:SmallButton{Text='Button'}end i:TreeNode{Title=`With icon & NoArrow`
+,NoArrow=true,Icon=aa.Icons.Image}end,['Collapsing Headers']=function(i)local j
+i:Checkbox{Value=true,Label='Show 2nd header',Callback=function(l,m)if j then j:
+SetVisible(m)end end}i:Checkbox{Value=true,Label='2nd has arrow',Callback=
+function(l,m)if j then j:SetArrowVisible(m)end end}local l=i:CollapsingHeader{
+Title='Header'}for m=1,5 do l:Label{Text=`Some content {m}`}end j=i:
+CollapsingHeader{Title='Second Header'}for m=1,5 do j:Label{Text=`More content {
+m}`}end end,Bullets=function(i)i:BulletText{Rows={'Bullet point 1',
+'Bullet point 2\nOn multiple lines'}}i:TreeNode():BulletText{Rows={
+'Another bullet point'}}i:Bullet():Label{Text='Bullet point 3 (two calls)'}i:
+Bullet():SmallButton()end,Text=function(i)local j=i:TreeNode{Title=
+'Colorful Text'}j:Label{TextColor3=Color3.fromRGB(255,0,255),Text='Pink',NoTheme
+=true}j:Label{TextColor3=Color3.fromRGB(255,255,0),Text='Yellow',NoTheme=true}j:
+Label{TextColor3=Color3.fromRGB(59,59,59),Text='Disabled',NoTheme=true}local l=i
+:TreeNode{Title='Word Wrapping'}l:Label{Text=
 [[This text should automatically wrap on the edge of the window. The current implementation for text wrapping follows simple rules suitable for English and possibly other languages.]]
-,TextWrapped=true}local o n:SliderInt{Label='Wrap width',Value=400,Minimum=20,
-Maximum=600,Callback=function(p,q)if not o then return end o.Size=UDim2.
-fromOffset(q,0)end}n:Label{Text='Test paragraph:'}o=n:Label{Text=
+,TextWrapped=true}local m l:SliderInt{Label='Wrap width',Value=400,Minimum=20,
+Maximum=600,Callback=function(n,o)if not m then return end m.Size=UDim2.
+fromOffset(o,0)end}l:Label{Text='Test paragraph:'}m=l:Label{Text=
 [[The lazy dog is a good dog. This paragraph should fit. Testing a 1 character word. The quick brown fox jumps over the lazy dog.]]
 ,TextWrapped=true,Border=true,BorderColor=Color3.fromRGB(255,255,0),
 AutomaticSize=Enum.AutomaticSize.Y,Size=UDim2.fromOffset(400,0)}end,Images=
-function(k)k:Label{TextWrapped=true,Text=
+function(i)i:Label{TextWrapped=true,Text=
 [[Below we are displaying the icons (which are the ones builtin to ReGui in this demo). Hover the texture for a zoomed view!]]
-}k:Label{TextWrapped=true,Text=`There is a total of {aa:GetDictSize(aa.Icons)} icons in this demo!`
-}local l,n,o=(k:List{Border=true})aa:SetItemTooltip(l,function(p)n=p:Label()o=p:
-Image{Size=UDim2.fromOffset(50,50)}end)for p,q in aa.Icons do local r=l:Image{
-Image=q,Size=UDim2.fromOffset(30,30)}aa:DetectHover(r,{MouseEnter=true,OnInput=
-function()n.Text=p o.Image=q end})end end,Tabs=function(k)local l=k:TreeNode{
-Title='Basic'}local n,o=l:TabSelector(),{'Avocado','Broccoli','Cucumber'}for p,q
-in next,o do n:CreateTab{Name=q}:Label{Text=`This is the {q} tab!\nblah blah blah blah blah`
-}end local p=k:TreeNode{Title='Advanced & Close Button'}local q,r=p:TabSelector(
-),{'Artichoke','Beetroot','Celery','Daikon'}for s,t in next,r do local u=q:
-CreateTab{Name=t,Closeable=true}u:Label{Text=`This is the {t} tab!\nblah blah blah blah blah`
-}end p:Button{Text='Add tab',Callback=function()q:CreateTab{Closeable=true}:
-Label{Text='I am an odd tab.'}end}end,['Plot widgets']=function(k)local l=k:
-PlotHistogram{Points={0.6,0.1,1,0.5,0.92,0.1,0.2}}k:Button{Text=
-'Generate new graph',Callback=function()local p={}for q=1,math.random(5,10)do
-table.insert(p,math.random(1,10))end l:PlotGraph(p)end}end,[
-'Multi-component Widgets']=function(k)k:Separator{Text='2-wide'}k:InputInt2{
-Value={10,50},Minimum={0,0},Maximum={20,100},Callback=function(l,p)print('1:',p[
-1],'2:',p[2])end}k:SliderInt2()k:SliderFloat2()k:DragInt2()k:DragFloat2()k:
-Separator{Text='3-wide'}k:InputInt3()k:SliderInt3()k:SliderFloat3()k:DragInt3()k
-:DragFloat3()k:Separator{Text='4-wide'}k:InputInt4()k:SliderInt4()k:
-SliderFloat4()k:DragInt4()k:DragFloat4()end,['Progress Bars']=function(k)local l
-=k:ProgressBar{Label='Loading...',Value=80}spawn(function()local p=0 while wait(
-0.02)do p+=1 l:SetPercentage(p%100)end end)end,['Picker Widgets']=function(k)k:
-Separator{Text='Color pickers'}k:DragColor3{Value=aa.Accent.Light}k:SliderColor3
-{Value=aa.Accent.Red}k:InputColor3{Value=aa.Accent.Green}k:Separator{Text=
-'CFrame pickers'}k:DragCFrame{Value=CFrame.new(1,1,1),Minimum=CFrame.new(0,0,0),
-Maximum=CFrame.new(200,100,50)}k:SliderCFrame()k:InputCFrame()end,['Code editor'
-]=function(k)k:CodeEditor{Text='print("Hello from ReGui\'s editor!")',Editable=
-true}end,Console=function(k)local l=k:TreeNode{Title='Basic'}local p,q=l:Console
-{ReadOnly=true,AutoScroll=true,MaxLines=50},k:TreeNode{Title=
-'Advanced & RichText'}local r,s=q:Console{ReadOnly=true,AutoScroll=true,RichText
-=true,MaxLines=50},k:TreeNode{Title='Editor'}s:Console{Value=
+}i:Label{TextWrapped=true,Text=`There is a total of {aa:GetDictSize(aa.Icons)} icons in this demo!`
+}local j,l,m=(i:List{Border=true})aa:SetItemTooltip(j,function(n)l=n:Label()m=n:
+Image{Size=UDim2.fromOffset(50,50)}end)for n,o in aa.Icons do local p=j:Image{
+Image=o,Size=UDim2.fromOffset(30,30)}aa:DetectHover(p,{MouseEnter=true,OnInput=
+function()l.Text=n m.Image=o end})end end,Tabs=function(i)local j=i:TreeNode{
+Title='Basic'}local l,m=j:TabSelector(),{'Avocado','Broccoli','Cucumber'}for n,o
+in next,m do l:CreateTab{Name=o}:Label{Text=`This is the {o} tab!\nblah blah blah blah blah`
+}end local n=i:TreeNode{Title='Advanced & Close Button'}local o,p=n:TabSelector(
+),{'Artichoke','Beetroot','Celery','Daikon'}for q,r in next,p do local s=o:
+CreateTab{Name=r,Closeable=true}s:Label{Text=`This is the {r} tab!\nblah blah blah blah blah`
+}end n:Button{Text='Add tab',Callback=function()o:CreateTab{Closeable=true}:
+Label{Text='I am an odd tab.'}end}end,['Plot widgets']=function(i)local j=i:
+PlotHistogram{Points={0.6,0.1,1,0.5,0.92,0.1,0.2}}i:Button{Text=
+'Generate new graph',Callback=function()local n={}for o=1,math.random(5,10)do
+table.insert(n,math.random(1,10))end j:PlotGraph(n)end}end,[
+'Multi-component Widgets']=function(i)i:Separator{Text='2-wide'}i:InputInt2{
+Value={10,50},Minimum={0,0},Maximum={20,100},Callback=function(j,n)print('1:',n[
+1],'2:',n[2])end}i:SliderInt2()i:SliderFloat2()i:DragInt2()i:DragFloat2()i:
+Separator{Text='3-wide'}i:InputInt3()i:SliderInt3()i:SliderFloat3()i:DragInt3()i
+:DragFloat3()i:Separator{Text='4-wide'}i:InputInt4()i:SliderInt4()i:
+SliderFloat4()i:DragInt4()i:DragFloat4()end,['Progress Bars']=function(i)local j
+=i:ProgressBar{Label='Loading...',Value=80}spawn(function()local n=0 while wait(
+0.02)do n+=1 j:SetPercentage(n%100)end end)end,['Picker Widgets']=function(i)i:
+Separator{Text='Color pickers'}i:DragColor3{Value=aa.Accent.Light}i:SliderColor3
+{Value=aa.Accent.Red}i:InputColor3{Value=aa.Accent.Green}i:Separator{Text=
+'CFrame pickers'}i:DragCFrame{Value=CFrame.new(1,1,1),Minimum=CFrame.new(0,0,0),
+Maximum=CFrame.new(200,100,50)}i:SliderCFrame()i:InputCFrame()end,['Code editor'
+]=function(i)i:CodeEditor{Text='print("Hello from ReGui\'s editor!")',Editable=
+true}end,Console=function(i)local j=i:TreeNode{Title='Basic'}local n,o=j:Console
+{ReadOnly=true,AutoScroll=true,MaxLines=50},i:TreeNode{Title=
+'Advanced & RichText'}local p,q=o:Console{ReadOnly=true,AutoScroll=true,RichText
+=true,MaxLines=50},i:TreeNode{Title='Editor'}q:Console{Value=
 "print('Hello world!')",LineNumbers=true}coroutine.wrap(function()while wait()do
-local t=DateTime.now():FormatLocalTime('h:mm:ss A','en-us')r:AppendText(`<font color="rgb(240, 40, 10)">[Random]</font>`
-,math.random())p:AppendText(`[{t}] Hello world!`)end end)()end,Combo=function(k)
-k:Combo{WidthFitPreview=true,Label='WidthFitPreview',Selected=1,Items={
-'AAAAAAAAAAAA','BBBBBBBB','CCCCC','DDD'}}k:Separator{Text='One-liner variants'}k
+local r=DateTime.now():FormatLocalTime('h:mm:ss A','en-us')p:AppendText(`<font color="rgb(240, 40, 10)">[Random]</font>`
+,math.random())n:AppendText(`[{r}] Hello world!`)end end)()end,Combo=function(i)
+i:Combo{WidthFitPreview=true,Label='WidthFitPreview',Selected=1,Items={
+'AAAAAAAAAAAA','BBBBBBBB','CCCCC','DDD'}}i:Separator{Text='One-liner variants'}i
 :Combo{Label='Combo 1 (array)',Selected=1,Items={'AAAA','BBBB','CCCC','DDDD',
-'EEEE','FFFF','GGGG','HHHH','IIIIIII','JJJJ','KKKKKKK'}}k:Combo{Label=
+'EEEE','FFFF','GGGG','HHHH','IIIIIII','JJJJ','KKKKKKK'}}i:Combo{Label=
 'Combo 1 (dict)',Selected='AAA',Items={AAA='Apple',BBB='Banana',CCC='Orange'},
-Callback=print}k:Combo{Label='Combo 2 (function)',Selected=1,GetItems=function()
-return{'aaa','bbb','ccc'}end}end,Indent=function(k)k:Label{Text=
-'This is not indented'}local l=k:Indent{Offset=30}l:Label{Text=
-'This is indented by 30 pixels'}local p=l:Indent{Offset=30}p:Label{Text=
-'This is indented by 30 more pixels'}end,Viewport=function(k)local l=aa:
-InsertPrefab'R15 Rig'local p=k:Viewport{Size=UDim2.new(1,0,0,200),Clone=true,
-Model=l}local q=p.Model q:PivotTo(CFrame.new(0,-2.5,-5))local r=game:GetService
-'RunService'r.RenderStepped:Connect(function(s)local t=CFrame.Angles(0,math.rad(
-30*s),0)local u=q:GetPivot()*t q:PivotTo(u)end)end,['List layout']=function(k)
-local l=k:List()for p=1,10 do l:Button{Text=`Resize the window! {p}`}end end,
-Keybinds=function(k)local l=k:Checkbox{Value=true}k:Keybind{Label=
-'Toggle checkbox',IgnoreGameProcessed=false,OnKeybindSet=function(p,q)warn(
-'[OnKeybindSet] .Value ->',q)end,Callback=function(p,q)print(q)l:Toggle()end}k:
+Callback=print}i:Combo{Label='Combo 2 (function)',Selected=1,GetItems=function()
+return{'aaa','bbb','ccc'}end}end,Indent=function(i)i:Label{Text=
+'This is not indented'}local j=i:Indent{Offset=30}j:Label{Text=
+'This is indented by 30 pixels'}local n=j:Indent{Offset=30}n:Label{Text=
+'This is indented by 30 more pixels'}end,Viewport=function(i)local j=aa:
+InsertPrefab'R15 Rig'local n=i:Viewport{Size=UDim2.new(1,0,0,200),Clone=true,
+Model=j}local o=n.Model o:PivotTo(CFrame.new(0,-2.5,-5))local p=game:GetService
+'RunService'p.RenderStepped:Connect(function(q)local r=CFrame.Angles(0,math.rad(
+30*q),0)local s=o:GetPivot()*r o:PivotTo(s)end)end,['List layout']=function(i)
+local j=i:List()for n=1,10 do j:Button{Text=`Resize the window! {n}`}end end,
+Keybinds=function(i)local j=i:Checkbox{Value=true}i:Keybind{Label=
+'Toggle checkbox',IgnoreGameProcessed=false,OnKeybindSet=function(n,o)warn(
+'[OnKeybindSet] .Value ->',o)end,Callback=function(n,o)print(o)j:Toggle()end}i:
 Keybind{Label='Keybind (w/ Q & Left-Click blacklist)',KeyBlacklist={Enum.
-UserInputType.MouseButton1,Enum.KeyCode.Q}}k:Keybind{Label=
+UserInputType.MouseButton1,Enum.KeyCode.Q}}i:Keybind{Label=
 'Toggle UI visibility',Value=Enum.KeyCode.E,Callback=function()ag:
-ToggleVisibility()end}end,Input=function(k)k:InputText{Label='One Line Text'}k:
-InputTextMultiline{Label='Multiline Text'}k:InputInt{Label='Input int'}end,[
-'Text Input']=function(k)local l=k:TreeNode{Title='Multiline'}l:
+ToggleVisibility()end}end,Input=function(i)i:InputText{Label='One Line Text'}i:
+InputTextMultiline{Label='Multiline Text'}i:InputInt{Label='Input int'}end,[
+'Text Input']=function(i)local j=i:TreeNode{Title='Multiline'}j:
 InputTextMultiline{Size=UDim2.new(1,0,0,117),Value=
 '/*The Pentium FOOF bug, shorthand for FO OF C7 C8,\r\n    the hexadecimal encoding of one offending instruction,\r\n    more formally, the invalid operand with locked CMPXCHG8B\r\n    instruction bug, is a design flaw in the majority of\r\n    Intel Pentium, Pentium MMX, and Pentium OverDrive\r\n    processors (all in the P5 microarchitecture).#\r\n    */'
-}end}for q,r in l do local s,t=k:TreeNode{Title=r},p[r]if t then task.spawn(t,s)
-end end local q=d:CollapsingHeader{Title='Popups & child windows'}local r=q:
-TreeNode{Title='Popups'}local s=r:Row()local t=s:Label{Text='<None>',LayoutOrder
-=2}s:Button{Text='Select..',Callback=function(u)local v,w={'Bream','Haddock',
-'Mackerel','Pollock','Tilefish'},r:PopupCanvas{RelativeTo=u,MaxSizeX=200}w:
-Separator{Text='Aquarium'}for x,y in v do w:Selectable{Text=y,Callback=function(
-z)t.Text=y w:ClosePopup()end}end end}local u=q:TreeNode{Title='Child windows'}
-local v=u:Window{Size=UDim2.fromOffset(300,200),NoMove=true,NoClose=true,
-NoCollapse=true,NoResize=true}v:Label{Text='Hello, world!'}v:Button{Text='Save'}
-v:InputText{Label='string'}v:SliderFloat{Label='float',Minimum=0,Maximum=1}local
-w=q:TreeNode{Title='Modals'}w:Label{Text=
+}end}for o,p in j do local q,r=i:TreeNode{Title=p},n[p]if r then task.spawn(r,q)
+end end local o=b:CollapsingHeader{Title='Popups & child windows'}local p=o:
+TreeNode{Title='Popups'}local q=p:Row()local r=q:Label{Text='<None>',LayoutOrder
+=2}q:Button{Text='Select..',Callback=function(s)local t,u={'Bream','Haddock',
+'Mackerel','Pollock','Tilefish'},p:PopupCanvas{RelativeTo=s,MaxSizeX=200}u:
+Separator{Text='Aquarium'}for v,w in t do u:Selectable{Text=w,Callback=function(
+x)r.Text=w u:ClosePopup()end}end end}local s=o:TreeNode{Title='Child windows'}
+local t=s:Window{Size=UDim2.fromOffset(300,200),NoMove=true,NoClose=true,
+NoCollapse=true,NoResize=true}t:Label{Text='Hello, world!'}t:Button{Text='Save'}
+t:InputText{Label='string'}t:SliderFloat{Label='float',Minimum=0,Maximum=1}local
+u=o:TreeNode{Title='Modals'}u:Label{Text=
 [[Modal windows are like popups but the user cannot close them by clicking outside.]]
-,TextWrapped=true}w:Button{Text='Delete..',Callback=function()local x=w:
-PopupModal{Title='Delete?'}x:Label{Text=
+,TextWrapped=true}u:Button{Text='Delete..',Callback=function()local v=u:
+PopupModal{Title='Delete?'}v:Label{Text=
 [[All those beautiful files will be deleted.
 This operation cannot be undone!]],
-TextWrapped=true}x:Separator()x:Checkbox{Value=false,Label=
-"Don't ask me next time"}local y=x:Row{Expanded=true}y:Button{Text='Okay',
-Callback=function()x:ClosePopup()end}y:Button{Text='Cancel',Callback=function()x
-:ClosePopup()end}end}w:Button{Text='Stacked modals..',Callback=function()local x
-=w:PopupModal{Title='Stacked 1'}x:Label{Text=`Hello from Stacked The First\nUsing Theme["ModalWindowDimBg"] behind it.`
-,TextWrapped=true}x:Combo{Items={'aaaa','bbbb','cccc','dddd','eeee'}}x:
-DragColor3{Value=Color3.fromRGB(102,178,0)}x:Button{Text='Add another modal..',
-Callback=function()local y=w:PopupModal{Title='Stacked 2'}y:Label{Text=
-'Hello from Stacked The Second!',TextWrapped=true}y:DragColor3{Value=Color3.
-fromRGB(102,178,0)}y:Button{Text='Close',Callback=function()y:ClosePopup()end}
-end}x:Button{Text='Close',Callback=function()x:ClosePopup()end}end}local x=d:
-CollapsingHeader{Title='Tables & Columns'}local y=x:TreeNode{Title='Basic'}local
-z=y:Table()for A=1,3 do local B=z:Row()for C=1,3 do local D=B:Column()for E=1,4
-do D:Label{Text=`Row {E} Column {C}`}end end end local A=x:TreeNode{Title=
-'Borders, background'}local B=A:Table{RowBackground=true,Border=true,MaxColumns=
-3}for C=1,5 do local D=B:NextRow()for E=1,3 do local F=D:NextColumn()F:Label{
-Text=`Hello {E},{C}`}end end local C=x:TreeNode{Title='With headers'}local D,E=C
-:Table{Border=true,RowBackground=true,MaxColumns=3},{'One','Two','Three'}for F=1
-,7 do if F==1 then s=D:HeaderRow()else s=D:Row()end for G,H in E do if F==1 then
-local I=s:Column()I:Label{Text=H}continue end local I=s:NextColumn()I:Label{Text
-=`Hello {G},{F}`}end end end end function a.f()return{Dot=
+TextWrapped=true}v:Separator()v:Checkbox{Value=false,Label=
+"Don't ask me next time"}local w=v:Row{Expanded=true}w:Button{Text='Okay',
+Callback=function()v:ClosePopup()end}w:Button{Text='Cancel',Callback=function()v
+:ClosePopup()end}end}u:Button{Text='Stacked modals..',Callback=function()local v
+=u:PopupModal{Title='Stacked 1'}v:Label{Text=`Hello from Stacked The First\nUsing Theme["ModalWindowDimBg"] behind it.`
+,TextWrapped=true}v:Combo{Items={'aaaa','bbbb','cccc','dddd','eeee'}}v:
+DragColor3{Value=Color3.fromRGB(102,178,0)}v:Button{Text='Add another modal..',
+Callback=function()local w=u:PopupModal{Title='Stacked 2'}w:Label{Text=
+'Hello from Stacked The Second!',TextWrapped=true}w:DragColor3{Value=Color3.
+fromRGB(102,178,0)}w:Button{Text='Close',Callback=function()w:ClosePopup()end}
+end}v:Button{Text='Close',Callback=function()v:ClosePopup()end}end}local v=b:
+CollapsingHeader{Title='Tables & Columns'}local w=v:TreeNode{Title='Basic'}local
+x=w:Table()for y=1,3 do local z=x:Row()for A=1,3 do local B=z:Column()for C=1,4
+do B:Label{Text=`Row {C} Column {A}`}end end end local y=v:TreeNode{Title=
+'Borders, background'}local z=y:Table{RowBackground=true,Border=true,MaxColumns=
+3}for A=1,5 do local B=z:NextRow()for C=1,3 do local D=B:NextColumn()D:Label{
+Text=`Hello {C},{A}`}end end local A=v:TreeNode{Title='With headers'}local B,C=A
+:Table{Border=true,RowBackground=true,MaxColumns=3},{'One','Two','Three'}for D=1
+,7 do if D==1 then q=B:HeaderRow()else q=B:Row()end for E,F in C do if D==1 then
+local G=q:Column()G:Label{Text=F}continue end local G=q:NextColumn()G:Label{Text
+=`Hello {E},{D}`}end end end end function a.f()return{Dot=
 'rbxasset://textures/whiteCircle.png',Arrow=
 [[rbxasset://textures/DeveloperFramework/button_arrow_right.png]],Close=
 'rbxasset://textures/AnimationEditor/icon_close.png',Checkmark=
@@ -796,7 +791,7 @@ Position aa:SetProperties(ae,{Position=UDim2.new(af:find'X'and 0.5 or ag.X.Scale
 new(af:find'X'and 0.5 or 0,af:find'Y'and 0.5 or 0)})end},{Properties={
 'ElementStyle'},Callback=function(ad,ae,af)ab:ApplyStyle(ae,af)end},{Properties=
 {'ColorTag'},Callback=function(ad,ae,af)local ag,ah=ad.Class,ad.WindowClass
-local c=ag.NoAutoTheme if not ah then return end if c then return end ab:
+local aj=ag.NoAutoTheme if not ah then return end if aj then return end ab:
 UpdateColors{Object=ae,Tag=af,NoAnimation=true,Theme=ah.Theme}end},{Properties={
 'Animation'},Callback=function(ad,ae,af)local ag=ad.Class.NoAnimation if ag then
 return end ab:SetAnimation(ae,af)end},{Properties={'Image'},Callback=function(ad
@@ -805,22 +800,22 @@ ae,af,ag)end},{Properties={'Icon','IconSize','IconRotation','IconPadding'},
 Callback=function(ad,ae,af)local ag=ae:FindFirstChild('Icon',true)if not ag then
 ab:Warn('No icon for',ae)return end local ah=ad.Class aa:CheckConfig(ah,{Icon=''
 ,IconSize=UDim2.fromScale(1,1),IconRotation=0,IconPadding=UDim2.new(0,2)})local
-c=ag.Parent:FindFirstChild'UIPadding'aa:SetPadding(c,ah.IconPadding)local d=ah.
-Icon d=aa:CheckAssetUrl(d)local e=ad.WindowClass ab:DynamicImageTag(ag,d,e)aa:
-SetProperties(ag,{Visible=ag~='',Image=aa:CheckAssetUrl(d),Size=ah.IconSize,
+aj=ag.Parent:FindFirstChild'UIPadding'aa:SetPadding(aj,ah.IconPadding)local b=ah
+.Icon b=aa:CheckAssetUrl(b)local c=ad.WindowClass ab:DynamicImageTag(ag,b,c)aa:
+SetProperties(ag,{Visible=ag~='',Image=aa:CheckAssetUrl(b),Size=ah.IconSize,
 Rotation=ah.IconRotation})end},{Properties={'BorderThickness','Border',
 'BorderColor'},Callback=function(ad,ae,af)local ag=ad.Class local ah=ag.Border==
 true aa:CheckConfig(ag,{BorderTransparency=ad:GetThemeKey
 'BorderTransparencyActive',BorderColor=ad:GetThemeKey'Border',BorderThickness=1,
-BorderStrokeMode=Enum.ApplyStrokeMode.Border})local c=aa:GetChildOfClass(ae,
-'UIStroke')aa:SetProperties(c,{Transparency=ag.BorderTransparency,Thickness=ag.
+BorderStrokeMode=Enum.ApplyStrokeMode.Border})local aj=aa:GetChildOfClass(ae,
+'UIStroke')aa:SetProperties(aj,{Transparency=ag.BorderTransparency,Thickness=ag.
 BorderThickness,Color=ag.BorderColor,ApplyStrokeMode=ag.BorderStrokeMode,Enabled
 =ah})end},{Properties={'Ratio'},Callback=function(ad,ae,af)local ag=ad.Class aa:
 CheckConfig(ag,{Ratio=1.3333333333333333,RatioAxis=Enum.DominantAxis.Height,
-RatioAspectType=Enum.AspectType.ScaleWithParentSize})local ah,c,d,e=ag.Ratio,ag.
-RatioAxis,ag.RatioAspectType,aa:GetChildOfClass(ae,'UIAspectRatioConstraint')aa:
-SetProperties(e,{DominantAxis=c,AspectType=d,AspectRatio=ah})end},{Properties={
-'FlexMode'},Callback=function(ad,ae,af)local ag=aa:GetChildOfClass(ae,
+RatioAspectType=Enum.AspectType.ScaleWithParentSize})local ah,aj,b,c=ag.Ratio,ag
+.RatioAxis,ag.RatioAspectType,aa:GetChildOfClass(ae,'UIAspectRatioConstraint')aa
+:SetProperties(c,{DominantAxis=aj,AspectType=b,AspectRatio=ah})end},{Properties=
+{'FlexMode'},Callback=function(ad,ae,af)local ag=aa:GetChildOfClass(ae,
 'UIFlexItem')ag.FlexMode=af end},{Properties={'CornerRadius'},Callback=function(
 ad,ae,af)local ag=aa:GetChildOfClass(ae,'UICorner')ag.CornerRadius=af end},{
 Properties={'Fill'},Callback=function(ad,ae,af)if af~=true then return end local
@@ -829,15 +824,15 @@ UIFlexMode.Fill,AutomaticSize=Enum.AutomaticSize.None})local ah=aa:
 GetChildOfClass(ae,'UIFlexItem')ah.FlexMode=ag.UIFlexMode ae.Size=ag.Size ae.
 AutomaticSize=ag.AutomaticSize end},{Properties={'Label'},Callback=function(ad,
 ae,af)local ag,ah=ad.Class,ae:FindFirstChild'Label'if not ah then return end ah.
-Text=tostring(af)function ag:SetLabel(c)ah.Text=c return self end end},{
+Text=tostring(af)function ag:SetLabel(aj)ah.Text=aj return self end end},{
 Properties={'NoGradient'},WindowProperties={'NoGradients'},Callback=function(ad,
 ae,af)local ag=ae:FindFirstChildOfClass'UIGradient'if not ag then return end ag.
 Enabled=af end},{Properties={'UiPadding','PaddingBottom','PaddingTop',
 'PaddingRight','PaddingTop'},Callback=function(ad,ae,af)af=af or 0 if typeof(af)
 =='number'then af=UDim.new(0,af)end local ag=ad.Class local ah=ag.UiPadding if
 ah then aa:CheckConfig(ag,{PaddingBottom=af,PaddingLeft=af,PaddingRight=af,
-PaddingTop=af})end local c=aa:GetChildOfClass(ae,'UIPadding')aa:SetProperties(c,
-{PaddingBottom=ag.PaddingBottom,PaddingLeft=ag.PaddingLeft,PaddingRight=ag.
+PaddingTop=af})end local aj=aa:GetChildOfClass(ae,'UIPadding')aa:SetProperties(
+aj,{PaddingBottom=ag.PaddingBottom,PaddingLeft=ag.PaddingLeft,PaddingRight=ag.
 PaddingRight,PaddingTop=ag.PaddingTop})end},{Properties={'Callback'},Callback=
 function(ad,ae)local af=ad.Class function af:SetCallback(ag)self.Callback=ag
 return self end function af:FireCallback(ag)self.Callback(ae)return self end end
@@ -903,870 +898,870 @@ load'g'aa.ThemeConfigs=a.load'h'aa.ElementFlags=a.load'i'local ag=a.load'j'aa.
 ElementColors=ag.Coloring aa.Animations=ag.Animations aa.Styles=ag.Styles ad:
 CallOnInitConnections(aa)aa.DynamicImages={[aa.Icons.Arrow]='ImageFollowsText',[
 aa.Icons.Close]='ImageFollowsText',[aa.Icons.Dot]='ImageFollowsText'}local ah=aa
-.Services local c,d,e,f,g=ah.HttpService,ah.Players,ah.UserInputService,ah.
-RunService,ah.InsertService local h=d.LocalPlayer aa.PlayerGui=h.PlayerGui aa.
-Mouse=h:GetMouse()local i=function()end function GetAndRemove(j,k)local l=k[j]if
-l then k[j]=nil end return l end function MoveTableItem(j,k,l)local p=table.
-find(j,k)if not p then return end local q=table.remove(j,p)table.insert(j,l,q)
-end function Merge(j,k)for l,p in next,k do j[l]=p end end function Copy(j,k)
-local l=table.clone(j)if k then Merge(l,k)end return l end function aa:Warn(...)
-warn('[ReGui]::',...)end function aa:Error(...)local j=aa:Concat({...},' ')local
-k=`\n[ReGui]:: {j}`coroutine.wrap(error)(k)end function aa:IsDoubleClick(j)local
-k=self.DoubleClickThreshold return j<k end function aa:StyleContainers()local j=
-self.Container local k,l=j.Overlays,j.Windows self:SetProperties(l,{
-OnTopOfCoreBlur=true})self:SetProperties(k,{OnTopOfCoreBlur=true})end function
-aa:Init(j)j=j or{}if self.Initialised then return end Merge(self,j)Merge(self,{
+.Services local aj,b,c,d,e=ah.HttpService,ah.Players,ah.UserInputService,ah.
+RunService,ah.InsertService local f=b.LocalPlayer aa.PlayerGui=f.PlayerGui aa.
+Mouse=f:GetMouse()local g=function()end function GetAndRemove(h,i)local j=i[h]if
+j then i[h]=nil end return j end function MoveTableItem(h,i,j)local n=table.
+find(h,i)if not n then return end local o=table.remove(h,n)table.insert(h,j,o)
+end function Merge(h,i)for j,n in next,i do h[j]=n end end function Copy(h,i)
+local j=table.clone(h)if i then Merge(j,i)end return j end function aa:Warn(...)
+warn('[ReGui]::',...)end function aa:Error(...)local h=aa:Concat({...},' ')local
+i=`\n[ReGui]:: {h}`coroutine.wrap(error)(i)end function aa:IsDoubleClick(h)local
+i=self.DoubleClickThreshold return h<i end function aa:StyleContainers()local h=
+self.Container local i,j=h.Overlays,h.Windows self:SetProperties(j,{
+OnTopOfCoreBlur=true})self:SetProperties(i,{OnTopOfCoreBlur=true})end function
+aa:Init(h)h=h or{}if self.Initialised then return end Merge(self,h)Merge(self,{
 Initialised=true,HasGamepad=self:IsConsoleDevice(),HasTouchScreen=self:
 IsMobileDevice()})self:CheckConfig(self,{ContainerParent=function()return ad:
 ResolveUIParent()end,Prefabs=function()return self:LoadPrefabs()end},true)self:
 CheckConfig(self,{Container=function()return self:InsertPrefab('Container',{
-Parent=self.ContainerParent,Name=self.ContainerName})end},true)local k,l,p=self.
-Container,self.TooltipOffset,self.ActiveTooltips local q,r=k.Overlays,0 self:
-StyleContainers()self.TooltipsContainer=self.Elements:Overlay{Parent=q}e.
-InputBegan:Connect(function(s)if not self:IsMouseEvent(s,true)then return end
-local t=tick()local u=t-r local v=self:IsDoubleClick(u)r=v and 0 or t self:
-UpdateWindowFocuses()end)local s=function()local s,t=self.TooltipsContainer,#p>0
-s.Visible=t if not t then return end local u,v=aa:GetMouseLocation()local w=q.
-AbsolutePosition s.Position=UDim2.fromOffset(u-w.X+l,v-w.Y+l)end f:
-BindToRenderStep('ReGui_InputUpdate',Enum.RenderPriority.Input.Value,s)end
-function aa:CheckImportState()if self.Initialised then return end local j=self.
-PrefabsId local k=ad:CheckAssetUrl(j)local l,p=pcall(function()return g:
-LoadLocalAsset(k)end)self:Init{Prefabs=l and p or nil}end function aa:GetVersion
-()return self.Version end function aa:IsMobileDevice()return e.TouchEnabled end
-function aa:IsConsoleDevice()return e.GamepadEnabled end function aa:
+Parent=self.ContainerParent,Name=self.ContainerName})end},true)local i,j,n=self.
+Container,self.TooltipOffset,self.ActiveTooltips local o,p=i.Overlays,0 self:
+StyleContainers()self.TooltipsContainer=self.Elements:Overlay{Parent=o}c.
+InputBegan:Connect(function(q)if not self:IsMouseEvent(q,true)then return end
+local r=tick()local s=r-p local t=self:IsDoubleClick(s)p=t and 0 or r self:
+UpdateWindowFocuses()end)local q=function()local q,r=self.TooltipsContainer,#n>0
+q.Visible=r if not r then return end local s,t=aa:GetMouseLocation()local u=o.
+AbsolutePosition q.Position=UDim2.fromOffset(s-u.X+j,t-u.Y+j)end d:
+BindToRenderStep('ReGui_InputUpdate',Enum.RenderPriority.Input.Value,q)end
+function aa:CheckImportState()if self.Initialised then return end local h=self.
+PrefabsId local i=ad:CheckAssetUrl(h)local j,n=pcall(function()return e:
+LoadLocalAsset(i)end)self:Init{Prefabs=j and n or nil}end function aa:GetVersion
+()return self.Version end function aa:IsMobileDevice()return c.TouchEnabled end
+function aa:IsConsoleDevice()return c.GamepadEnabled end function aa:
 GetScreenSize()return workspace.CurrentCamera.ViewportSize end function aa:
-LoadPrefabs()local j,k=self.PlayerGui,'ReGui-Prefabs'local l=script:
-WaitForChild(k,2)if l then return l end local p=j:WaitForChild(k,2)if p then
-return p end return nil end function aa:CheckConfig(j,k,l,p)return ad:
-CheckConfig(j,k,l,p)end function aa:CreateInstance(j,k,l)local p=Instance.new(j,
-k)if l then local q=l.UsePropertiesList if not q then self:SetProperties(p,l)
-else self:ApplyFlags{Object=p,Class=l}end end return p end function aa:
-ConnectMouseEvent(j,k)local l,p,q,r,s=k.Callback,k.DoubleClick,k.
-OnlyMouseHovering,0 if q then s=self:DetectHover(q)end j.Activated:Connect(
-function(...)local t=tick()local u=t-r if s and not s.Hovering then return end
-if p then if not aa:IsDoubleClick(u)then r=t return end r=0 end l(...)end)end
-function aa:GetAnimation(j)return j and self.Animation or TweenInfo.new(0)end
-function aa:DynamicImageTag(j,k,l)local p=self.DynamicImages local q=p[k]if not
-q then return end if not l then return end l:TagElements{[j]=q}end function aa:
-GetDictSize(j)local k=0 for l,p in j do k+=1 end return k end function aa:
-RemoveAnimations(j)local k=self:GetAnimationData(j)local l=k.Connections for p,q
-in next,l do q:Disconnect()end end function aa:GetAnimationData(j)local k=self.
-AnimationConnections local l=k[j]if l then return l end local p={Connections={}}
-k[j]=p return p end function aa:AddAnimationSignal(j,k)local l=self:
-GetAnimationData(j)local p=l.Connections table.insert(p,k)end function aa:
-SetAnimationsEnabled(j)self.NoAnimations=not j end function aa:SetAnimation(j,k,
-l)l=l or j local p,q,r=self.Animations,self.HasTouchScreen,k if typeof(k)~=
-'table'then r=p[k]end assert(r,`No animation data for Class {k}!`)self:
-RemoveAnimations(l)local s,t,u,v,w=r.Init,r.Connections,r.Tweeninfo,r.
-NoAnimation,self:GetAnimationData(j)local x,y,A,B,C,D=w.State,true,{},{}function
-B:Reset(E)if not C then return end C(E)end function B:FireSignal(E,F)A[E](F)end
-function B:Refresh(E)if not D then return end A[D](E)end function B:SetEnabled(E
-)y=E end for E,F in next,t do local G,H=function(G)G=G==true D=E local H=self.
-NoAnimations if H then return end if not y then return end w.State=E ae:Tween{
-NoAnimation=G or v,Object=j,Tweeninfo=u,EndProperties=F}end,l[E]if not q then
-local I=H:Connect(G)self:AddAnimationSignal(l,I)end A[E]=G if E==s then C=G end
-end if x then B:FireSignal(x)else B:Reset(true)end return B end function aa:
-ConnectDrag(j,k)self:CheckConfig(k,{DragStart=i,DragEnd=i,DragMovement=i,
-OnDragStateChange=i})local l,p,q,r,s,t=k.DragStart,k.DragEnd,k.DragMovement,k.
+LoadPrefabs()local h,i=self.PlayerGui,'ReGui-Prefabs'local j=script:
+WaitForChild(i,2)if j then return j end local n=h:WaitForChild(i,2)if n then
+return n end return nil end function aa:CheckConfig(h,i,j,n)return ad:
+CheckConfig(h,i,j,n)end function aa:CreateInstance(h,i,j)local n=Instance.new(h,
+i)if j then local o=j.UsePropertiesList if not o then self:SetProperties(n,j)
+else self:ApplyFlags{Object=n,Class=j}end end return n end function aa:
+ConnectMouseEvent(h,i)local j,n,o,p,q=i.Callback,i.DoubleClick,i.
+OnlyMouseHovering,0 if o then q=self:DetectHover(o)end h.Activated:Connect(
+function(...)local r=tick()local s=r-p if q and not q.Hovering then return end
+if n then if not aa:IsDoubleClick(s)then p=r return end p=0 end j(...)end)end
+function aa:GetAnimation(h)return h and self.Animation or TweenInfo.new(0)end
+function aa:DynamicImageTag(h,i,j)local n=self.DynamicImages local o=n[i]if not
+o then return end if not j then return end j:TagElements{[h]=o}end function aa:
+GetDictSize(h)local i=0 for j,n in h do i+=1 end return i end function aa:
+RemoveAnimations(h)local i=self:GetAnimationData(h)local j=i.Connections for n,o
+in next,j do o:Disconnect()end end function aa:GetAnimationData(h)local i=self.
+AnimationConnections local j=i[h]if j then return j end local n={Connections={}}
+i[h]=n return n end function aa:AddAnimationSignal(h,i)local j=self:
+GetAnimationData(h)local n=j.Connections table.insert(n,i)end function aa:
+SetAnimationsEnabled(h)self.NoAnimations=not h end function aa:SetAnimation(h,i,
+j)j=j or h local n,o,p=self.Animations,self.HasTouchScreen,i if typeof(i)~=
+'table'then p=n[i]end assert(p,`No animation data for Class {i}!`)self:
+RemoveAnimations(j)local q,r,s,t,u=p.Init,p.Connections,p.Tweeninfo,p.
+NoAnimation,self:GetAnimationData(h)local v,w,y,z,A,B=u.State,true,{},{}function
+z:Reset(C)if not A then return end A(C)end function z:FireSignal(C,D)y[C](D)end
+function z:Refresh(C)if not B then return end y[B](C)end function z:SetEnabled(C
+)w=C end for C,D in next,r do local E,F=function(E)E=E==true B=C local F=self.
+NoAnimations if F then return end if not w then return end u.State=C ae:Tween{
+NoAnimation=E or t,Object=h,Tweeninfo=s,EndProperties=D}end,j[C]if not o then
+local G=F:Connect(E)self:AddAnimationSignal(j,G)end y[C]=E if C==q then A=E end
+end if v then z:FireSignal(v)else z:Reset(true)end return z end function aa:
+ConnectDrag(h,i)self:CheckConfig(i,{DragStart=g,DragEnd=g,DragMovement=g,
+OnDragStateChange=g})local j,n,o,p,q,r=i.DragStart,i.DragEnd,i.DragMovement,i.
 OnDragStateChange,{StartAndEnd={Enum.UserInputType.MouseButton1,Enum.
 UserInputType.Touch},Movement={Enum.UserInputType.MouseMovement,Enum.
-UserInputType.Touch}},false local u,v,w=function(u,v)local w=u.UserInputType
-return table.find(s[v],w)end,function(u)local v=u.Position return Vector2.new(v.
-X,v.Y)end,function(u)self._DraggingDisabled=u t=u r(u)end local x=function(x)
-local y,A,B=x.IsDragging,x.InputType,x.Callback return function(C)if x.
-DraggingRequired~=t then return end if x.CheckDraggingDisabled and self.
-_DraggingDisabled then return end if not u(C,A)then return end if x.UpdateState
-then w(y)end local D=v(C)B(D)end end j.InputBegan:Connect(x{
+UserInputType.Touch}},false local s,t,u=function(s,t)local u=s.UserInputType
+return table.find(q[t],u)end,function(s)local t=s.Position return Vector2.new(t.
+X,t.Y)end,function(s)self._DraggingDisabled=s r=s p(s)end local v=function(v)
+local w,y,z=v.IsDragging,v.InputType,v.Callback return function(A)if v.
+DraggingRequired~=r then return end if v.CheckDraggingDisabled and self.
+_DraggingDisabled then return end if not s(A,y)then return end if v.UpdateState
+then u(w)end local B=t(A)z(B)end end h.InputBegan:Connect(v{
 CheckDraggingDisabled=true,DraggingRequired=false,UpdateState=true,IsDragging=
-true,InputType='StartAndEnd',Callback=l})e.InputEnded:Connect(x{DraggingRequired
-=true,UpdateState=true,IsDragging=false,InputType='StartAndEnd',Callback=p})e.
-InputChanged:Connect(x{DraggingRequired=true,InputType='Movement',Callback=q})
-end function aa:MakeDraggable(j)local k,l,p,q,r,s=j.Move,j.Grab,j.
-OnDragStateChange,{}function q:SetEnabled(t)local u=j.StateChanged self.Enabled=
-t if u then u(self)end end function q:CanDrag(t)return self.Enabled end local t,
-u,v,w,x=function(t)if not q:CanDrag()then return end local u=j.DragBegin s=t u(s
-)end,function(t)if not q:CanDrag()then return end local u,v=t-s,j.OnUpdate v(u)
-end,function(t)r=k.Position end,function(t)local u=UDim2.new(r.X.Scale,r.X.
-Offset+t.X,r.Y.Scale,r.Y.Offset+t.Y)j:SetPosition(u)end,function(t,u)ae:Tween{
-Object=k,EndProperties={Position=u}}end self:CheckConfig(j,{Enabled=true,
-OnUpdate=w,SetPosition=x,DragBegin=v})self:ConnectDrag(l,{DragStart=t,
-DragMovement=u,OnDragStateChange=p})local y=j.Enabled q:SetEnabled(y)return q
-end function aa:MakeResizable(j)aa:CheckConfig(j,{MinimumSize=Vector2.new(160,90
-),MaximumSize=Vector2.new(math.huge,math.huge)})local k,l,p,q,r=j.MaximumSize,j.
-MinimumSize,j.Resize,(j.OnUpdate)local s=aa:InsertPrefab('ResizeGrab',{Parent=p}
-)local t,u,v=function(t)s.Visible=t.Enabled end,function(t)local u=r+t local v=
-UDim2.fromOffset(math.clamp(u.X,l.X,k.X),math.clamp(u.Y,l.Y,k.Y))if q then q(v)
-return end ae:Tween{Object=p,EndProperties={Size=v}}end,function(t)r=p.
-AbsoluteSize end local w=self:MakeDraggable{Grab=s,OnUpdate=u,DragBegin=v,
-StateChanged=t}w.Grab=s return w end function aa:IsMouseEvent(j,k)local l=j.
-UserInputType.Name if k and l:find'Movement'then return end return l:find'Touch'
-or l:find'Mouse'end function aa:DetectHover(j,k)local l=k or{}l.Hovering=false
-local p,q,r,s,t,u=l.OnInput,l.OnHoverChange,l.Anykey,l.MouseMove,l.MouseEnter,l.
-MouseOnly local v=function(v,w,x)if v and u then if not aa:IsMouseEvent(v,true)
-then return end end if w~=nil then local y=l.Hovering l.Hovering=w if w~=y and q
-then q(w)end end if not t and x then return end if p then local y=l.Hovering p(y
-,v)return end end local w={j.MouseEnter:Connect(function()v(nil,true,true)end),j
-.MouseLeave:Connect(function()v(nil,false,true)end)}if r or u then table.insert(
-w,e.InputBegan:Connect(function(x)v(x)end))end if s then local x=j.MouseMoved:
-Connect(function()v()end)table.insert(w,x)end function l:Disconnect()for x,y in
-next,w do y:Disconnect()end end return l end function aa:StackWindows()local j,k
-=self.Windows,20 for l,p in next,j do local q,r=p.WindowFrame,UDim2.fromOffset(k
-*l,k*l)p:Center()q.Position+=r end end function aa:GetElementFlags(j)local k=
-self._FlagCache return k[j]end function aa:UpdateColors(j)local k,l,p,q,r,s,t=j.
-Object,j.Tag,j.NoAnimation,j.TagsList,j.Theme,j.Tweeninfo,self.ElementColors
-local u,v,w=self:GetElementFlags(k),self.Debug,t[l]if typeof(w)=='string'then w=
-t[w]end if typeof(l)=='table'then w=l elseif q then q[k]=l end if not w then
-return end local x={}for y,A in next,w do local B=self:GetThemeKey(r,A)if u and
-u[y]then continue end if not B then if v then self:Warn(`Color: '{A}' does not exist!`
-)end continue end x[y]=B end ae:Tween{Tweeninfo=s,Object=k,NoAnimation=p,
-EndProperties=x}end function aa:MultiUpdateColors(j)local k=j.Objects for l,p in
-next,k do self:UpdateColors{TagsList=j.TagsList,Theme=j.Theme,NoAnimation=not j.
-Animate,Tweeninfo=j.Tweeninfo,Object=l,Tag=p}end end function aa:ApplyStyle(j,k)
-local l=self.Styles local p=l[k]if not p then return end self:ApplyFlags{Object=
-j,Class=p}end function aa:ClassIgnores(j)local k=self.ClassIgnored local l=table
-.find(k,j)return l and true or false end function aa:MergeMetatables(j,k)local l
-,p=self.Debug,{}p.__index=function(q,r)local s,t=self:ClassIgnores(r),j[r]if t~=
-nil and not s then return t end local u,v=pcall(function()local u=k[r]return
-self:PatchSelf(k,u)end)return u and v or nil end p.__newindex=function(q,r,s)
-local t,u=self:ClassIgnores(r),typeof(s)=='function'local v=j[r]~=nil or u if v
-and not t then j[r]=s return end xpcall(function()k[r]=s end,function(w)if l
-then self:Warn(`Newindex Error: {k}.{r} = {s}\n{w}`)end j[r]=s end)end return
-setmetatable({},p)end function aa:Concat(j,k)local l=''for p,q in next,j do l..=
-tostring(q)..(p~=#j and k or'')end return l end function aa:GetValueFromAliases(
-j,k)for l,p in j do local q=k[p]if q~=nil then return q end end return nil end
-function aa:RecursiveCall(j,k)for l,p in next,j:GetDescendants()do k(p)end end
-function aa:ApplyFlags(j)local k,l,p,q=self.ElementFlags,j.Object,j.Class,j.
-WindowClass function j:GetThemeKey(r)if q then return q:GetThemeKey(r)else
-return aa:GetThemeKey(nil,r)end end self:SetProperties(l,p)for r,s in next,k do
-local t,u,v,w=s.Properties,s.Callback,s.Recursive,s.WindowProperties local x=
-self:GetValueFromAliases(t,p)if q and w and x==nil then x=self:
-GetValueFromAliases(w,q)end if x==nil then continue end u(j,l,x)if v then self:
-RecursiveCall(l,function(y)u(j,y,x)end)end end end function aa:SetProperties(j,k
-)return ad:SetProperties(j,k)end function aa:InsertPrefab(j,k)local l=self.
-Prefabs local p=l.Prefabs local q=p:WaitForChild(j)local r=q:Clone()if k then
-local s=k.UsePropertiesList if not s then self:SetProperties(r,k)else self:
-ApplyFlags{Object=r,Class=k}end end return r end function aa:GetContentSize(j,k)
-local l,p,q,r=j:FindFirstChildOfClass'UIListLayout',j:FindFirstChildOfClass
-'UIPadding',(j:FindFirstChildOfClass'UIStroke')if l and not k then r=l.
-AbsoluteContentSize else r=j.AbsoluteSize end if p then local s,t,u,v=p.
-PaddingTop.Offset,p.PaddingBottom.Offset,p.PaddingLeft.Offset,p.PaddingRight.
-Offset r+=Vector2.new(u+v,s+t)end if q then local s=q.Thickness r+=Vector2.new(s
-/2,s/2)end return r end function aa:PatchSelf(j,k,...)if typeof(k)~='function'
-then return k,...end return function(l,...)return k(j,...)end end function aa:
-MakeCanvas(j)local k,l,p,q,r,s,t=self.Elements,self.Debug,j.Element,j.
-WindowClass,j.Class,j.OnChildChange,af:NewSignal()if s then t:Connect(s)end if
-not q and l then self:Warn(`No WindowClass for {p}`)self:Warn(j)end local u=ad:
-NewClass(k,{Class=r,RawObject=p,WindowClass=q or false,OnChildChange=t,Elements=
-{}})local v={__index=function(v,w)local x=u[w]if x~=nil then return self:
-PatchSelf(u,x)end local y=r[w]if y~=nil then return self:PatchSelf(r,y)end local
-A=p[w]return self:PatchSelf(p,A)end,__newindex=function(v,w,x)local y=r[w]~=nil
-if y then r[w]=x else p[w]=x end end}return setmetatable({},v)end function aa:
-GetIniData(j)local k,l=self.IniToSave,{}for p,q in next,k do l[q]=j[q]end return
-l end function aa:DumpIni(j)local k,l=self.IniSettings,{}for p,q in next,k do l[
-p]=self:GetIniData(q)end if j then return c:JSONEncode(l)end return l end
-function aa:LoadIniIntoElement(j,k)local l={Value=function(l)j:SetValue(l)end}
-for p,q in next,k do local r=l[p]if r then r(q)continue end j[p]=q end end
-function aa:LoadIni(j,k)local l=self.IniSettings assert(j,
-'No Ini configuration was passed')if k then j=c:JSONDecode(j)end for p,q in next
-,j do local r=l[p]self:LoadIniIntoElement(r,q)end end function aa:AddIniFlag(j,k
-)local l=self.IniSettings l[j]=k end function aa:OnElementCreate(j)local k,l,p,q
-,r=self._FlagCache,j.Flags,j.Object,j.Canvas,j.Class local s,t,u,v,w,x=q.
-WindowClass,l.NoAutoTag,l.NoAutoFlags,l.ColorTag,l.NoStyle,l.IniFlag k[p]=l if x
-then self:AddIniFlag(x,r)end if w then return end if not t and s then s:
-TagElements{[p]=v}end if s then s:LoadStylesIntoElement(j)end if not u then self
-:ApplyFlags{Object=p,Class=l,WindowClass=s}end end function aa:VisualError(j,k,l
-)local p=self.Initialised and j.Error if not p then self:Error('Class:',l)return
-end j:Error{Parent=k,Text=l}end function aa:WrapGeneration(j,k)local l,p,q=self.
-_ErrorCache,k.Base,k.IgnoreDefaults return function(r,s,...)s=s or{}self:
-CheckConfig(s,p)local t=s.CloneTable if t then s=table.clone(s)end local u,v,w=r
-.RawObject,r.Elements,r.OnChildChange self:CheckConfig(s,{Parent=u,Name=s.
-ColorTag},nil,q)if r==self then r=self.Elements end local x,y,A=pcall(j,r,s,...)
-if x==false then if u then if l[u]then return end l[u]=y end self:VisualError(r,
-u,y)self:Error('Class:',y)self:Error(debug.traceback())end if A==nil then A=y
-end if w then w:Fire(y)end if A then if v then table.insert(v,A)end self:
-OnElementCreate{Object=A,Flags=s,Class=y,Canvas=r}end return y,A end end
-function aa:DefineElement(j,k)local l,p,q=self.Elements,self.ThemeConfigs,self.
-ElementColors local r,s,t,u,v,w=p.DarkTheme,k.Base,k.Create,k.Export,k.ThemeTags
-,k.ColorData self:CheckConfig(s,{ColorTag=j,ElementStyle=j})if v then Merge(r,v)
-end if w then Merge(q,w)end local x=self:WrapGeneration(t,k)if u then self[j]=x
-end l[j]=x return x end function aa:DefineGlobalFlag(j)local k=self.ElementFlags
-table.insert(k,j)end function aa:DefineTheme(j,k)local l=self.ThemeConfigs self:
-CheckConfig(k,{BaseTheme=l.DarkTheme})local p=GetAndRemove('BaseTheme',k)local q
-={BaseTheme=p,Values=k}l[j]=q return q end function aa:GetMouseLocation()local j
-=self.Mouse return j.X,j.Y end function aa:SetWindowFocusesEnabled(j)self.
-WindowFocusesEnabled=j end function aa:UpdateWindowFocuses()local j,k=self.
-Windows,self.WindowFocusesEnabled if not k then return end for l,p in j do local
-q=p.HoverConnection if not q then continue end local r=q.Hovering if r then self
-:SetFocusedWindow(p)return end end self:SetFocusedWindow(nil)end function aa:
-WindowCanFocus(j)if j.NoSelect then return false end if j.Collapsed then return
-false end if j._SelectDisabled then return false end return true end function aa
+true,InputType='StartAndEnd',Callback=j})c.InputEnded:Connect(v{DraggingRequired
+=true,UpdateState=true,IsDragging=false,InputType='StartAndEnd',Callback=n})c.
+InputChanged:Connect(v{DraggingRequired=true,InputType='Movement',Callback=o})
+end function aa:MakeDraggable(h)local i,j,n,o,p,q=h.Move,h.Grab,h.
+OnDragStateChange,{}function o:SetEnabled(r)local s=h.StateChanged self.Enabled=
+r if s then s(self)end end function o:CanDrag(r)return self.Enabled end local r,
+s,t,u,v=function(r)if not o:CanDrag()then return end local s=h.DragBegin q=r s(q
+)end,function(r)if not o:CanDrag()then return end local s,t=r-q,h.OnUpdate t(s)
+end,function(r)p=i.Position end,function(r)local s=UDim2.new(p.X.Scale,p.X.
+Offset+r.X,p.Y.Scale,p.Y.Offset+r.Y)h:SetPosition(s)end,function(r,s)ae:Tween{
+Object=i,EndProperties={Position=s}}end self:CheckConfig(h,{Enabled=true,
+OnUpdate=u,SetPosition=v,DragBegin=t})self:ConnectDrag(j,{DragStart=r,
+DragMovement=s,OnDragStateChange=n})local w=h.Enabled o:SetEnabled(w)return o
+end function aa:MakeResizable(h)aa:CheckConfig(h,{MinimumSize=Vector2.new(160,90
+),MaximumSize=Vector2.new(math.huge,math.huge)})local i,j,n,o,p=h.MaximumSize,h.
+MinimumSize,h.Resize,(h.OnUpdate)local q=aa:InsertPrefab('ResizeGrab',{Parent=n}
+)local r,s,t=function(r)q.Visible=r.Enabled end,function(r)local s=p+r local t=
+UDim2.fromOffset(math.clamp(s.X,j.X,i.X),math.clamp(s.Y,j.Y,i.Y))if o then o(t)
+return end ae:Tween{Object=n,EndProperties={Size=t}}end,function(r)p=n.
+AbsoluteSize end local u=self:MakeDraggable{Grab=q,OnUpdate=s,DragBegin=t,
+StateChanged=r}u.Grab=q return u end function aa:IsMouseEvent(h,i)local j=h.
+UserInputType.Name if i and j:find'Movement'then return end return j:find'Touch'
+or j:find'Mouse'end function aa:DetectHover(h,i)local j=i or{}j.Hovering=false
+local n,o,p,q,r,s=j.OnInput,j.OnHoverChange,j.Anykey,j.MouseMove,j.MouseEnter,j.
+MouseOnly local t=function(t,u,v)if t and s then if not aa:IsMouseEvent(t,true)
+then return end end if u~=nil then local w=j.Hovering j.Hovering=u if u~=w and o
+then o(u)end end if not r and v then return end if n then local w=j.Hovering n(w
+,t)return end end local u={h.MouseEnter:Connect(function()t(nil,true,true)end),h
+.MouseLeave:Connect(function()t(nil,false,true)end)}if p or s then table.insert(
+u,c.InputBegan:Connect(function(v)t(v)end))end if q then local v=h.MouseMoved:
+Connect(function()t()end)table.insert(u,v)end function j:Disconnect()for v,w in
+next,u do w:Disconnect()end end return j end function aa:StackWindows()local h,i
+=self.Windows,20 for j,n in next,h do local o,p=n.WindowFrame,UDim2.fromOffset(i
+*j,i*j)n:Center()o.Position+=p end end function aa:GetElementFlags(h)local i=
+self._FlagCache return i[h]end function aa:UpdateColors(h)local i,j,n,o,p,q,r=h.
+Object,h.Tag,h.NoAnimation,h.TagsList,h.Theme,h.Tweeninfo,self.ElementColors
+local s,t,u=self:GetElementFlags(i),self.Debug,r[j]if typeof(u)=='string'then u=
+r[u]end if typeof(j)=='table'then u=j elseif o then o[i]=j end if not u then
+return end local v={}for w,y in next,u do local z=self:GetThemeKey(p,y)if s and
+s[w]then continue end if not z then if t then self:Warn(`Color: '{y}' does not exist!`
+)end continue end v[w]=z end ae:Tween{Tweeninfo=q,Object=i,NoAnimation=n,
+EndProperties=v}end function aa:MultiUpdateColors(h)local i=h.Objects for j,n in
+next,i do self:UpdateColors{TagsList=h.TagsList,Theme=h.Theme,NoAnimation=not h.
+Animate,Tweeninfo=h.Tweeninfo,Object=j,Tag=n}end end function aa:ApplyStyle(h,i)
+local j=self.Styles local n=j[i]if not n then return end self:ApplyFlags{Object=
+h,Class=n}end function aa:ClassIgnores(h)local i=self.ClassIgnored local j=table
+.find(i,h)return j and true or false end function aa:MergeMetatables(h,i)local j
+,n=self.Debug,{}n.__index=function(o,p)local q,r=self:ClassIgnores(p),h[p]if r~=
+nil and not q then return r end local s,t=pcall(function()local s=i[p]return
+self:PatchSelf(i,s)end)return s and t or nil end n.__newindex=function(o,p,q)
+local r,s=self:ClassIgnores(p),typeof(q)=='function'local t=h[p]~=nil or s if t
+and not r then h[p]=q return end xpcall(function()i[p]=q end,function(u)if j
+then self:Warn(`Newindex Error: {i}.{p} = {q}\n{u}`)end h[p]=q end)end return
+setmetatable({},n)end function aa:Concat(h,i)local j=''for n,o in next,h do j..=
+tostring(o)..(n~=#h and i or'')end return j end function aa:GetValueFromAliases(
+h,i)for j,n in h do local o=i[n]if o~=nil then return o end end return nil end
+function aa:RecursiveCall(h,i)for j,n in next,h:GetDescendants()do i(n)end end
+function aa:ApplyFlags(h)local i,j,n,o=self.ElementFlags,h.Object,h.Class,h.
+WindowClass function h:GetThemeKey(p)if o then return o:GetThemeKey(p)else
+return aa:GetThemeKey(nil,p)end end self:SetProperties(j,n)for p,q in next,i do
+local r,s,t,u=q.Properties,q.Callback,q.Recursive,q.WindowProperties local v=
+self:GetValueFromAliases(r,n)if o and u and v==nil then v=self:
+GetValueFromAliases(u,o)end if v==nil then continue end s(h,j,v)if t then self:
+RecursiveCall(j,function(w)s(h,w,v)end)end end end function aa:SetProperties(h,i
+)return ad:SetProperties(h,i)end function aa:InsertPrefab(h,i)local j=self.
+Prefabs local n=j.Prefabs local o=n:WaitForChild(h)local p=o:Clone()if i then
+local q=i.UsePropertiesList if not q then self:SetProperties(p,i)else self:
+ApplyFlags{Object=p,Class=i}end end return p end function aa:GetContentSize(h,i)
+local j,n,o,p=h:FindFirstChildOfClass'UIListLayout',h:FindFirstChildOfClass
+'UIPadding',(h:FindFirstChildOfClass'UIStroke')if j and not i then p=j.
+AbsoluteContentSize else p=h.AbsoluteSize end if n then local q,r,s,t=n.
+PaddingTop.Offset,n.PaddingBottom.Offset,n.PaddingLeft.Offset,n.PaddingRight.
+Offset p+=Vector2.new(s+t,q+r)end if o then local q=o.Thickness p+=Vector2.new(q
+/2,q/2)end return p end function aa:PatchSelf(h,i,...)if typeof(i)~='function'
+then return i,...end return function(j,...)return i(h,...)end end function aa:
+MakeCanvas(h)local i,j,n,o,p,q,r=self.Elements,self.Debug,h.Element,h.
+WindowClass,h.Class,h.OnChildChange,af:NewSignal()if q then r:Connect(q)end if
+not o and j then self:Warn(`No WindowClass for {n}`)self:Warn(h)end local s=ad:
+NewClass(i,{Class=p,RawObject=n,WindowClass=o or false,OnChildChange=r,Elements=
+{}})local t={__index=function(t,u)local v=s[u]if v~=nil then return self:
+PatchSelf(s,v)end local w=p[u]if w~=nil then return self:PatchSelf(p,w)end local
+y=n[u]return self:PatchSelf(n,y)end,__newindex=function(t,u,v)local w=p[u]~=nil
+if w then p[u]=v else n[u]=v end end}return setmetatable({},t)end function aa:
+GetIniData(h)local i,j=self.IniToSave,{}for n,o in next,i do j[o]=h[o]end return
+j end function aa:DumpIni(h)local i,j=self.IniSettings,{}for n,o in next,i do j[
+n]=self:GetIniData(o)end if h then return aj:JSONEncode(j)end return j end
+function aa:LoadIniIntoElement(h,i)local j={Value=function(j)h:SetValue(j)end}
+for n,o in next,i do local p=j[n]if p then p(o)continue end h[n]=o end end
+function aa:LoadIni(h,i)local j=self.IniSettings assert(h,
+'No Ini configuration was passed')if i then h=aj:JSONDecode(h)end for n,o in
+next,h do local p=j[n]self:LoadIniIntoElement(p,o)end end function aa:AddIniFlag
+(h,i)local j=self.IniSettings j[h]=i end function aa:OnElementCreate(h)local i,j
+,n,o,p=self._FlagCache,h.Flags,h.Object,h.Canvas,h.Class local q,r,s,t,u,v=o.
+WindowClass,j.NoAutoTag,j.NoAutoFlags,j.ColorTag,j.NoStyle,j.IniFlag i[n]=j if v
+then self:AddIniFlag(v,p)end if u then return end if not r and q then q:
+TagElements{[n]=t}end if q then q:LoadStylesIntoElement(h)end if not s then self
+:ApplyFlags{Object=n,Class=j,WindowClass=q}end end function aa:VisualError(h,i,j
+)local n=self.Initialised and h.Error if not n then self:Error('Class:',j)return
+end h:Error{Parent=i,Text=j}end function aa:WrapGeneration(h,i)local j,n,o=self.
+_ErrorCache,i.Base,i.IgnoreDefaults return function(p,q,...)q=q or{}self:
+CheckConfig(q,n)local r=q.CloneTable if r then q=table.clone(q)end local s,t,u=p
+.RawObject,p.Elements,p.OnChildChange self:CheckConfig(q,{Parent=s,Name=q.
+ColorTag},nil,o)if p==self then p=self.Elements end local v,w,y=pcall(h,p,q,...)
+if v==false then if s then if j[s]then return end j[s]=w end self:VisualError(p,
+s,w)self:Error('Class:',w)self:Error(debug.traceback())end if y==nil then y=w
+end if u then u:Fire(w)end if y then if t then table.insert(t,y)end self:
+OnElementCreate{Object=y,Flags=q,Class=w,Canvas=p}end return w,y end end
+function aa:DefineElement(h,i)local j,n,o=self.Elements,self.ThemeConfigs,self.
+ElementColors local p,q,r,s,t,u=n.DarkTheme,i.Base,i.Create,i.Export,i.ThemeTags
+,i.ColorData self:CheckConfig(q,{ColorTag=h,ElementStyle=h})if t then Merge(p,t)
+end if u then Merge(o,u)end local v=self:WrapGeneration(r,i)if s then self[h]=v
+end j[h]=v return v end function aa:DefineGlobalFlag(h)local i=self.ElementFlags
+table.insert(i,h)end function aa:DefineTheme(h,i)local j=self.ThemeConfigs self:
+CheckConfig(i,{BaseTheme=j.DarkTheme})local n=GetAndRemove('BaseTheme',i)local o
+={BaseTheme=n,Values=i}j[h]=o return o end function aa:GetMouseLocation()local h
+=self.Mouse return h.X,h.Y end function aa:SetWindowFocusesEnabled(h)self.
+WindowFocusesEnabled=h end function aa:UpdateWindowFocuses()local h,i=self.
+Windows,self.WindowFocusesEnabled if not i then return end for j,n in h do local
+o=n.HoverConnection if not o then continue end local p=o.Hovering if p then self
+:SetFocusedWindow(n)return end end self:SetFocusedWindow(nil)end function aa:
+WindowCanFocus(h)if h.NoSelect then return false end if h.Collapsed then return
+false end if h._SelectDisabled then return false end return true end function aa
 :GetFocusedWindow()return self.FocusedWindow end function aa:BringWindowToFront(
-j)local k,l=self.Windows,j.NoBringToFrontOnFocus if l then return end
-MoveTableItem(k,j,1)end function aa:SetFocusedWindow(j)local k,l=self:
-GetFocusedWindow(),self.Windows if k==j then return end self.FocusedWindow=j if
-j then local p=self:WindowCanFocus(j)if not p then return end self:
-BringWindowToFront(j)end local p=#l for q,r in l do local s,t=self:
-WindowCanFocus(r),r.WindowFrame if not s then continue end p-=1 if p then t.
-ZIndex=p end local u=r==j r:SetFocused(u,p)end end function aa:SetItemTooltip(j,
-k)local l,p,q=self.Elements,self.TooltipsContainer,self.ActiveTooltips local r,s
-=p:Canvas{Visible=false,UiPadding=UDim.new()}task.spawn(k,r)aa:DetectHover(j,{
-MouseMove=true,MouseEnter=true,OnHoverChange=function(t)if t then table.insert(q
-,r)return end local u=table.find(q,r)table.remove(q,u)end,OnInput=function(t,u)s
-.Visible=t end})end function aa:CheckFlags(j,k)for l,p in next,j do local q=k[l]
-if not q then continue end p(q)end end function aa:GetThemeKey(j,k)local l=self.
-ThemeConfigs if typeof(j)=='string'then j=l[j]end local p=l.DarkTheme j=j or p
-local q,r=j.BaseTheme,j.Values local s=r[k]if s then return s end if q then
-return self:GetThemeKey(q,k)end return end function aa:SelectionGroup(j)local k,
-l,p=false,function(k,l)for p,q in next,j do if typeof(q)=='Instance'then
-continue end if q==l then continue end k(q)end end local q=function(q)if k then
-return end k=true local r=p p=q:GetValue()if not r then r=p end l(function(s)s:
-SetValue(r)end,q)k=false end l(function(r)r.Callback=q end)end local j=aa.
-Elements j.__index=j function j:GetObject()return self.RawObject end function j:
-ApplyFlags(k,l)local p=self.WindowClass aa:ApplyFlags{WindowClass=p,Object=k,
-Class=l}end function j:Remove()local k,l,p=self.OnChildChange,self:GetObject(),
-self.Class local q=p.Remove if q then return q(p)end if k then k:Fire(p or self)
-end if p then table.clear(p)end l:Destroy()table.clear(self)end function j:
-GetChildElements()local k=self.Elements return k end function j:
-ClearChildElements()local k=self:GetChildElements()for l,p in next,k do p:
-Destroy()end end function j:TagElements(k)local l,p=self.WindowClass,aa.Debug if
-not l then if p then aa:Warn('No WindowClass for TagElements:',k)end return end
-l:TagElements(k)end function j:GetThemeKey(k)local l=self.WindowClass if l then
-return l:GetThemeKey(k)end return aa:GetThemeKey(nil,k)end function j:
-SetColorTags(k,l)local p=self.WindowClass if not p then return end local q,r=p.
-TagsList,p.Theme aa:MultiUpdateColors{Animate=l,Theme=r,TagsList=q,Objects=k}end
-function j:SetElementFocused(k,l)local p,q,r,s=self.WindowClass,aa.
-HasTouchScreen,l.Focused,l.Animation aa:SetAnimationsEnabled(not r)if not r and
-s then s:Refresh()end if not p then return end if not q then return end local t=
-p.ContentCanvas t.Interactable=not r end aa:DefineElement('Dropdown',{Base={
-ColorTag='PopupCanvas',Disabled=false,AutoClose=true,OnSelected=i},Create=
-function(k,l)l.Parent=aa.Container.Overlays local p,q,r,s,t=l.Selected,l.Items,l
-.OnSelected,k:PopupCanvas(l)local u,v,w=aa:MergeMetatables(l,s),{},function(u)r(
-u)end function l:ClearEntries()for x,y in v do y:Remove()end end function l:
-SetItems(x,y)local A=x[1]self:ClearEntries()for B,C in x do local D,E=A and C or
-B,B==y or C==y local F=s:Selectable{Text=tostring(D),Selected=E,ZIndex=6,
-Callback=function()return w(D)end}table.insert(v,F)end end if q then l:SetItems(
-q,p)end return u,t end})aa:DefineElement('OverlayScroll',{Base={ElementClass=
-'OverlayScroll',Spacing=UDim.new(0,4)},Create=function(k,l)local p,q,r=k.
-WindowClass,l.ElementClass,l.Spacing local s=aa:InsertPrefab(q,l)local t,u=s:
-FindFirstChild'ContentFrame'or s,s:FindFirstChild('UIListLayout',true)u.Padding=
-r local v=aa:MergeMetatables(k,l)local w=aa:MakeCanvas{Element=t,WindowClass=p,
-Class=v}function l:GetCanvasSize()return t.AbsoluteCanvasSize end return w,s end
-})aa:DefineElement('Overlay',{Base={ElementClass='Overlay'},Create=j.
-OverlayScroll})aa:DefineElement('Image',{Base={Image='',Callback=i},Create=
-function(k,l)local p=aa:InsertPrefab('Image',l)p.Activated:Connect(function(...)
-local q=l.Callback return q(p,...)end)return p end})aa:DefineElement(
-'VideoPlayer',{Base={Video='',Callback=i},Create=function(k,l)local p=l.Video l.
-Video=ad:CheckAssetUrl(p)local q=aa:InsertPrefab('VideoPlayer',l)return q end})
-aa:DefineElement('Button',{Base={Text='Button',DoubleClick=false,Callback=i},
-Create=function(k,l)local p=aa:InsertPrefab('Button',l)local q,r=aa:
-MergeMetatables(l,p),l.DoubleClick function l:SetDisabled(s)self.Disabled=s end
-aa:ConnectMouseEvent(p,{DoubleClick=r,Callback=function(...)if l.Disabled then
-return end local s=l.Callback return s(q,...)end})return q,p end})aa:
-DefineElement('Selectable',{Base={Text='Selectable',Callback=i,Selected=false,
+h)local i,j=self.Windows,h.NoBringToFrontOnFocus if j then return end
+MoveTableItem(i,h,1)end function aa:SetFocusedWindow(h)local i,j=self:
+GetFocusedWindow(),self.Windows if i==h then return end self.FocusedWindow=h if
+h then local n=self:WindowCanFocus(h)if not n then return end self:
+BringWindowToFront(h)end local n=#j for o,p in j do local q,r=self:
+WindowCanFocus(p),p.WindowFrame if not q then continue end n-=1 if n then r.
+ZIndex=n end local s=p==h p:SetFocused(s,n)end end function aa:SetItemTooltip(h,
+i)local j,n,o=self.Elements,self.TooltipsContainer,self.ActiveTooltips local p,q
+=n:Canvas{Visible=false,UiPadding=UDim.new()}task.spawn(i,p)aa:DetectHover(h,{
+MouseMove=true,MouseEnter=true,OnHoverChange=function(r)if r then table.insert(o
+,p)return end local s=table.find(o,p)table.remove(o,s)end,OnInput=function(r,s)q
+.Visible=r end})end function aa:CheckFlags(h,i)for j,n in next,h do local o=i[j]
+if not o then continue end n(o)end end function aa:GetThemeKey(h,i)local j=self.
+ThemeConfigs if typeof(h)=='string'then h=j[h]end local n=j.DarkTheme h=h or n
+local o,p=h.BaseTheme,h.Values local q=p[i]if q then return q end if o then
+return self:GetThemeKey(o,i)end return end function aa:SelectionGroup(h)local i,
+j,n=false,function(i,j)for n,o in next,h do if typeof(o)=='Instance'then
+continue end if o==j then continue end i(o)end end local o=function(o)if i then
+return end i=true local p=n n=o:GetValue()if not p then p=n end j(function(q)q:
+SetValue(p)end,o)i=false end j(function(p)p.Callback=o end)end local h=aa.
+Elements h.__index=h function h:GetObject()return self.RawObject end function h:
+ApplyFlags(i,j)local n=self.WindowClass aa:ApplyFlags{WindowClass=n,Object=i,
+Class=j}end function h:Remove()local i,j,n=self.OnChildChange,self:GetObject(),
+self.Class local o=n.Remove if o then return o(n)end if i then i:Fire(n or self)
+end if n then table.clear(n)end j:Destroy()table.clear(self)end function h:
+GetChildElements()local i=self.Elements return i end function h:
+ClearChildElements()local i=self:GetChildElements()for j,n in next,i do n:
+Destroy()end end function h:TagElements(i)local j,n=self.WindowClass,aa.Debug if
+not j then if n then aa:Warn('No WindowClass for TagElements:',i)end return end
+j:TagElements(i)end function h:GetThemeKey(i)local j=self.WindowClass if j then
+return j:GetThemeKey(i)end return aa:GetThemeKey(nil,i)end function h:
+SetColorTags(i,j)local n=self.WindowClass if not n then return end local o,p=n.
+TagsList,n.Theme aa:MultiUpdateColors{Animate=j,Theme=p,TagsList=o,Objects=i}end
+function h:SetElementFocused(i,j)local n,o,p,q=self.WindowClass,aa.
+HasTouchScreen,j.Focused,j.Animation aa:SetAnimationsEnabled(not p)if not p and
+q then q:Refresh()end if not n then return end if not o then return end local r=
+n.ContentCanvas r.Interactable=not p end aa:DefineElement('Dropdown',{Base={
+ColorTag='PopupCanvas',Disabled=false,AutoClose=true,OnSelected=g},Create=
+function(i,j)j.Parent=aa.Container.Overlays local n,o,p,q,r=j.Selected,j.Items,j
+.OnSelected,i:PopupCanvas(j)local s,t,u=aa:MergeMetatables(j,q),{},function(s)p(
+s)end function j:ClearEntries()for v,w in t do w:Remove()end end function j:
+SetItems(v,w)local y=v[1]self:ClearEntries()for z,A in v do local B,C=y and A or
+z,z==w or A==w local D=q:Selectable{Text=tostring(B),Selected=C,ZIndex=6,
+Callback=function()return u(B)end}table.insert(t,D)end end if o then j:SetItems(
+o,n)end return s,r end})aa:DefineElement('OverlayScroll',{Base={ElementClass=
+'OverlayScroll',Spacing=UDim.new(0,4)},Create=function(i,j)local n,o,p=i.
+WindowClass,j.ElementClass,j.Spacing local q=aa:InsertPrefab(o,j)local r,s=q:
+FindFirstChild'ContentFrame'or q,q:FindFirstChild('UIListLayout',true)s.Padding=
+p local t=aa:MergeMetatables(i,j)local u=aa:MakeCanvas{Element=r,WindowClass=n,
+Class=t}function j:GetCanvasSize()return r.AbsoluteCanvasSize end return u,q end
+})aa:DefineElement('Overlay',{Base={ElementClass='Overlay'},Create=h.
+OverlayScroll})aa:DefineElement('Image',{Base={Image='',Callback=g},Create=
+function(i,j)local n=aa:InsertPrefab('Image',j)n.Activated:Connect(function(...)
+local o=j.Callback return o(n,...)end)return n end})aa:DefineElement(
+'VideoPlayer',{Base={Video='',Callback=g},Create=function(i,j)local n=j.Video j.
+Video=ad:CheckAssetUrl(n)local o=aa:InsertPrefab('VideoPlayer',j)return o end})
+aa:DefineElement('Button',{Base={Text='Button',DoubleClick=false,Callback=g},
+Create=function(i,j)local n=aa:InsertPrefab('Button',j)local o,p=aa:
+MergeMetatables(j,n),j.DoubleClick function j:SetDisabled(q)self.Disabled=q end
+aa:ConnectMouseEvent(n,{DoubleClick=p,Callback=function(...)if j.Disabled then
+return end local q=j.Callback return q(o,...)end})return o,n end})aa:
+DefineElement('Selectable',{Base={Text='Selectable',Callback=g,Selected=false,
 Disabled=false,Size=UDim2.fromScale(1,0),AutomaticSize=Enum.AutomaticSize.Y,
 TextXAlignment=Enum.TextXAlignment.Left,AnimationTags={Selected='Buttons',
-Unselected='TransparentButtons'}},Create=function(k,l)local p,q,r,s=k.Class.
-AfterClick,l.Selected,l.Disabled,aa:InsertPrefab('Button',l)local t=aa:
-MergeMetatables(l,s)s.Activated:Connect(function(...)local u=l.Callback u(s,...)
-if p then p(s,...)end end)function l:SetSelected(u)local v=self.AnimationTags
-local w=u and v.Selected or v.Unselected self.Selected=u aa:SetAnimation(s,w)
-return self end function l:SetDisabled(u)self.Disabled=u s.Interactable=not u
-return self end l:SetSelected(q)l:SetDisabled(r)return t,s end})aa:
-DefineElement('ImageButton',{Base={ElementStyle='Button',Callback=i},Create=j.
+Unselected='TransparentButtons'}},Create=function(i,j)local n,o,p,q=i.Class.
+AfterClick,j.Selected,j.Disabled,aa:InsertPrefab('Button',j)local r=aa:
+MergeMetatables(j,q)q.Activated:Connect(function(...)local s=j.Callback s(q,...)
+if n then n(q,...)end end)function j:SetSelected(s)local t=self.AnimationTags
+local u=s and t.Selected or t.Unselected self.Selected=s aa:SetAnimation(q,u)
+return self end function j:SetDisabled(s)self.Disabled=s q.Interactable=not s
+return self end j:SetSelected(o)j:SetDisabled(p)return r,q end})aa:
+DefineElement('ImageButton',{Base={ElementStyle='Button',Callback=g},Create=h.
 Image})aa:DefineElement('SmallButton',{Base={Text='Button',PaddingTop=UDim.new()
 ,PaddingBottom=UDim.new(),PaddingLeft=UDim.new(0,2),PaddingRight=UDim.new(0,2),
-ColorTag='Button',ElementStyle='Button',Callback=i},Create=j.Button})aa:
+ColorTag='Button',ElementStyle='Button',Callback=g},Create=h.Button})aa:
 DefineElement('Keybind',{Base={Label='Keybind',ColorTag='Frame',Value=nil,
 DeleteKey=Enum.KeyCode.Backspace,IgnoreGameProcessed=true,Enabled=true,Disabled=
-false,Callback=i,OnKeybindSet=i,OnBlacklistedKeybindSet=i,KeyBlacklist={},
+false,Callback=g,OnKeybindSet=g,OnBlacklistedKeybindSet=g,KeyBlacklist={},
 UiPadding=UDim.new(),AutomaticSize=Enum.AutomaticSize.None,Size=UDim2.new(0.3,0,
-0,19)},Create=function(k,l)local p,q,r,s,t=l.Value,l.Label,l.Disabled,l.
-KeyBlacklist,aa:InsertPrefab('Button',l)local u,v,w,x=aa:MergeMetatables(l,t),k:
-Label{Parent=t,Text=q,Position=UDim2.new(1,4,0.5),AnchorPoint=Vector2.new(0,0.5)
-},function(u,...)return u(t,...)end,function(u)return table.find(s,u)end
-function l:SetDisabled(y)self.Disabled=y t.Interactable=not y k:SetColorTags({[v
-]=y and'LabelDisabled'or'Label'},true)return self end function l:SetValue(y)
-local A,B=self.OnKeybindSet,self.DeleteKey if y==B then y=nil end self.Value=y t
-.Text=y and y.Name or'Not set'w(A,y)return self end function l:WaitForNewKey()
-self._WaitingForNewKey=true t.Text='...'t.Interactable=false end local y=
-function(y)local A,B=y.KeyCode,y.UserInputType if B~=Enum.UserInputType.Keyboard
-then return B end return A end local A=function(A)local B,C,D=l.
-OnBlacklistedKeybindSet,l.Value,y(A)if not e.WindowFocused then return end if x(
-D)then w(B,D)return end t.Interactable=true l._WaitingForNewKey=false if D.Name
-=='Unknown'then return l:SetValue(C)end l:SetValue(D)return end local B=function
-(B,C)local D,E,F,G,H,I=l.IgnoreGameProcessed,l.DeleteKey,l.Enabled,l.Value,l.
-Callback,y(B)if l._WaitingForNewKey then A(B)return end if not F and t.
-Interactable then return end if not D and C then return end if not G then return
-end if I==E then return end if I.Name~=G.Name then return end w(H,I)end l:
-SetValue(p)l:SetDisabled(r)l.Connection=e.InputBegan:Connect(B)t.Activated:
-Connect(function()l:WaitForNewKey()end)aa:SetAnimation(t,'Inputs')return u,t end
+0,19)},Create=function(i,j)local n,o,p,q,r=j.Value,j.Label,j.Disabled,j.
+KeyBlacklist,aa:InsertPrefab('Button',j)local s,t,u,v=aa:MergeMetatables(j,r),i:
+Label{Parent=r,Text=o,Position=UDim2.new(1,4,0.5),AnchorPoint=Vector2.new(0,0.5)
+},function(s,...)return s(r,...)end,function(s)return table.find(q,s)end
+function j:SetDisabled(w)self.Disabled=w r.Interactable=not w i:SetColorTags({[t
+]=w and'LabelDisabled'or'Label'},true)return self end function j:SetValue(w)
+local y,z=self.OnKeybindSet,self.DeleteKey if w==z then w=nil end self.Value=w r
+.Text=w and w.Name or'Not set'u(y,w)return self end function j:WaitForNewKey()
+self._WaitingForNewKey=true r.Text='...'r.Interactable=false end local w=
+function(w)local y,z=w.KeyCode,w.UserInputType if z~=Enum.UserInputType.Keyboard
+then return z end return y end local y=function(y)local z,A,B=j.
+OnBlacklistedKeybindSet,j.Value,w(y)if not c.WindowFocused then return end if v(
+B)then u(z,B)return end r.Interactable=true j._WaitingForNewKey=false if B.Name
+=='Unknown'then return j:SetValue(A)end j:SetValue(B)return end local z=function
+(z,A)local B,C,D,E,F,G=j.IgnoreGameProcessed,j.DeleteKey,j.Enabled,j.Value,j.
+Callback,w(z)if j._WaitingForNewKey then y(z)return end if not D and r.
+Interactable then return end if not B and A then return end if not E then return
+end if G==C then return end if G.Name~=E.Name then return end u(F,G)end j:
+SetValue(n)j:SetDisabled(p)j.Connection=c.InputBegan:Connect(z)r.Activated:
+Connect(function()j:WaitForNewKey()end)aa:SetAnimation(r,'Inputs')return s,r end
 })aa:DefineElement('ArrowButton',{Base={Direction='Left',ColorTag='Button',Icon=
 aa.Icons.Arrow,Size=UDim2.fromOffset(21,21),IconSize=UDim2.fromScale(1,1),
-IconPadding=UDim.new(0,4),Rotations={Left=180,Right=0}},Create=function(k,l)
-local p,q=l.Direction,l.Rotations local r=q[p]l.IconRotation=r local s=aa:
-InsertPrefab('ArrowButton',l)s.Activated:Connect(function(...)local t=l.Callback
-return t(s,...)end)return s end})aa:DefineElement('Label',{Base={Font=
+IconPadding=UDim.new(0,4),Rotations={Left=180,Right=0}},Create=function(i,j)
+local n,o=j.Direction,j.Rotations local p=o[n]j.IconRotation=p local q=aa:
+InsertPrefab('ArrowButton',j)q.Activated:Connect(function(...)local r=j.Callback
+return r(q,...)end)return q end})aa:DefineElement('Label',{Base={Font=
 'Inconsolata'},ColorData={LabelPadding={PaddingTop='LabelPaddingTop',
-PaddingBottom='LabelPaddingBottom'}},Create=function(k,l)local p,q,r,s,t,u,v,w=l
-.Bold,l.Italic,l.Font,l.FontFace,Enum.FontWeight.Medium,Enum.FontWeight.Bold,
-Enum.FontStyle.Normal,Enum.FontStyle.Italic local x,y,A=p and u or t,q and w or
-v,p or q if not s and A then l.FontFace=Font.fromName(r,x,y)end local B=aa:
-InsertPrefab('Label',l)local C=B:FindFirstChildOfClass'UIPadding'k:TagElements{[
-C]='LabelPadding'}return B end})aa:DefineElement('Error',{Base={RichText=true,
+PaddingBottom='LabelPaddingBottom'}},Create=function(i,j)local n,o,p,q,r,s,t,u=j
+.Bold,j.Italic,j.Font,j.FontFace,Enum.FontWeight.Medium,Enum.FontWeight.Bold,
+Enum.FontStyle.Normal,Enum.FontStyle.Italic local v,w,y=n and s or r,o and u or
+t,n or o if not q and y then j.FontFace=Font.fromName(p,v,w)end local z=aa:
+InsertPrefab('Label',j)local A=z:FindFirstChildOfClass'UIPadding'i:TagElements{[
+A]='LabelPadding'}return z end})aa:DefineElement('Error',{Base={RichText=true,
 TextWrapped=true},ColorData={Error={TextColor3='ErrorText',FontFace='TextFont'}}
-,Create=function(k,l)local p=l.Text l.Text=`<b>\u{26d4} Error:</b> {p}`return k:
-Label(l)end})aa:DefineElement('CodeEditor',{Base={Editable=true,Fill=true,Text=
-''},Create=function(k,l)local p,q=k.WindowClass,ab.CodeFrame.new(l)local r=q.Gui
-l.Parent=k:GetObject()aa:ApplyFlags{Object=r,WindowClass=p,Class=l}return q,r
-end})local k={Engaged=false}k.__index=k function k:SetEngaged(l)local p=self.
-WindowClass self.Engaged=l if p then p:SetCanvasInteractable(not l)end end
-function k:IsHovering()local l=false self:Foreach(function(p)l=p.Popup:
-IsMouseHovering()return l end)return l end function k:Foreach(l)local p=self.
-Menus for q,r in next,p do local s=l(r)if s then break end end end function k:
-SetFocusedMenu(l)self:Foreach(function(p)local q=p==l p:SetActiveState(q)end)end
-function k:Close()self:SetEngaged(false)self:SetFocusedMenu(nil)end function k:
-MenuItem(l)local p,q=self.Canvas,self.Menus local r=p:MenuButton(l)local s=p:
-PopupCanvas{RelativeTo=r,MaxSizeX=210,Visible=false,AutoClose=false,AfterClick=
-function()self:Close()end}local t={Popup=s,Button=r}aa:DetectHover(r,{MouseEnter
+,Create=function(i,j)local n=j.Text j.Text=`<b>\u{26d4} Error:</b> {n}`return i:
+Label(j)end})aa:DefineElement('CodeEditor',{Base={Editable=true,Fill=true,Text=
+''},Create=function(i,j)local n,o=i.WindowClass,ab.CodeFrame.new(j)local p=o.Gui
+j.Parent=i:GetObject()aa:ApplyFlags{Object=p,WindowClass=n,Class=j}return o,p
+end})local i={Engaged=false}i.__index=i function i:SetEngaged(j)local n=self.
+WindowClass self.Engaged=j if n then n:SetCanvasInteractable(not j)end end
+function i:IsHovering()local j=false self:Foreach(function(n)j=n.Popup:
+IsMouseHovering()return j end)return j end function i:Foreach(j)local n=self.
+Menus for o,p in next,n do local q=j(p)if q then break end end end function i:
+SetFocusedMenu(j)self:Foreach(function(n)local o=n==j n:SetActiveState(o)end)end
+function i:Close()self:SetEngaged(false)self:SetFocusedMenu(nil)end function i:
+MenuItem(j)local n,o=self.Canvas,self.Menus local p=n:MenuButton(j)local q=n:
+PopupCanvas{RelativeTo=p,MaxSizeX=210,Visible=false,AutoClose=false,AfterClick=
+function()self:Close()end}local r={Popup=q,Button=p}aa:DetectHover(p,{MouseEnter
 =true,OnInput=function()if not self.Engaged then return end self:SetFocusedMenu(
-t)end})function t:SetActiveState(u)s:SetPopupVisible(u)r:SetSelected(u)end r.
-Activated:Connect(function()self:SetFocusedMenu(t)self:SetEngaged(true)end)table
-.insert(q,t)return s,t end aa:DefineElement('MenuBar',{Base={},Create=function(l
-,p)local q,r=l.WindowClass,aa:InsertPrefab('MenuBar',p)local s=aa:MakeCanvas{
-Element=r,WindowClass=q,Class=p}local t=ad:NewClass(k,{WindowClass=q,Canvas=s,
-Object=r,Menus={}})Merge(t,p)aa:DetectHover(r,{MouseOnly=true,OnInput=function()
-if not t.Engaged then return end if t:IsHovering()then return end t:Close()end})
-local u=aa:MergeMetatables(t,s)return u,r end})aa:DefineElement('MenuButton',{
+r)end})function r:SetActiveState(s)q:SetPopupVisible(s)p:SetSelected(s)end p.
+Activated:Connect(function()self:SetFocusedMenu(r)self:SetEngaged(true)end)table
+.insert(o,r)return q,r end aa:DefineElement('MenuBar',{Base={},Create=function(j
+,n)local o,p=j.WindowClass,aa:InsertPrefab('MenuBar',n)local q=aa:MakeCanvas{
+Element=p,WindowClass=o,Class=n}local r=ad:NewClass(i,{WindowClass=o,Canvas=q,
+Object=p,Menus={}})Merge(r,n)aa:DetectHover(p,{MouseOnly=true,OnInput=function()
+if not r.Engaged then return end if r:IsHovering()then return end r:Close()end})
+local s=aa:MergeMetatables(r,q)return s,p end})aa:DefineElement('MenuButton',{
 Base={Text='MenuButton',PaddingLeft=UDim.new(0,8),PaddingRight=UDim.new(0,8),
-Size=UDim2.fromOffset(0,19),AutomaticSize=Enum.AutomaticSize.XY},Create=j.
-Selectable})local l={ColorTags={BGSelected={[true]='SelectedTab',[false]=
+Size=UDim2.fromOffset(0,19),AutomaticSize=Enum.AutomaticSize.XY},Create=h.
+Selectable})local j={ColorTags={BGSelected={[true]='SelectedTab',[false]=
 'DeselectedTab'},LabelSelected={[true]='SelectedTabLabel',[false]=
-'DeselectedTabLabel'}}}function l:SetButtonSelected(p,q)if p.IsSelected==q then
-return end p.IsSelected=q local r,s,t=self.NoAnimation,self.WindowClass,self.
-ColorTags local u,v,w,x,y=s.Theme,s.TagsList,t.BGSelected,t.LabelSelected,p.
-TabButton local A=y.Button local B=A.Label aa:MultiUpdateColors{Animate=not r,
-Theme=u,TagsList=v,Objects={[A]=w[q],[B]=x[q]}}end function l:CompareTabs(p,q)if
-not p then return false end return p.MatchBy==q or p==q end function l:
-ForEachTab(p,q)local r,s=typeof(p)=='string',self.Tabs for t,u in s do local v,w
-=u.Name,false if r then w=v==p else w=self:CompareTabs(u,p)end q(u,w,t)end end
-function l:RemoveTab(p)local q,r=self.OnTabRemove,self.Tabs self:ForEachTab(p,
-function(s,t,u)if not t then return end local v,w=s.TabButton,s.OnClosure table.
-remove(r,u)v:Destroy()q(self,s)w(s)end)return self end function l:CreateTab(p)p=
-p or{}aa:CheckConfig(p,{Name='Tab',AutoSize='Y',Focused=false,OnClosure=i})local
-q,r,s,t,u,v,w,x,y=self.AutoSelectNewTabs,self.WindowClass,self.ParentCanvas,self
-.Tabs,self.TabsFrame,self.OnTabCreate,p.Focused,p.Name,p.Icon local A,B=w or#t<=
-0 and q,aa:InsertPrefab('TabButton',p)B.Parent=u local C=B.Button local D,E=C:
-FindFirstChildOfClass'UIPadding',C.Label E.Text=tostring(x)Merge(p,{TabButton=B}
-)local F,G=function()self:SetActiveTab(p)end,{Closeable=function()local F=s:
-RadioButton{Parent=C,Visible=not self.NoClose,Icon=aa.Icons.Close,IconSize=UDim2
+'DeselectedTabLabel'}}}function j:SetButtonSelected(n,o)if n.IsSelected==o then
+return end n.IsSelected=o local p,q,r=self.NoAnimation,self.WindowClass,self.
+ColorTags local s,t,u,v,w=q.Theme,q.TagsList,r.BGSelected,r.LabelSelected,n.
+TabButton local y=w.Button local z=y.Label aa:MultiUpdateColors{Animate=not p,
+Theme=s,TagsList=t,Objects={[y]=u[o],[z]=v[o]}}end function j:CompareTabs(n,o)if
+not n then return false end return n.MatchBy==o or n==o end function j:
+ForEachTab(n,o)local p,q=typeof(n)=='string',self.Tabs for r,s in q do local t,u
+=s.Name,false if p then u=t==n else u=self:CompareTabs(s,n)end o(s,u,r)end end
+function j:RemoveTab(n)local o,p=self.OnTabRemove,self.Tabs self:ForEachTab(n,
+function(q,r,s)if not r then return end local t,u=q.TabButton,q.OnClosure table.
+remove(p,s)t:Destroy()o(self,q)u(q)end)return self end function j:CreateTab(n)n=
+n or{}aa:CheckConfig(n,{Name='Tab',AutoSize='Y',Focused=false,OnClosure=g})local
+o,p,q,r,s,t,u,v,w=self.AutoSelectNewTabs,self.WindowClass,self.ParentCanvas,self
+.Tabs,self.TabsFrame,self.OnTabCreate,n.Focused,n.Name,n.Icon local y,z=u or#r<=
+0 and o,aa:InsertPrefab('TabButton',n)z.Parent=s local A=z.Button local B,C=A:
+FindFirstChildOfClass'UIPadding',A.Label C.Text=tostring(v)Merge(n,{TabButton=z}
+)local D,E=function()self:SetActiveTab(n)end,{Closeable=function()local D=q:
+RadioButton{Parent=A,Visible=not self.NoClose,Icon=aa.Icons.Close,IconSize=UDim2
 .fromOffset(11,11),LayoutOrder=3,ZIndex=2,UsePropertiesList=true,Callback=
-function()self:RemoveTab(p)end}local G=F.Icon aa:SetAnimation(G,{Connections={
+function()self:RemoveTab(n)end}local E=D.Icon aa:SetAnimation(E,{Connections={
 MouseEnter={ImageTransparency=0},MouseLeave={ImageTransparency=1}},Init=
-'MouseLeave'},B)end}C.Activated:Connect(F)aa:CheckFlags(G,p)table.insert(t,p)if
-r then r:TagElements{[D]='TabPadding'}end aa:SetAnimation(C,'Buttons')self:
-SetButtonSelected(p,A)s:ApplyFlags(B,p)local H=v(self,p)if A then self:
-SetActiveTab(p)end return H or p end function l:SetActiveTab(p)local q,r,s,t,u=
-self.Tabs,self.NoAnimation,self.ActiveTab,self.OnActiveTabChange,typeof(p)==
-'string'self:ForEachTab(p,function(v,w,x)if w then MatchedTab=v end self:
-SetButtonSelected(v,w)end)if not MatchedTab then return self end if self:
-CompareTabs(MatchedTab,s)then return self end self.ActiveTab=MatchedTab t(self,
-MatchedTab,s)return self end aa:DefineElement('TabBar',{Base={AutoSelectNewTabs=
-true,OnActiveTabChange=i,OnTabCreate=i,OnTabRemove=i},ColorData={DeselectedTab={
+'MouseLeave'},z)end}A.Activated:Connect(D)aa:CheckFlags(E,n)table.insert(r,n)if
+p then p:TagElements{[B]='TabPadding'}end aa:SetAnimation(A,'Buttons')self:
+SetButtonSelected(n,y)q:ApplyFlags(z,n)local F=t(self,n)if y then self:
+SetActiveTab(n)end return F or n end function j:SetActiveTab(n)local o,p,q,r,s=
+self.Tabs,self.NoAnimation,self.ActiveTab,self.OnActiveTabChange,typeof(n)==
+'string'self:ForEachTab(n,function(t,u,v)if u then MatchedTab=t end self:
+SetButtonSelected(t,u)end)if not MatchedTab then return self end if self:
+CompareTabs(MatchedTab,q)then return self end self.ActiveTab=MatchedTab r(self,
+MatchedTab,q)return self end aa:DefineElement('TabBar',{Base={AutoSelectNewTabs=
+true,OnActiveTabChange=g,OnTabCreate=g,OnTabRemove=g},ColorData={DeselectedTab={
 BackgroundColor3='TabBg'},SelectedTab={BackgroundColor3='TabBgActive'},
 DeselectedTabLabel={FontFace='TextFont',TextColor3='TabText'},SelectedTabLabel={
 FontFace='TextFont',TextColor3='TabTextActive'},TabsBarSeparator={
 BackgroundColor3='TabBgActive'},TabPadding={PaddingTop='TabTextPaddingTop',
 PaddingBottom='TabTextPaddingBottom'},TabPagePadding={PaddingBottom=
 'TabPagePadding',PaddingLeft='TabPagePadding',PaddingRight='TabPagePadding',
-PaddingTop='TabPagePadding'}},Create=function(p,q)local r,s,t=p.WindowClass,aa:
-InsertPrefab('TabsBar',q),ad:NewClass(l)local u,v=s.Separator,s.TabsFrame local
-w=aa:MakeCanvas{Element=v,WindowClass=r,Class=t}Merge(t,q)Merge(t,{ParentCanvas=
-p,Object=s,TabsFrame=v,WindowClass=r,Tabs={}})p:TagElements{[s]='TabsBar',[u]=
-'TabsBarSeparator'}local x=aa:MergeMetatables(w,s)return x,s end})aa:
-DefineElement('TabSelector',{Base={NoTabsBar=false,OnActiveTabChange=i,
-OnTabCreate=i,OnTabRemove=i},Create=function(p,q)local r,s,t,u=p.WindowClass,q.
-NoTabsBar,q.NoAnimation,aa:InsertPrefab('TabSelector',q)local v=u.Body local w=v
-.PageTemplate w.Visible=false local x,y=function(x,y,...)local A,B,C=y.AutoSize,
-y.Name,w:Clone()local D=ad:GetChildOfClass(C,'UIPadding')aa:SetProperties(C,{
-Parent=v,Name=B,AutomaticSize=Enum.AutomaticSize[A],Size=UDim2.fromScale(A=='Y'
-and 1 or 0,A=='X'and 1 or 0)})p:TagElements{[D]='TabPagePadding'}local E=aa:
-MakeCanvas{Element=C,WindowClass=r,Class=y}q.OnTabCreate(x,y,...)Merge(y,{Page=C
-,MatchBy=E})return E end,function(x,y,...)x:ForEachTab(y,function(A,B,C)local D=
-A.Page D.Visible=B if not B then return end local E=p:GetThemeKey
-'AnimationTweenInfo'ae:Tween{Object=D,Tweeninfo=E,NoAnimation=t,StartProperties=
+PaddingTop='TabPagePadding'}},Create=function(n,o)local p,q,r=n.WindowClass,aa:
+InsertPrefab('TabsBar',o),ad:NewClass(j)local s,t=q.Separator,q.TabsFrame local
+u=aa:MakeCanvas{Element=t,WindowClass=p,Class=r}Merge(r,o)Merge(r,{ParentCanvas=
+n,Object=q,TabsFrame=t,WindowClass=p,Tabs={}})n:TagElements{[q]='TabsBar',[s]=
+'TabsBarSeparator'}local v=aa:MergeMetatables(u,q)return v,q end})aa:
+DefineElement('TabSelector',{Base={NoTabsBar=false,OnActiveTabChange=g,
+OnTabCreate=g,OnTabRemove=g},Create=function(n,o)local p,q,r,s=n.WindowClass,o.
+NoTabsBar,o.NoAnimation,aa:InsertPrefab('TabSelector',o)local t=s.Body local u=t
+.PageTemplate u.Visible=false local v,w=function(v,w,...)local y,z,A=w.AutoSize,
+w.Name,u:Clone()local B=ad:GetChildOfClass(A,'UIPadding')aa:SetProperties(A,{
+Parent=t,Name=z,AutomaticSize=Enum.AutomaticSize[y],Size=UDim2.fromScale(y=='Y'
+and 1 or 0,y=='X'and 1 or 0)})n:TagElements{[B]='TabPagePadding'}local C=aa:
+MakeCanvas{Element=A,WindowClass=p,Class=w}o.OnTabCreate(v,w,...)Merge(w,{Page=A
+,MatchBy=C})return C end,function(v,w,...)v:ForEachTab(w,function(y,z,A)local B=
+y.Page B.Visible=z if not z then return end local C=n:GetThemeKey
+'AnimationTweenInfo'ae:Tween{Object=B,Tweeninfo=C,NoAnimation=r,StartProperties=
 {Position=UDim2.fromOffset(0,4)},EndProperties={Position=UDim2.fromOffset(0,0)}}
-end)q.OnActiveTabChange(x,y,...)end local A=p:TabBar{Parent=u,Visible=not s,
-OnTabCreate=x,OnActiveTabChange=y,OnTabRemove=function(A,B,...)B.Page:Remove()q.
-OnTabRemove(...)end}local B=aa:MergeMetatables(A,u)return B,u end})aa:
-DefineElement('RadioButton',{Base={Callback=i},Create=function(p,q)local r=aa:
-InsertPrefab('RadioButton',q)r.Activated:Connect(function(...)local s=q.Callback
-return s(r,...)end)return r end})aa:DefineElement('Checkbox',{Base={Label=
+end)o.OnActiveTabChange(v,w,...)end local y=n:TabBar{Parent=s,Visible=not q,
+OnTabCreate=v,OnActiveTabChange=w,OnTabRemove=function(y,z,...)z.Page:Remove()o.
+OnTabRemove(...)end}local z=aa:MergeMetatables(y,s)return z,s end})aa:
+DefineElement('RadioButton',{Base={Callback=g},Create=function(n,o)local p=aa:
+InsertPrefab('RadioButton',o)p.Activated:Connect(function(...)local q=o.Callback
+return q(p,...)end)return p end})aa:DefineElement('Checkbox',{Base={Label=
 'Checkbox',IsRadio=false,Value=false,NoAutoTag=true,TickedImageSize=UDim2.
-fromScale(1,1),UntickedImageSize=UDim2.fromScale(0,0),Callback=i,Disabled=false}
-,Create=function(p,q)local r,s,t,u,v,w,x=q.IsRadio,q.Value,q.Label,q.
-TickedImageSize,q.UntickedImageSize,q.Disabled,aa:InsertPrefab('CheckBox',q)
-local y,A=aa:MergeMetatables(q,x),x.Tickbox local B=A.Tick B.Image=aa.Icons.
-Checkmark local C,D,E,F=A:FindFirstChildOfClass'UIPadding',ad:GetChildOfClass(A,
-'UICorner'),p:Label{Text=t,Parent=x,LayoutOrder=2},UDim.new(0,3)if r then B.
-ImageTransparency=1 B.BackgroundTransparency=0 D.CornerRadius=UDim.new(1,0)else
-F=UDim.new(0,2)end aa:SetProperties(C,{PaddingBottom=F,PaddingLeft=F,
-PaddingRight=F,PaddingTop=F})local G,H=function(...)local G=q.Callback return G(
-y,...)end,function(G,H)local I,J=p:GetThemeKey'AnimationTweenInfo',G and u or v
-ae:Tween{Object=B,Tweeninfo=I,NoAnimation=H,EndProperties={Size=J}}end function
-q:SetDisabled(I)self.Disabled=I x.Interactable=not I p:SetColorTags({[E]=I and
-'LabelDisabled'or'Label'},true)return self end function q:SetValue(I,J)self.
-Value=I H(I,J)G(I)return self end function q:SetTicked(...)aa:Warn
+fromScale(1,1),UntickedImageSize=UDim2.fromScale(0,0),Callback=g,Disabled=false}
+,Create=function(n,o)local p,q,r,s,t,u,v=o.IsRadio,o.Value,o.Label,o.
+TickedImageSize,o.UntickedImageSize,o.Disabled,aa:InsertPrefab('CheckBox',o)
+local w,y=aa:MergeMetatables(o,v),v.Tickbox local z=y.Tick z.Image=aa.Icons.
+Checkmark local A,B,C,D=y:FindFirstChildOfClass'UIPadding',ad:GetChildOfClass(y,
+'UICorner'),n:Label{Text=r,Parent=v,LayoutOrder=2},UDim.new(0,3)if p then z.
+ImageTransparency=1 z.BackgroundTransparency=0 B.CornerRadius=UDim.new(1,0)else
+D=UDim.new(0,2)end aa:SetProperties(A,{PaddingBottom=D,PaddingLeft=D,
+PaddingRight=D,PaddingTop=D})local E,F=function(...)local E=o.Callback return E(
+w,...)end,function(E,F)local G,H=n:GetThemeKey'AnimationTweenInfo',E and s or t
+ae:Tween{Object=z,Tweeninfo=G,NoAnimation=F,EndProperties={Size=H}}end function
+o:SetDisabled(G)self.Disabled=G v.Interactable=not G n:SetColorTags({[C]=G and
+'LabelDisabled'or'Label'},true)return self end function o:SetValue(G,H)self.
+Value=G F(G,H)E(G)return self end function o:SetTicked(...)aa:Warn
 'Checkbox:SetTicked is deprecated, please use :SetValue'return self:SetValue(...
-)end function q:Toggle()local I=not self.Value self.Value=I self:SetValue(I)
-return self end local I=function()q:Toggle()end x.Activated:Connect(I)A.
-Activated:Connect(I)q:SetValue(s,true)q:SetDisabled(w)aa:SetAnimation(A,
-'Buttons',x)p:TagElements{[B]='CheckMark',[A]='Checkbox'}return y,x end})aa:
+)end function o:Toggle()local G=not self.Value self.Value=G self:SetValue(G)
+return self end local G=function()o:Toggle()end v.Activated:Connect(G)y.
+Activated:Connect(G)o:SetValue(q,true)o:SetDisabled(u)aa:SetAnimation(y,
+'Buttons',v)n:TagElements{[z]='CheckMark',[y]='Checkbox'}return w,v end})aa:
 DefineElement('Radiobox',{Base={IsRadio=true,CornerRadius=UDim.new(1,0)},Create=
-j.Checkbox})aa:DefineElement('PlotHistogram',{Base={ColorTag='Frame',Label=
-'Histogram'},Create=function(p,q)local r,s,t=q.Label,q.Points,aa:InsertPrefab(
-'Histogram',q)local u,v=aa:MergeMetatables(q,t),t.Canvas local w=v.PointTemplate
-w.Visible=false p:Label{Text=r,Parent=t,Position=UDim2.new(1,4)}local x aa:
-SetItemTooltip(t,function(y)x=y:Label()end)Merge(q,{_Plots={},_Cache={}})
-function q:GetBaseValues()local y,A=self.Minimum,self.Maximum if y and A then
-return y,A end local B=self._Plots for C,D in B do local E=D.Value if not y or E
-<y then y=E end if not A or E>A then A=E end end return y,A end function q:
-UpdateGraph()local y,A,B=self._Plots,self:GetBaseValues()if not A or not B then
-return end local C=B-A for D,E in y do local F,G=E.Point,E.Value local H=(G-A)/C
-H=math.clamp(H,0.05,1)F.Size=UDim2.fromScale(1,H)end return self end function q:
-Plot(y)local A,B,C=self._Plots,{},w:Clone()local D=C.Bar aa:SetProperties(C,{
-Parent=v,Visible=true})local E,F=aa:DetectHover(C,{MouseEnter=true,OnInput=
-function()B:UpdateTooltip()end}),{Object=C,Point=D,Value=y}function B:
-UpdateTooltip()local G=B:GetPointIndex()x.Text=`{G}:\t{F.Value}`end function B:
-SetValue(G)F.Value=G q:UpdateGraph()if E.Hovering then self:UpdateTooltip()end
-end function B:GetPointIndex()return table.find(A,F)end function B:Remove(G)
-table.remove(A,self:GetPointIndex())C:Remove()q:UpdateGraph()end table.insert(A,
-F)self:UpdateGraph()aa:SetAnimation(D,'Plots',C)p:TagElements{[D]='Plot'}return
-B end function q:PlotGraph(y)local A=self._Cache local B=#A-#y if B>=1 then for
-C=1,B do local D=table.remove(A,C)if D then D:Remove()end end end for C,D in y
-do local E=A[C]if E then E:SetValue(D)continue end A[C]=self:Plot(D)end return
-self end if s then q:PlotGraph(s)end return u,t end})aa:DefineElement('Viewport'
-,{Base={IsRadio=true},Create=function(p,q)local r,s,t=q.Model,q.Camera,aa:
-InsertPrefab('Viewport',q)local u,v=aa:MergeMetatables(q,t),t.Viewport local w=v
-.WorldModel if not s then s=aa:CreateInstance('Camera',v)s.CFrame=CFrame.new(0,0
-,0)end Merge(q,{Camera=s,WorldModel=w,Viewport=v})function q:SetCamera(x)self.
-Camera=x v.CurrentCamera=x return self end function q:SetModel(x,y)local A=self.
-Clone w:ClearAllChildren()if A then x=x:Clone()end if y then x:PivotTo(y)end x.
-Parent=w self.Model=x return x end if r then q:SetModel(r)end q:SetCamera(s)
-return u,t end})aa:DefineElement('InputText',{Base={Value='',Placeholder='',
-Label='Input text',Callback=i,MultiLine=false,NoAutoTag=true,Disabled=false},
-Create=function(p,q)local r,s,t,u,v,w=q.MultiLine,q.Placeholder,q.Label,q.
-Disabled,q.Value,aa:InsertPrefab('InputBox',q)local x=w.Frame local y,A=x.Input,
-aa:MergeMetatables(q,w)p:Label{Parent=w,Text=t,AutomaticSize=Enum.AutomaticSize.
+h.Checkbox})aa:DefineElement('PlotHistogram',{Base={ColorTag='Frame',Label=
+'Histogram'},Create=function(n,o)local p,q,r=o.Label,o.Points,aa:InsertPrefab(
+'Histogram',o)local s,t=aa:MergeMetatables(o,r),r.Canvas local u=t.PointTemplate
+u.Visible=false n:Label{Text=p,Parent=r,Position=UDim2.new(1,4)}local v aa:
+SetItemTooltip(r,function(w)v=w:Label()end)Merge(o,{_Plots={},_Cache={}})
+function o:GetBaseValues()local w,y=self.Minimum,self.Maximum if w and y then
+return w,y end local z=self._Plots for A,B in z do local C=B.Value if not w or C
+<w then w=C end if not y or C>y then y=C end end return w,y end function o:
+UpdateGraph()local w,y,z=self._Plots,self:GetBaseValues()if not y or not z then
+return end local A=z-y for B,C in w do local D,E=C.Point,C.Value local F=(E-y)/A
+F=math.clamp(F,0.05,1)D.Size=UDim2.fromScale(1,F)end return self end function o:
+Plot(w)local y,z,A=self._Plots,{},u:Clone()local B=A.Bar aa:SetProperties(A,{
+Parent=t,Visible=true})local C,D=aa:DetectHover(A,{MouseEnter=true,OnInput=
+function()z:UpdateTooltip()end}),{Object=A,Point=B,Value=w}function z:
+UpdateTooltip()local E=z:GetPointIndex()v.Text=`{E}:\t{D.Value}`end function z:
+SetValue(E)D.Value=E o:UpdateGraph()if C.Hovering then self:UpdateTooltip()end
+end function z:GetPointIndex()return table.find(y,D)end function z:Remove(E)
+table.remove(y,self:GetPointIndex())A:Remove()o:UpdateGraph()end table.insert(y,
+D)self:UpdateGraph()aa:SetAnimation(B,'Plots',A)n:TagElements{[B]='Plot'}return
+z end function o:PlotGraph(w)local y=self._Cache local z=#y-#w if z>=1 then for
+A=1,z do local B=table.remove(y,A)if B then B:Remove()end end end for A,B in w
+do local C=y[A]if C then C:SetValue(B)continue end y[A]=self:Plot(B)end return
+self end if q then o:PlotGraph(q)end return s,r end})aa:DefineElement('Viewport'
+,{Base={IsRadio=true},Create=function(n,o)local p,q,r=o.Model,o.Camera,aa:
+InsertPrefab('Viewport',o)local s,t=aa:MergeMetatables(o,r),r.Viewport local u=t
+.WorldModel if not q then q=aa:CreateInstance('Camera',t)q.CFrame=CFrame.new(0,0
+,0)end Merge(o,{Camera=q,WorldModel=u,Viewport=t})function o:SetCamera(v)self.
+Camera=v t.CurrentCamera=v return self end function o:SetModel(v,w)local y=self.
+Clone u:ClearAllChildren()if y then v=v:Clone()end if w then v:PivotTo(w)end v.
+Parent=u self.Model=v return v end if p then o:SetModel(p)end o:SetCamera(q)
+return s,r end})aa:DefineElement('InputText',{Base={Value='',Placeholder='',
+Label='Input text',Callback=g,MultiLine=false,NoAutoTag=true,Disabled=false},
+Create=function(n,o)local p,q,r,s,t,u=o.MultiLine,o.Placeholder,o.Label,o.
+Disabled,o.Value,aa:InsertPrefab('InputBox',o)local v=u.Frame local w,y=v.Input,
+aa:MergeMetatables(o,u)n:Label{Parent=u,Text=r,AutomaticSize=Enum.AutomaticSize.
 X,Size=UDim2.fromOffset(0,19),Position=UDim2.new(1,4),LayoutOrder=2}aa:
-SetProperties(y,{PlaceholderText=s,MultiLine=r})local B=function(...)local B=q.
-Callback B(A,...)end function q:SetValue(C)y.Text=tostring(C)self.Value=C return
-self end function q:SetDisabled(C)self.Disabled=C w.Interactable=not C p:
-SetColorTags({[t]=C and'LabelDisabled'or'Label'},true)return self end function q
-:Clear()y.Text=''return self end local C=function()local C=y.Text q.Value=C B(C)
-end y:GetPropertyChangedSignal'Text':Connect(C)q:SetDisabled(u)q:SetValue(v)p:
-TagElements{[y]='Frame'}return A,w end})aa:DefineElement('InputInt',{Base={Value
-=0,Increment=1,Placeholder='',Label='Input Int',Callback=i},Create=function(p,q)
-local r,s,t,u,v,w=q.Value,q.Placeholder,q.Label,q.Disabled,q.NoButtons,aa:
-InsertPrefab('InputBox',q)local x,y=aa:MergeMetatables(q,w),w.Frame local A=y.
-Input A.PlaceholderText=s local B,C,D,E=p:Button{Text='-',Parent=y,LayoutOrder=2
+SetProperties(w,{PlaceholderText=q,MultiLine=p})local z=function(...)local z=o.
+Callback z(y,...)end function o:SetValue(A)w.Text=tostring(A)self.Value=A return
+self end function o:SetDisabled(A)self.Disabled=A u.Interactable=not A n:
+SetColorTags({[r]=A and'LabelDisabled'or'Label'},true)return self end function o
+:Clear()w.Text=''return self end local A=function()local A=w.Text o.Value=A z(A)
+end w:GetPropertyChangedSignal'Text':Connect(A)o:SetDisabled(s)o:SetValue(t)n:
+TagElements{[w]='Frame'}return y,u end})aa:DefineElement('InputInt',{Base={Value
+=0,Increment=1,Placeholder='',Label='Input Int',Callback=g},Create=function(n,o)
+local p,q,r,s,t,u=o.Value,o.Placeholder,o.Label,o.Disabled,o.NoButtons,aa:
+InsertPrefab('InputBox',o)local v,w=aa:MergeMetatables(o,u),u.Frame local y=w.
+Input y.PlaceholderText=q local z,A,B,C=n:Button{Text='-',Parent=w,LayoutOrder=2
 ,Ratio=1,AutomaticSize=Enum.AutomaticSize.None,FlexMode=Enum.UIFlexMode.None,
-Size=UDim2.fromScale(1,1),Visible=not v,Callback=function()q:Decrease()end},p:
-Button{Text='+',Parent=y,LayoutOrder=3,Ratio=1,AutomaticSize=Enum.AutomaticSize.
-None,FlexMode=Enum.UIFlexMode.None,Size=UDim2.fromScale(1,1),Visible=not v,
-Callback=function()q:Increase()end},p:Label{Parent=w,Text=t,AutomaticSize=Enum.
+Size=UDim2.fromScale(1,1),Visible=not t,Callback=function()o:Decrease()end},n:
+Button{Text='+',Parent=w,LayoutOrder=3,Ratio=1,AutomaticSize=Enum.AutomaticSize.
+None,FlexMode=Enum.UIFlexMode.None,Size=UDim2.fromScale(1,1),Visible=not t,
+Callback=function()o:Increase()end},n:Label{Parent=u,Text=r,AutomaticSize=Enum.
 AutomaticSize.X,Size=UDim2.fromOffset(0,19),Position=UDim2.new(1,4),LayoutOrder=
-4},function(...)local B=q.Callback B(x,...)end function q:Increase()local F,G=
-self.Value,self.Increment q:SetValue(F+G)end function q:Decrease()local F,G=self
-.Value,self.Increment q:SetValue(F-G)end function q:SetDisabled(F)self.Disabled=
-F w.Interactable=not F p:SetColorTags({[D]=F and'LabelDisabled'or'Label'},true)
-return self end function q:SetValue(F)local G,H,I=self.Value,self.Minimum,self.
-Maximum F=tonumber(F)if not F then F=G end if H and I then F=math.clamp(F,H,I)
-end A.Text=F q.Value=F E(F)return self end local F=function()local F=A.Text q:
-SetValue(F)end q:SetValue(r)q:SetDisabled(u)A.FocusLost:Connect(F)p:TagElements{
-[C]='Button',[B]='Button',[A]='Frame'}return x,w end})aa:DefineElement(
+4},function(...)local z=o.Callback z(v,...)end function o:Increase()local D,E=
+self.Value,self.Increment o:SetValue(D+E)end function o:Decrease()local D,E=self
+.Value,self.Increment o:SetValue(D-E)end function o:SetDisabled(D)self.Disabled=
+D u.Interactable=not D n:SetColorTags({[B]=D and'LabelDisabled'or'Label'},true)
+return self end function o:SetValue(D)local E,F,G=self.Value,self.Minimum,self.
+Maximum D=tonumber(D)if not D then D=E end if F and G then D=math.clamp(D,F,G)
+end y.Text=D o.Value=D C(D)return self end local D=function()local D=y.Text o:
+SetValue(D)end o:SetValue(p)o:SetDisabled(s)y.FocusLost:Connect(D)n:TagElements{
+[A]='Button',[z]='Button',[y]='Frame'}return v,u end})aa:DefineElement(
 'InputTextMultiline',{Base={Label='',Size=UDim2.new(1,0,0,39),Border=false,
-ColorTag='Frame'},Create=function(p,q)return p:Console(q)end})aa:DefineElement(
+ColorTag='Frame'},Create=function(n,o)return n:Console(o)end})aa:DefineElement(
 'Console',{Base={Enabled=true,Value='',TextWrapped=false,Border=true,MaxLines=
-300,LinesFormat='%s',Callback=i},Create=function(p,q)local r,s,t,u,v=q.ReadOnly,
-q.LineNumbers,q.Value,q.Placeholder,aa:InsertPrefab('Console',q)local w,x,y=aa:
-MergeMetatables(q,v),v.Source,v.Lines y.Visible=s function q:CountLines(A)local
-B=x.Text:split'\n'local C=#B if C==1 and B[1]==''then return 0 end return C end
-function q:UpdateLineNumbers()local A,B=self.LineNumbers,self.LinesFormat if not
-A then return end local C=self:CountLines()y.Text=''for D=1,C do local E,F=B:
-format(D),D~=C and'\n'or''y.Text..=`{E}{F}`end local D=y.AbsoluteSize.X x.Size=
-UDim2.new(1,-D,0,0)return self end function q:CheckLineCount()local A=q.MaxLines
-if not A then return end local B=x.Text local C=B:split'\n'if#C>A then local D=`{
-C[1]}\\n`local E=B:sub(#D)self:SetValue(E)end return self end function q:
-UpdateScroll()local A=v.AbsoluteCanvasSize v.CanvasPosition=Vector2.new(0,A.Y)
-return self end function q:SetValue(A)if not self.Enabled then return end x.Text
-=tostring(A)self:Update()return self end function q:GetValue()return x.Text end
-function q:Clear()x.Text=''self:Update()return self end function q:AppendText(
-...)local A,B=self:CountLines(true),aa:Concat({...},' ')if A==0 then return self
-:SetValue(B)end local C=self:GetValue()local D=`{C}\n{B}`self:SetValue(D)return
-self end function q:Update()local A=self.AutoScroll self:CheckLineCount()self:
-UpdateLineNumbers()if A then self:UpdateScroll()end end local A=function()local
-A=q:GetValue()q:Update()q:Callback(A)end q:SetValue(t)aa:SetProperties(x,q)aa:
-SetProperties(x,{TextEditable=not r,Parent=v,PlaceholderText=u})p:TagElements{[x
-]='ConsoleText',[y]='ConsoleLineNumbers'}x:GetPropertyChangedSignal'Text':
-Connect(A)return w,v end})aa:DefineElement('Table',{Base={VerticalAlignment=Enum
+300,LinesFormat='%s',Callback=g},Create=function(n,o)local p,q,r,s,t=o.ReadOnly,
+o.LineNumbers,o.Value,o.Placeholder,aa:InsertPrefab('Console',o)local u,v,w=aa:
+MergeMetatables(o,t),t.Source,t.Lines w.Visible=q function o:CountLines(y)local
+z=v.Text:split'\n'local A=#z if A==1 and z[1]==''then return 0 end return A end
+function o:UpdateLineNumbers()local y,z=self.LineNumbers,self.LinesFormat if not
+y then return end local A=self:CountLines()w.Text=''for B=1,A do local C,D=z:
+format(B),B~=A and'\n'or''w.Text..=`{C}{D}`end local B=w.AbsoluteSize.X v.Size=
+UDim2.new(1,-B,0,0)return self end function o:CheckLineCount()local y=o.MaxLines
+if not y then return end local z=v.Text local A=z:split'\n'if#A>y then local B=`{
+A[1]}\\n`local C=z:sub(#B)self:SetValue(C)end return self end function o:
+UpdateScroll()local y=t.AbsoluteCanvasSize t.CanvasPosition=Vector2.new(0,y.Y)
+return self end function o:SetValue(y)if not self.Enabled then return end v.Text
+=tostring(y)self:Update()return self end function o:GetValue()return v.Text end
+function o:Clear()v.Text=''self:Update()return self end function o:AppendText(
+...)local y,z=self:CountLines(true),aa:Concat({...},' ')if y==0 then return self
+:SetValue(z)end local A=self:GetValue()local B=`{A}\n{z}`self:SetValue(B)return
+self end function o:Update()local y=self.AutoScroll self:CheckLineCount()self:
+UpdateLineNumbers()if y then self:UpdateScroll()end end local y=function()local
+y=o:GetValue()o:Update()o:Callback(y)end o:SetValue(r)aa:SetProperties(v,o)aa:
+SetProperties(v,{TextEditable=not p,Parent=t,PlaceholderText=s})n:TagElements{[v
+]='ConsoleText',[w]='ConsoleLineNumbers'}v:GetPropertyChangedSignal'Text':
+Connect(y)return u,t end})aa:DefineElement('Table',{Base={VerticalAlignment=Enum
 .VerticalAlignment.Top,RowBackground=false,RowBgTransparency=0.87,Border=false,
-Spacing=UDim.new(0,4)},Create=function(p,q)local r,s,t,u,v,w,x,y=p.WindowClass,q
-.RowBgTransparency,q.RowBackground,q.Border,q.VerticalAlignment,q.MaxColumns,q.
-Spacing,aa:InsertPrefab('Table',q)local A,B,C,D,E=aa:MergeMetatables(q,y),y.
-RowTemp,0,{},u and t function q:Row(F)F=F or{}local G,H,I,J=F.IsHeader,0,{},B:
-Clone()aa:SetProperties(J,{Name='Row',Visible=true,Parent=y})local K=J:
-FindFirstChildOfClass'UIListLayout'aa:SetProperties(K,{VerticalAlignment=v,
-Padding=not E and x or UDim.new(0,1)})if G then p:TagElements{[J]='Header'}else
-C+=1 end if t and not G then local L=C%2~=1 and s or 1 J.BackgroundTransparency=
-L end local L={}local M=aa:MergeMetatables(L,J)function L:Column(N)N=N or{}aa:
-CheckConfig(N,{HorizontalAlign=Enum.HorizontalAlignment.Left,VerticalAlignment=
-Enum.VerticalAlignment.Top})local O=J.ColumnTemp:Clone()local P=O:
-FindFirstChildOfClass'UIListLayout'aa:SetProperties(P,N)local Q=O:
-FindFirstChildOfClass'UIStroke'Q.Enabled=u local R=O:FindFirstChildOfClass
-'UIPadding'if not E then R:Destroy()end aa:SetProperties(O,{Parent=J,Visible=
-true,Name='Column'})return aa:MakeCanvas{Element=O,WindowClass=r,Class=M}end
-function L:NextColumn()H+=1 local N=H%w+1 local O=I[N]if not O then O=self:
-Column()I[N]=O end return O end table.insert(D,L)return M end function q:NextRow
-()return self:Row()end function q:HeaderRow()return self:Row{IsHeader=true}end
-function q:ClearRows()C=0 for F,G in next,y:GetChildren()do if not G:IsA'Frame'
-then continue end if G==B then continue end G:Destroy()end return q end return A
-,y end})aa:DefineElement('List',{Base={Spacing=4,HorizontalFlex=Enum.
+Spacing=UDim.new(0,4)},Create=function(n,o)local p,q,r,s,t,u,v,w=n.WindowClass,o
+.RowBgTransparency,o.RowBackground,o.Border,o.VerticalAlignment,o.MaxColumns,o.
+Spacing,aa:InsertPrefab('Table',o)local y,z,A,B,C=aa:MergeMetatables(o,w),w.
+RowTemp,0,{},s and r function o:Row(D)D=D or{}local E,F,G,H=D.IsHeader,0,{},z:
+Clone()aa:SetProperties(H,{Name='Row',Visible=true,Parent=w})local I=H:
+FindFirstChildOfClass'UIListLayout'aa:SetProperties(I,{VerticalAlignment=t,
+Padding=not C and v or UDim.new(0,1)})if E then n:TagElements{[H]='Header'}else
+A+=1 end if r and not E then local J=A%2~=1 and q or 1 H.BackgroundTransparency=
+J end local J={}local K=aa:MergeMetatables(J,H)function J:Column(L)L=L or{}aa:
+CheckConfig(L,{HorizontalAlign=Enum.HorizontalAlignment.Left,VerticalAlignment=
+Enum.VerticalAlignment.Top})local M=H.ColumnTemp:Clone()local N=M:
+FindFirstChildOfClass'UIListLayout'aa:SetProperties(N,L)local O=M:
+FindFirstChildOfClass'UIStroke'O.Enabled=s local P=M:FindFirstChildOfClass
+'UIPadding'if not C then P:Destroy()end aa:SetProperties(M,{Parent=H,Visible=
+true,Name='Column'})return aa:MakeCanvas{Element=M,WindowClass=p,Class=K}end
+function J:NextColumn()F+=1 local L=F%u+1 local M=G[L]if not M then M=self:
+Column()G[L]=M end return M end table.insert(B,J)return K end function o:NextRow
+()return self:Row()end function o:HeaderRow()return self:Row{IsHeader=true}end
+function o:ClearRows()A=0 for D,E in next,w:GetChildren()do if not E:IsA'Frame'
+then continue end if E==z then continue end E:Destroy()end return o end return y
+,w end})aa:DefineElement('List',{Base={Spacing=4,HorizontalFlex=Enum.
 UIFlexAlignment.None,VerticalFlex=Enum.UIFlexAlignment.None,HorizontalAlignment=
 Enum.HorizontalAlignment.Left,VerticalAlignment=Enum.VerticalAlignment.Top,
-FillDirection=Enum.FillDirection.Horizontal},Create=function(p,q)local r,s,t,u,v
-,w,x,y=p.WindowClass,q.Spacing,q.HorizontalFlex,q.VerticalFlex,q.
-HorizontalAlignment,q.VerticalAlignment,q.FillDirection,aa:InsertPrefab('List',q
-)local A,B=aa:MergeMetatables(q,y),y.UIListLayout aa:SetProperties(B,{Padding=
-UDim.new(0,s),HorizontalFlex=t,VerticalFlex=u,HorizontalAlignment=v,
-VerticalAlignment=w,FillDirection=x})local C=aa:MakeCanvas{Element=y,WindowClass
-=r,Class=A}return C,y end})aa:DefineElement('CollapsingHeader',{Base={Title=
+FillDirection=Enum.FillDirection.Horizontal},Create=function(n,o)local p,q,r,s,t
+,u,v,w=n.WindowClass,o.Spacing,o.HorizontalFlex,o.VerticalFlex,o.
+HorizontalAlignment,o.VerticalAlignment,o.FillDirection,aa:InsertPrefab('List',o
+)local y,z=aa:MergeMetatables(o,w),w.UIListLayout aa:SetProperties(z,{Padding=
+UDim.new(0,q),HorizontalFlex=r,VerticalFlex=s,HorizontalAlignment=t,
+VerticalAlignment=u,FillDirection=v})local A=aa:MakeCanvas{Element=w,WindowClass
+=p,Class=y}return A,w end})aa:DefineElement('CollapsingHeader',{Base={Title=
 'Collapsing Header',CollapseIcon=aa.Icons.Arrow,Collapsed=true,Offset=0,
-NoAutoTag=true,NoAutoFlags=true,IconPadding=UDim.new(0,4),Activated=i},Create=
-function(p,q)local r,s,t,u,v,w,x,y,A,B,C,D=q.Title,q.Collapsed,q.ElementStyle,q.
-Offset,q.TitleBarProperties,q.OpenOnDoubleClick,q.OpenOnArrow,q.CollapseIcon,q.
-IconPadding,q.Icon,q.NoArrow,aa:InsertPrefab('CollapsingHeader',q)local E=D.
-TitleBar local F,G=E.Collapse,E.Icon p:ApplyFlags(G,{Image=B})local H,I=F.
-CollapseIcon,F.UIPadding ad:SetPadding(I,A)p:ApplyFlags(H,{Image=y})local J,K,L=
-p:Label{ColorTag='CollapsingHeader',Parent=E,LayoutOrder=2},p:Indent{Class=q,
-Parent=D,Offset=u,LayoutOrder=2,Size=UDim2.fromScale(1,0),AutomaticSize=Enum.
-AutomaticSize.None,PaddingTop=UDim.new(0,4),PaddingBottom=UDim.new(0,1)}local M=
-function()local M=q.Activated M(K)end function q:Remove()D:Destroy()table.clear(
-self)end function q:SetArrowVisible(N)H.Visible=N end function q:SetTitle(N)J.
-Text=N end function q:SetVisible(N)D.Visible=N end function q:SetIcon(N)local O=
-N and N~=''G.Visible=O if O then G.Image=ad:CheckAssetUrl(N)end end function q:
-SetCollapsed(N)self.Collapsed=N local O,P,Q=aa:GetContentSize(L),K:GetThemeKey
-'AnimationTweenInfo',UDim2.fromScale(1,0)local R=Q+UDim2.fromOffset(0,O.Y)ae:
-HeaderCollapse{Tweeninfo=P,Collapsed=N,Toggle=H,Resize=L,Hide=L,ClosedSize=Q,
-OpenSize=R}return self end local N=function()q:SetCollapsed(not q.Collapsed)end
-if v then K:ApplyFlags(E,v)end if not x then aa:ConnectMouseEvent(E,{DoubleClick
-=w,Callback=N})end H.Activated:Connect(N)E.Activated:Connect(M)q:SetCollapsed(s)
-q:SetTitle(r)q:SetArrowVisible(not C)aa:ApplyStyle(E,t)K:TagElements{[E]=
-'CollapsingHeader'}return K,D end})aa:DefineElement('TreeNode',{Base={Offset=21,
+NoAutoTag=true,NoAutoFlags=true,IconPadding=UDim.new(0,4),Activated=g},Create=
+function(n,o)local p,q,r,s,t,u,v,w,y,z,A,B=o.Title,o.Collapsed,o.ElementStyle,o.
+Offset,o.TitleBarProperties,o.OpenOnDoubleClick,o.OpenOnArrow,o.CollapseIcon,o.
+IconPadding,o.Icon,o.NoArrow,aa:InsertPrefab('CollapsingHeader',o)local C=B.
+TitleBar local D,E=C.Collapse,C.Icon n:ApplyFlags(E,{Image=z})local F,G=D.
+CollapseIcon,D.UIPadding ad:SetPadding(G,y)n:ApplyFlags(F,{Image=w})local H,I,J=
+n:Label{ColorTag='CollapsingHeader',Parent=C,LayoutOrder=2},n:Indent{Class=o,
+Parent=B,Offset=s,LayoutOrder=2,Size=UDim2.fromScale(1,0),AutomaticSize=Enum.
+AutomaticSize.None,PaddingTop=UDim.new(0,4),PaddingBottom=UDim.new(0,1)}local K=
+function()local K=o.Activated K(I)end function o:Remove()B:Destroy()table.clear(
+self)end function o:SetArrowVisible(L)F.Visible=L end function o:SetTitle(L)H.
+Text=L end function o:SetVisible(L)B.Visible=L end function o:SetIcon(L)local M=
+L and L~=''E.Visible=M if M then E.Image=ad:CheckAssetUrl(L)end end function o:
+SetCollapsed(L)self.Collapsed=L local M,N,O=aa:GetContentSize(J),I:GetThemeKey
+'AnimationTweenInfo',UDim2.fromScale(1,0)local P=O+UDim2.fromOffset(0,M.Y)ae:
+HeaderCollapse{Tweeninfo=N,Collapsed=L,Toggle=F,Resize=J,Hide=J,ClosedSize=O,
+OpenSize=P}return self end local L=function()o:SetCollapsed(not o.Collapsed)end
+if t then I:ApplyFlags(C,t)end if not v then aa:ConnectMouseEvent(C,{DoubleClick
+=u,Callback=L})end F.Activated:Connect(L)C.Activated:Connect(K)o:SetCollapsed(q)
+o:SetTitle(p)o:SetArrowVisible(not A)aa:ApplyStyle(C,r)I:TagElements{[C]=
+'CollapsingHeader'}return I,B end})aa:DefineElement('TreeNode',{Base={Offset=21,
 IconPadding=UDim.new(0,2),TitleBarProperties={Size=UDim2.new(1,0,0,13)}},Create=
-j.CollapsingHeader})aa:DefineElement('Separator',{Base={NoAutoTag=true,
-NoAutoTheme=true},Create=function(p,q)local r,s=q.Text,aa:InsertPrefab(
-'SeparatorText',q)p:Label{Text=tostring(r),Visible=r~=nil,Parent=s,LayoutOrder=2
-,Size=UDim2.new(),PaddingLeft=UDim.new(0,4),PaddingRight=UDim.new(0,4)}p:
-TagElements{[s.Left]='Separator',[s.Right]='Separator'}return s end})aa:
-DefineElement('Canvas',{Base={},Create=function(p,q)local r,s,t=p.WindowClass,q.
-Scroll,q.Class or q local u=s and'ScrollingCanvas'or'Canvas'local v=aa:
-InsertPrefab(u,q)local w=aa:MakeCanvas{Element=v,WindowClass=r,Class=t}return w,
-v end})aa:DefineElement('ScrollingCanvas',{Base={Scroll=true},Create=j.Canvas})
+h.CollapsingHeader})aa:DefineElement('Separator',{Base={NoAutoTag=true,
+NoAutoTheme=true},Create=function(n,o)local p,q=o.Text,aa:InsertPrefab(
+'SeparatorText',o)n:Label{Text=tostring(p),Visible=p~=nil,Parent=q,LayoutOrder=2
+,Size=UDim2.new(),PaddingLeft=UDim.new(0,4),PaddingRight=UDim.new(0,4)}n:
+TagElements{[q.Left]='Separator',[q.Right]='Separator'}return q end})aa:
+DefineElement('Canvas',{Base={},Create=function(n,o)local p,q,r=n.WindowClass,o.
+Scroll,o.Class or o local s=q and'ScrollingCanvas'or'Canvas'local t=aa:
+InsertPrefab(s,o)local u=aa:MakeCanvas{Element=t,WindowClass=p,Class=r}return u,
+t end})aa:DefineElement('ScrollingCanvas',{Base={Scroll=true},Create=h.Canvas})
 aa:DefineElement('Region',{Base={Scroll=false,AutomaticSize=Enum.AutomaticSize.Y
-},Create=function(p,q)local r,s=p.WindowClass,q.Scroll local t=s and
-'ScrollingCanvas'or'Canvas'local u=aa:InsertPrefab(t,q)local v=aa:MakeCanvas{
-Element=u,WindowClass=r,Class=q}return v,u end})aa:DefineElement('Group',{Base={
-Scroll=false,AutomaticSize=Enum.AutomaticSize.Y},Create=function(p,q)local r,s=p
-.WindowClass,aa:InsertPrefab('Group',q)local t=aa:MakeCanvas{Element=s,
-WindowClass=r,Class=q}return t,s end})aa:DefineElement('Indent',{Base={Offset=15
+},Create=function(n,o)local p,q=n.WindowClass,o.Scroll local r=q and
+'ScrollingCanvas'or'Canvas'local s=aa:InsertPrefab(r,o)local t=aa:MakeCanvas{
+Element=s,WindowClass=p,Class=o}return t,s end})aa:DefineElement('Group',{Base={
+Scroll=false,AutomaticSize=Enum.AutomaticSize.Y},Create=function(n,o)local p,q=n
+.WindowClass,aa:InsertPrefab('Group',o)local r=aa:MakeCanvas{Element=q,
+WindowClass=p,Class=o}return r,q end})aa:DefineElement('Indent',{Base={Offset=15
 ,PaddingTop=UDim.new(),PaddingBottom=UDim.new(),PaddingRight=UDim.new()},Create=
-function(p,q)local r=q.Offset q.PaddingLeft=UDim.new(0,r)return p:Canvas(q)end})
-aa:DefineElement('BulletText',{Base={},Create=function(p,q)local r=q.Rows for s,
-t in next,r do local u=p:Bullet(q)u:Label{Text=tostring(t),LayoutOrder=2,Size=
+function(n,o)local p=o.Offset o.PaddingLeft=UDim.new(0,p)return n:Canvas(o)end})
+aa:DefineElement('BulletText',{Base={},Create=function(n,o)local p=o.Rows for q,
+r in next,p do local s=n:Bullet(o)s:Label{Text=tostring(r),LayoutOrder=2,Size=
 UDim2.fromOffset(0,14)}end end})aa:DefineElement('Bullet',{Base={Padding=3,Icon=
-aa.Icons.Dot,IconSize=UDim2.fromOffset(5,5)},Create=function(p,q)local r,s,t=p.
-WindowClass,q.Padding,aa:InsertPrefab('Bullet',q)local u,v=aa:MakeCanvas{Element
-=t,WindowClass=r,Class=p},t.UIListLayout v.Padding=UDim.new(0,s)return u,t end})
+aa.Icons.Dot,IconSize=UDim2.fromOffset(5,5)},Create=function(n,o)local p,q,r=n.
+WindowClass,o.Padding,aa:InsertPrefab('Bullet',o)local s,t=aa:MakeCanvas{Element
+=r,WindowClass=p,Class=n},r.UIListLayout t.Padding=UDim.new(0,q)return s,r end})
 aa:DefineElement('Row',{Base={Spacing=4,Expanded=false,HorizontalFlex=Enum.
-UIFlexAlignment.None,VerticalFlex=Enum.UIFlexAlignment.None},Create=function(p,q
-)local r,s,t,u,v,w=p.WindowClass,q.Spacing,q.Expanded,q.HorizontalFlex,q.
-VerticalFlex,aa:InsertPrefab('Row',q)local x,y=aa:MergeMetatables(q,w),w:
-FindFirstChildOfClass'UIListLayout'y.Padding=UDim.new(0,s)y.HorizontalFlex=u y.
-VerticalFlex=v local A=aa:MakeCanvas{Element=w,WindowClass=r,Class=x}function q:
-Expand()y.HorizontalFlex=Enum.UIFlexAlignment.Fill return self end if t then q:
-Expand()end return A,w end})aa:DefineElement('SliderBase',{Base={Format='%.f',
-Label='',Type='Slider',Callback=i,NoGrab=false,NoClick=false,Minimum=0,Maximum=
-100,ColorTag='Frame',Disabled=false},Create=function(p,q)local r,s,t,u,v,w,x,y,A
-=q.Value or q.Minimum,q.Format,q.Label,q.NoAnimation,q.NoGrab,q.NoClick,q.Type,q
-.Disabled,aa:InsertPrefab'Slider'local B=A.Track local C,D,E=B.Grab,B.ValueText,
-aa:MergeMetatables(q,A)local F,G,H=C.AbsoluteSize,aa:SetAnimation(A,'Inputs'),p:
-Label{Parent=A,Text=t,Position=UDim2.new(1,4),Size=UDim2.fromScale(0,1)}Merge(q,
-{Grab=C,Name=t})if x=='Slider'then B.Position=UDim2.fromOffset(F.X/2,0)B.Size=
-UDim2.new(1,-F.X,1,0)end local I,J={Slider=function(I)return{AnchorPoint=Vector2
-.new(0.5,0.5),Position=UDim2.fromScale(I,0.5)}end,Progress=function(I)return{
-Size=UDim2.fromScale(I,1)}end,Snap=function(I,J,K,L)local M=(math.round(J)-K)/L
-return{Size=UDim2.fromScale(1/L,1),Position=UDim2.fromScale(M,0.5)}end},function
-(...)local I=q.Callback return I(E,...)end function q:SetDisabled(K)self.
-Disabled=K A.Interactable=not K p:SetColorTags({[H]=K and'LabelDisabled'or
-'Label'},true)return self end function q:SetValueText(K)D.Text=tostring(K)end
-function q:SetValue(K,L)local M,N,O,P=p:GetThemeKey'AnimationTweenInfo',q.
-Minimum,q.Maximum,K local Q=O-N if not L then P=(K-N)/Q else K=N+(Q*P)end P=math
-.clamp(P,0,1)local R=I[x](P,K,N,O)ae:Tween{Object=C,Tweeninfo=M,NoAnimation=u,
-EndProperties=R}self.Value=K self:SetValueText(s:format(K,O))J(K)return self end
-local K,L=function(K)p:SetColorTags({[A]=K and'FrameActive'or'Frame'},true)p:
-SetElementFocused(A,{Focused=K,Animation=G})end,function()if q.Disabled then
-return end if q.ReadOnly then return end return true end local M=function(M)if
-not L()then return end local N,O,P=B.AbsolutePosition.X,B.AbsoluteSize.X,M.X
-local Q=P-N local R=math.clamp(Q/O,0,1)q:SetValue(R,true)end local N,O=function(
-...)if not L()then return end K(true)if not w then M(...)end end,function()K(
-false)end C.Visible=not v q:SetValue(r)q:SetDisabled(y)p:TagElements{[D]='Label'
-,[C]='SliderGrab'}aa:ConnectDrag(B,{DragStart=N,DragMovement=M,DragEnd=O})return
-E,A end})aa:DefineElement('SliderEnum',{Base={Items={},Label='Slider Enum',Type=
-'Snap',Minimum=1,Maximum=10,Value=1,Callback=i,ColorTag='Frame'},Create=function
-(p,q)local r,s=q.Callback,q.Value local t=function(t,u)u=math.round(u)local v=t.
-Items t.Maximum=#v return v[u]end q.Callback=function(u,v)local w=t(u,v)u:
-SetValueText(w)q.Value=w return r(u,w)end t(q,s)return p:SliderBase(q)end})aa:
-DefineElement('SliderInt',{Base={Label='Slider Int',ColorTag='Frame'},Create=j.
+UIFlexAlignment.None,VerticalFlex=Enum.UIFlexAlignment.None},Create=function(n,o
+)local p,q,r,s,t,u=n.WindowClass,o.Spacing,o.Expanded,o.HorizontalFlex,o.
+VerticalFlex,aa:InsertPrefab('Row',o)local v,w=aa:MergeMetatables(o,u),u:
+FindFirstChildOfClass'UIListLayout'w.Padding=UDim.new(0,q)w.HorizontalFlex=s w.
+VerticalFlex=t local y=aa:MakeCanvas{Element=u,WindowClass=p,Class=v}function o:
+Expand()w.HorizontalFlex=Enum.UIFlexAlignment.Fill return self end if r then o:
+Expand()end return y,u end})aa:DefineElement('SliderBase',{Base={Format='%.f',
+Label='',Type='Slider',Callback=g,NoGrab=false,NoClick=false,Minimum=0,Maximum=
+100,ColorTag='Frame',Disabled=false},Create=function(n,o)local p,q,r,s,t,u,v,w,y
+=o.Value or o.Minimum,o.Format,o.Label,o.NoAnimation,o.NoGrab,o.NoClick,o.Type,o
+.Disabled,aa:InsertPrefab'Slider'local z=y.Track local A,B,C=z.Grab,z.ValueText,
+aa:MergeMetatables(o,y)local D,E,F=A.AbsoluteSize,aa:SetAnimation(y,'Inputs'),n:
+Label{Parent=y,Text=r,Position=UDim2.new(1,4),Size=UDim2.fromScale(0,1)}Merge(o,
+{Grab=A,Name=r})if v=='Slider'then z.Position=UDim2.fromOffset(D.X/2,0)z.Size=
+UDim2.new(1,-D.X,1,0)end local G,H={Slider=function(G)return{AnchorPoint=Vector2
+.new(0.5,0.5),Position=UDim2.fromScale(G,0.5)}end,Progress=function(G)return{
+Size=UDim2.fromScale(G,1)}end,Snap=function(G,H,I,J)local K=(math.round(H)-I)/J
+return{Size=UDim2.fromScale(1/J,1),Position=UDim2.fromScale(K,0.5)}end},function
+(...)local G=o.Callback return G(C,...)end function o:SetDisabled(I)self.
+Disabled=I y.Interactable=not I n:SetColorTags({[F]=I and'LabelDisabled'or
+'Label'},true)return self end function o:SetValueText(I)B.Text=tostring(I)end
+function o:SetValue(I,J)local K,L,M,N=n:GetThemeKey'AnimationTweenInfo',o.
+Minimum,o.Maximum,I local O=M-L if not J then N=(I-L)/O else I=L+(O*N)end N=math
+.clamp(N,0,1)local P=G[v](N,I,L,M)ae:Tween{Object=A,Tweeninfo=K,NoAnimation=s,
+EndProperties=P}self.Value=I self:SetValueText(q:format(I,M))H(I)return self end
+local I,J=function(I)n:SetColorTags({[y]=I and'FrameActive'or'Frame'},true)n:
+SetElementFocused(y,{Focused=I,Animation=E})end,function()if o.Disabled then
+return end if o.ReadOnly then return end return true end local K=function(K)if
+not J()then return end local L,M,N=z.AbsolutePosition.X,z.AbsoluteSize.X,K.X
+local O=N-L local P=math.clamp(O/M,0,1)o:SetValue(P,true)end local L,M=function(
+...)if not J()then return end I(true)if not u then K(...)end end,function()I(
+false)end A.Visible=not t o:SetValue(p)o:SetDisabled(w)n:TagElements{[B]='Label'
+,[A]='SliderGrab'}aa:ConnectDrag(z,{DragStart=L,DragMovement=K,DragEnd=M})return
+C,y end})aa:DefineElement('SliderEnum',{Base={Items={},Label='Slider Enum',Type=
+'Snap',Minimum=1,Maximum=10,Value=1,Callback=g,ColorTag='Frame'},Create=function
+(n,o)local p,q=o.Callback,o.Value local r=function(r,s)s=math.round(s)local t=r.
+Items r.Maximum=#t return t[s]end o.Callback=function(s,t)local u=r(s,t)s:
+SetValueText(u)o.Value=u return p(s,u)end r(o,q)return n:SliderBase(o)end})aa:
+DefineElement('SliderInt',{Base={Label='Slider Int',ColorTag='Frame'},Create=h.
 SliderBase})aa:DefineElement('SliderFloat',{Base={Label='Slider Float',Format=
-'%.3f',ColorTag='Frame'},Create=j.SliderBase})aa:DefineElement('DragInt',{Base={
-Format='%.f',Label='Drag Int',Callback=i,Minimum=0,Maximum=100,ColorTag='Frame',
-Disabled=false},Create=function(p,q)local r,s,t,u,v=q.Value or q.Minimum,q.
-Format,q.Label,q.Disabled,aa:InsertPrefab'Slider'local w,x=aa:MergeMetatables(q,
-v),v.Track local y,A=x.ValueText,x.Grab A.Visible=false local B,C,D,E,F,G=p:
-Label{Parent=v,Text=t,Position=UDim2.new(1,7),Size=UDim2.fromScale(0,1)},0,0,aa:
-SetAnimation(v,'Inputs'),function(...)local B=q.Callback return B(w,...)end
-function q:SetValue(H,I)local J,K=self.Minimum,self.Maximum local L=K-J if not I
-then C=((H-J)/L)*100 else H=J+(L*(C/100))end H=math.clamp(H,J,K)self.Value=H y.
-Text=s:format(H,K)F(H)return self end function q:SetDisabled(H)self.Disabled=H p
-:SetColorTags({[B]=H and'LabelDisabled'or'Label'},true)return self end local H,I
-=function(H)p:SetColorTags({[v]=H and'FrameActive'or'Frame'},true)p:
-SetElementFocused(v,{Focused=H,Animation=E})end,function()if q.Disabled then
-return end if q.ReadOnly then return end return true end local J,K,L=function(J)
-if not I()then return end H(true)G=J D=C end,function(J)if not I()then return
-end local K=J.X-G.X local L=D+(K/2)C=math.clamp(L,0,100)q:SetValue(C,true)end,
-function()H(false)end q:SetValue(r)q:SetDisabled(u)aa:ConnectDrag(x,{DragStart=J
-,DragEnd=L,DragMovement=K})p:TagElements{[y]='Label'}return w,v end})aa:
+'%.3f',ColorTag='Frame'},Create=h.SliderBase})aa:DefineElement('DragInt',{Base={
+Format='%.f',Label='Drag Int',Callback=g,Minimum=0,Maximum=100,ColorTag='Frame',
+Disabled=false},Create=function(n,o)local p,q,r,s,t=o.Value or o.Minimum,o.
+Format,o.Label,o.Disabled,aa:InsertPrefab'Slider'local u,v=aa:MergeMetatables(o,
+t),t.Track local w,y=v.ValueText,v.Grab y.Visible=false local z,A,B,C,D,E=n:
+Label{Parent=t,Text=r,Position=UDim2.new(1,7),Size=UDim2.fromScale(0,1)},0,0,aa:
+SetAnimation(t,'Inputs'),function(...)local z=o.Callback return z(u,...)end
+function o:SetValue(F,G)local H,I=self.Minimum,self.Maximum local J=I-H if not G
+then A=((F-H)/J)*100 else F=H+(J*(A/100))end F=math.clamp(F,H,I)self.Value=F w.
+Text=q:format(F,I)D(F)return self end function o:SetDisabled(F)self.Disabled=F n
+:SetColorTags({[z]=F and'LabelDisabled'or'Label'},true)return self end local F,G
+=function(F)n:SetColorTags({[t]=F and'FrameActive'or'Frame'},true)n:
+SetElementFocused(t,{Focused=F,Animation=C})end,function()if o.Disabled then
+return end if o.ReadOnly then return end return true end local H,I,J=function(H)
+if not G()then return end F(true)E=H B=A end,function(H)if not G()then return
+end local I=H.X-E.X local J=B+(I/2)A=math.clamp(J,0,100)o:SetValue(A,true)end,
+function()F(false)end o:SetValue(p)o:SetDisabled(s)aa:ConnectDrag(v,{DragStart=H
+,DragEnd=J,DragMovement=I})n:TagElements{[w]='Label'}return u,t end})aa:
 DefineElement('DragFloat',{Base={Format='%.3f',Label='Drag Float',ColorTag=
-'Frame'},Create=j.DragInt})aa:DefineElement('MultiElement',{Base={Callback=i,
+'Frame'},Create=h.DragInt})aa:DefineElement('MultiElement',{Base={Callback=g,
 Label='',Disabled=false,BaseInputConfig={},InputConfigs={},Value={},Minimum={},
-Maximum={},MultiCallback=i},Create=function(p,q)local r,s,t,u,v,w,x,y=q.Label,q.
-BaseInputConfig,q.InputConfigs,q.InputType,q.Disabled,q.Value,q.Minimum,q.
-Maximum assert(u,'No input type provided for MultiElement')local A,B=p:Row{
-Spacing=4}local C,D,E,F,G=A:Row{Size=UDim2.fromScale(0.65,0),Expanded=true},A:
-Label{Size=UDim2.fromScale(0.35,0),LayoutOrder=2,Text=r},aa:MergeMetatables(q,A)
-,{},false local H=function()local H={}for I,J in F do H[I]=J:GetValue()end q.
-Value=H return H end local function I(...)local J=q.MultiCallback J(E,...)end
-local J=function()if#F~=#t then return end if not G then return end local J=H()
-I(J)end function q:SetDisabled(K)self.Disabled=K p:SetColorTags({[D]=K and
-'LabelDisabled'or'Label'},true)for L,M in F do M:SetDisabled(K)end end function
-q:SetValue(K)G=false for L,M in K do local N=F[L]assert(N,`No input object for index: {
-L}`)N:SetValue(M)end G=true I(K)end s=Copy(s,{Size=UDim2.new(1,0,0,19),Label='',
-Callback=J})for K,L in t do local M=Copy(s,L)aa:CheckConfig(M,{Minimum=x[K],
-Maximum=y[K]})local N=C[u](C,M)table.insert(F,N)end Merge(q,{Row=C,Inputs=F})G=
-true q:SetDisabled(v)q:SetValue(w)return E,B end})local p=function(p,q,r,s)aa:
-DefineElement(p,{Base={Label=p,Callback=i,InputType=q,InputConfigs=table.create(
-r,{}),BaseInputConfig={}},Create=function(t,u)local v=(u.BaseInputConfig)if s
-then Merge(v,s)end aa:CheckConfig(v,{ReadOnly=u.ReadOnly,Format=u.Format})u.
-MultiCallback=function(...)local w=u.Callback w(...)end return t:MultiElement(u)
-end})end local q=function(q,r)aa:DefineElement(q,{Base={Label=q,Callback=i,Value
+Maximum={},MultiCallback=g},Create=function(n,o)local p,q,r,s,t,u,v,w=o.Label,o.
+BaseInputConfig,o.InputConfigs,o.InputType,o.Disabled,o.Value,o.Minimum,o.
+Maximum assert(s,'No input type provided for MultiElement')local y,z=n:Row{
+Spacing=4}local A,B,C,D,E=y:Row{Size=UDim2.fromScale(0.65,0),Expanded=true},y:
+Label{Size=UDim2.fromScale(0.35,0),LayoutOrder=2,Text=p},aa:MergeMetatables(o,y)
+,{},false local F=function()local F={}for G,H in D do F[G]=H:GetValue()end o.
+Value=F return F end local function G(...)local H=o.MultiCallback H(C,...)end
+local H=function()if#D~=#r then return end if not E then return end local H=F()
+G(H)end function o:SetDisabled(I)self.Disabled=I n:SetColorTags({[B]=I and
+'LabelDisabled'or'Label'},true)for J,K in D do K:SetDisabled(I)end end function
+o:SetValue(I)E=false for J,K in I do local L=D[J]assert(L,`No input object for index: {
+J}`)L:SetValue(K)end E=true G(I)end q=Copy(q,{Size=UDim2.new(1,0,0,19),Label='',
+Callback=H})for I,J in r do local K=Copy(q,J)aa:CheckConfig(K,{Minimum=v[I],
+Maximum=w[I]})local L=A[s](A,K)table.insert(D,L)end Merge(o,{Row=A,Inputs=D})E=
+true o:SetDisabled(t)o:SetValue(u)return C,z end})local n=function(n,o,p,q)aa:
+DefineElement(n,{Base={Label=n,Callback=g,InputType=o,InputConfigs=table.create(
+p,{}),BaseInputConfig={}},Create=function(r,s)local t=(s.BaseInputConfig)if q
+then Merge(t,q)end aa:CheckConfig(t,{ReadOnly=s.ReadOnly,Format=s.Format})s.
+MultiCallback=function(...)local u=s.Callback u(...)end return r:MultiElement(s)
+end})end local o=function(o,p)aa:DefineElement(o,{Base={Label=o,Callback=g,Value
 =aa.Accent.Light,Disabled=false,Minimum={0,0,0},Maximum={255,255,255,100},
 BaseInputConfig={},InputConfigs={[1]={Format='R: %.f'},[2]={Format='G: %.f'},[3]
-={Format='B: %.f'}}},Create=function(s,t)local u,v=t.Value,Copy(t,{Value={1,1,1}
-,Callback=function(u,...)if t.ValueChanged then t:ValueChanged(...)end end})
-local w,x=s[r](s,v)local y,A=aa:MergeMetatables(t,w),w.Row local B,C=A:Button{
+={Format='B: %.f'}}},Create=function(q,r)local s,t=r.Value,Copy(r,{Value={1,1,1}
+,Callback=function(s,...)if r.ValueChanged then r:ValueChanged(...)end end})
+local u,v=q[p](q,t)local w,y=aa:MergeMetatables(r,u),u.Row local z,A=y:Button{
 BackgroundTransparency=0,Size=UDim2.fromOffset(19,19),UiPadding=0,Text='',Ratio=
-1,ColorTag='',ElementStyle=''},function(...)local B=t.Callback return B(y,...)
-end local D=function(D)B.BackgroundColor3=D C(D)end function t:ValueChanged(E)
-local F,G,H=E[1],E[2],E[3]local I=Color3.fromRGB(F,G,H)self.Value=I D(I)end
-function t:SetValue(E)self.Value=E D(E)w:SetValue{math.round(E.R*255),math.
-round(E.G*255),math.round(E.B*255)}end t:SetValue(u)return y,x end})end local r=
-function(r,s)aa:DefineElement(r,{Base={Label=r,Callback=i,Disabled=false,Value=
+1,ColorTag='',ElementStyle=''},function(...)local z=r.Callback return z(w,...)
+end local B=function(B)z.BackgroundColor3=B A(B)end function r:ValueChanged(C)
+local D,E,F=C[1],C[2],C[3]local G=Color3.fromRGB(D,E,F)self.Value=G B(G)end
+function r:SetValue(C)self.Value=C B(C)u:SetValue{math.round(C.R*255),math.
+round(C.G*255),math.round(C.B*255)}end r:SetValue(s)return w,v end})end local p=
+function(p,q)aa:DefineElement(p,{Base={Label=p,Callback=g,Disabled=false,Value=
 CFrame.new(10,10,10),Minimum=CFrame.new(0,0,0),Maximum=CFrame.new(100,100,100),
 BaseInputConfig={},InputConfigs={[1]={Format='X: %.f'},[2]={Format='Y: %.f'},[3]
-={Format='Z: %.f'}}},Create=function(t,u)local v,w,x=u.Value,u.Maximum,u.Minimum
-local y=Copy(u,{Maximum={w.X,w.Y,w.Z},Minimum={x.X,x.Y,x.Z},Value={v.X,v.Y,v.Z},
-Callback=function(y,...)if u.ValueChanged then u:ValueChanged(...)end end})local
-A,B=t[s](t,y)local C=aa:MergeMetatables(u,A)local D=function(...)local D=u.
-Callback return D(C,...)end function u:ValueChanged(E)local F,G,H=E[1],E[2],E[3]
-local I=CFrame.new(F,G,H)self.Value=I D(I)end function u:SetValue(E)self.Value=E
-A:SetValue{math.round(E.X),math.round(E.Y),math.round(E.Z)}end u:SetValue(v)
-return C,B end})end aa:DefineElement('SliderProgress',{Base={Label=
-'Slider Progress',Type='Progress',ColorTag='Frame'},Create=j.SliderBase})aa:
+={Format='Z: %.f'}}},Create=function(r,s)local t,u,v=s.Value,s.Maximum,s.Minimum
+local w=Copy(s,{Maximum={u.X,u.Y,u.Z},Minimum={v.X,v.Y,v.Z},Value={t.X,t.Y,t.Z},
+Callback=function(w,...)if s.ValueChanged then s:ValueChanged(...)end end})local
+y,z=r[q](r,w)local A=aa:MergeMetatables(s,y)local B=function(...)local B=s.
+Callback return B(A,...)end function s:ValueChanged(C)local D,E,F=C[1],C[2],C[3]
+local G=CFrame.new(D,E,F)self.Value=G B(G)end function s:SetValue(C)self.Value=C
+y:SetValue{math.round(C.X),math.round(C.Y),math.round(C.Z)}end s:SetValue(t)
+return A,z end})end aa:DefineElement('SliderProgress',{Base={Label=
+'Slider Progress',Type='Progress',ColorTag='Frame'},Create=h.SliderBase})aa:
 DefineElement('ProgressBar',{Base={Label='Progress Bar',Type='Progress',ReadOnly
 =true,MinValue=0,MaxValue=100,Format='% i%%',Interactable=false,ColorTag='Frame'
-},Create=function(s,t)function t:SetPercentage(u)t:SetValue(u)end local u,v=s:
-SliderBase(t)local w=u.Grab s:TagElements{[w]={BackgroundColor3='ProgressBar'}}
-return u,v end})aa:DefineElement('Combo',{Base={Value='',Placeholder='',Callback
-=i,Items={},Disabled=false,WidthFitPreview=false,Label='Combo'},Create=function(
-s,t)local u,v,w,x,y,A,B=t.Placeholder,t.NoAnimation,t.Selected,t.Label,t.
-Disabled,t.WidthFitPreview,aa:InsertPrefab('Combo',t)local C,D,E=aa:
-MergeMetatables(t,B),(B.Combo)local F,G,H=s:Label{Text=tostring(u),Parent=D,Name
-='ValueText'},s:ArrowButton{Parent=D,Interactable=false,Size=UDim2.fromOffset(19
-,19),LayoutOrder=2},s:Label{Text=x,Parent=B,LayoutOrder=2}if A then aa:
-SetProperties(B,{AutomaticSize=Enum.AutomaticSize.XY,Size=UDim2.new(0,0,0,0)})aa
-:SetProperties(D,{AutomaticSize=Enum.AutomaticSize.XY,Size=UDim2.fromScale(0,1)}
-)end local I,J=function(I,...)t:SetOpen(false)return t.Callback(C,I,...)end,
-function(I,J)local K=s:GetThemeKey'AnimationTweenInfo'B.Interactable=not I ae:
-HeaderCollapseToggle{Tweeninfo=K,NoAnimation=J,Collapsed=not I,Toggle=G.Icon}end
-local function K()local L,M=t.GetItems,t.Items if L then return L()end return M
-end function t:SetValueText(L)F.Text=tostring(L)end function t:ClosePopup()if
-not E then return end E:ClosePopup(true)end function t:SetDisabled(L)self.
-Disabled=L B.Interactable=not L s:SetColorTags({[H]=L and'LabelDisabled'or
-'Label'},true)return self end function t:SetValue(L)local M=K()local N=M[L]local
-O=N or L self.Selected=L self.Value=O self:ClosePopup()if typeof(L)=='number'
-then self:SetValueText(O)else self:SetValueText(L)end I(L,O)return self end
-function t:SetOpen(L)local M=self.Selected self.Open=L J(L,v)if not L then self:
-ClosePopup()return end E=s:Dropdown{RelativeTo=D,Items=K(),Selected=M,OnSelected
-=function(...)t:SetValue(...)end,OnClosed=function()self:SetOpen(false)end}
-return self end local L=function()local L=t.Open t:SetOpen(not L)end D.Activated
-:Connect(L)J(false,true)t:SetDisabled(y)if w then t:SetValue(w)end aa:
-SetAnimation(D,'Inputs')s:TagElements{[D]='Frame'}return C,B end})local s={
+},Create=function(q,r)function r:SetPercentage(s)r:SetValue(s)end local s,t=q:
+SliderBase(r)local u=s.Grab q:TagElements{[u]={BackgroundColor3='ProgressBar'}}
+return s,t end})aa:DefineElement('Combo',{Base={Value='',Placeholder='',Callback
+=g,Items={},Disabled=false,WidthFitPreview=false,Label='Combo'},Create=function(
+q,r)local s,t,u,v,w,y,z=r.Placeholder,r.NoAnimation,r.Selected,r.Label,r.
+Disabled,r.WidthFitPreview,aa:InsertPrefab('Combo',r)local A,B,C=aa:
+MergeMetatables(r,z),(z.Combo)local D,E,F=q:Label{Text=tostring(s),Parent=B,Name
+='ValueText'},q:ArrowButton{Parent=B,Interactable=false,Size=UDim2.fromOffset(19
+,19),LayoutOrder=2},q:Label{Text=v,Parent=z,LayoutOrder=2}if y then aa:
+SetProperties(z,{AutomaticSize=Enum.AutomaticSize.XY,Size=UDim2.new(0,0,0,0)})aa
+:SetProperties(B,{AutomaticSize=Enum.AutomaticSize.XY,Size=UDim2.fromScale(0,1)}
+)end local G,H=function(G,...)r:SetOpen(false)return r.Callback(A,G,...)end,
+function(G,H)local I=q:GetThemeKey'AnimationTweenInfo'z.Interactable=not G ae:
+HeaderCollapseToggle{Tweeninfo=I,NoAnimation=H,Collapsed=not G,Toggle=E.Icon}end
+local function I()local J,K=r.GetItems,r.Items if J then return J()end return K
+end function r:SetValueText(J)D.Text=tostring(J)end function r:ClosePopup()if
+not C then return end C:ClosePopup(true)end function r:SetDisabled(J)self.
+Disabled=J z.Interactable=not J q:SetColorTags({[F]=J and'LabelDisabled'or
+'Label'},true)return self end function r:SetValue(J)local K=I()local L=K[J]local
+M=L or J self.Selected=J self.Value=M self:ClosePopup()if typeof(J)=='number'
+then self:SetValueText(M)else self:SetValueText(J)end G(J,M)return self end
+function r:SetOpen(J)local K=self.Selected self.Open=J H(J,t)if not J then self:
+ClosePopup()return end C=q:Dropdown{RelativeTo=B,Items=I(),Selected=K,OnSelected
+=function(...)r:SetValue(...)end,OnClosed=function()self:SetOpen(false)end}
+return self end local J=function()local J=r.Open r:SetOpen(not J)end B.Activated
+:Connect(J)H(false,true)r:SetDisabled(w)if u then r:SetValue(u)end aa:
+SetAnimation(B,'Inputs')q:TagElements{[B]='Frame'}return A,z end})local q={
 TileBarConfig={Close={Image=aa.Icons.Close,IconPadding=UDim.new(0,3)},Collapse={
-Image=aa.Icons.Arrow,IconPadding=UDim.new(0,3)}},CloseCallback=i,Collapsible=
-true,Open=true,Focused=false}function s:Tween(t)aa:CheckConfig(t,{Tweeninfo=self
-:GetThemeKey'AnimationTweenInfo'})return ae:Tween(t)end function s:TagElements(t
-)local u,v=self.TagsList,self.Theme aa:MultiUpdateColors{Theme=v,TagsList=u,
-Objects=t}end function s:MakeTitleBarCanvas()local t=self.TitleBar local u=aa:
-MakeCanvas{WindowClass=self,Element=t}self.TitleBarCanvas=u return u end
-function s:AddDefaultTitleButtons()local t=self.TileBarConfig local u,v,w=t.
-Collapse,t.Close,self.TitleBarCanvas if not w then w=self:MakeTitleBarCanvas()
-end aa:CheckConfig(self,{Toggle=w:RadioButton{Icon=u.Image,IconPadding=u.
+Image=aa.Icons.Arrow,IconPadding=UDim.new(0,3)}},CloseCallback=g,Collapsible=
+true,Open=true,Focused=false}function q:Tween(r)aa:CheckConfig(r,{Tweeninfo=self
+:GetThemeKey'AnimationTweenInfo'})return ae:Tween(r)end function q:TagElements(r
+)local s,t=self.TagsList,self.Theme aa:MultiUpdateColors{Theme=t,TagsList=s,
+Objects=r}end function q:MakeTitleBarCanvas()local r=self.TitleBar local s=aa:
+MakeCanvas{WindowClass=self,Element=r}self.TitleBarCanvas=s return s end
+function q:AddDefaultTitleButtons()local r=self.TileBarConfig local s,t,u=r.
+Collapse,r.Close,self.TitleBarCanvas if not u then u=self:MakeTitleBarCanvas()
+end aa:CheckConfig(self,{Toggle=u:RadioButton{Icon=s.Image,IconPadding=s.
 IconPadding,LayoutOrder=1,Ratio=1,Size=UDim2.new(0,0),Callback=function()self:
-ToggleCollapsed()end},CloseButton=w:RadioButton{Icon=v.Image,IconPadding=v.
+ToggleCollapsed()end},CloseButton=u:RadioButton{Icon=t.Image,IconPadding=t.
 IconPadding,LayoutOrder=3,Ratio=1,Size=UDim2.new(0,0),Callback=function()self:
-SetVisible(false)end},TitleLabel=w:Label{ColorTag='Title',LayoutOrder=2,Size=
+SetVisible(false)end},TitleLabel=u:Label{ColorTag='Title',LayoutOrder=2,Size=
 UDim2.new(1,0),Active=false,Fill=true,ClipsDescendants=true,AutomaticSize=Enum.
 AutomaticSize.XY}})self:TagElements{[self.TitleLabel]='WindowTitle'}end function
-s:Close()local t=self.CloseCallback if t then local u=t(self)if u==false then
-return end end self:Remove()end function s:SetVisible(t)local u,v=self.
-WindowFrame,self.NoFocusOnAppearing self.Visible=t u.Visible=t if t and not v
-then aa:SetFocusedWindow(self)end return self end function s:ToggleVisibility(t)
-local u=self.Visible self:SetVisible(not u)end function s:GetWindowSize()return
-self.WindowFrame.AbsoluteSize end function s:GetTitleBarSizeY()local t=self.
-TitleBar return t.Visible and t.AbsoluteSize.Y or 0 end function s:SetTitle(t)
-self.TitleLabel.Text=tostring(t)return self end function s:SetPosition(t)self.
-WindowFrame.Position=t return self end function s:SetSize(t,u)local v=self.
-WindowFrame if typeof(t)=='Vector2'then t=UDim2.fromOffset(t.X,t.Y)end v.Size=t
-self.Size=t return self end function s:SetCanvasInteractable(t)local u=self.Body
-u.Interactable=t end function s:Center()local t=self:GetWindowSize()/2 local u=
-UDim2.new(0.5,-t.X,0.5,-t.Y)self:SetPosition(u)return self end function s:
-LoadStylesIntoElement(t)local u,v,w=t.Flags,t.Object,t.Canvas local x={
-FrameRounding=function()if u.CornerRadius then return end if not w then return
-end local x=v:FindFirstChild('FrameRounding',true)if not x then return end w:
-TagElements{[x]='FrameRounding'}end}for y,A in x do local B=self:GetThemeKey(y)
-if B==nil then continue end task.spawn(A,B)end end function s:SetTheme(t)local u
-,v,w=aa.ThemeConfigs,self.TagsList,self.WindowState t=t or self.Theme assert(u[t
-],`{t} is not a valid theme!`)self.Theme=t aa:MultiUpdateColors{Animate=false,
-Theme=t,Objects=v}self:SetFocusedColors(w)return self end function s:
-SetFocusedColors(t)local u,v,w,x,y=self.WindowFrame,self.TitleBar,self.Theme,
-self.TitleLabel,self:GetThemeKey'AnimationTweenInfo'local A=u:
-FindFirstChildOfClass'UIStroke'local B={Focused={[A]='BorderActive',[v]=
-'TitleBarBgActive',[x]={TextColor3='TitleActive'}},UnFocused={[A]='Border',[v]=
-'TitleBarBg',[x]={TextColor3='Title'}},Collapsed={[A]='Border',[v]=
-'TitleBarBgCollapsed',[x]={TextColor3='Title'}}}aa:MultiUpdateColors{Tweeninfo=y
-,Animate=true,Objects=B[t],Theme=w}end function s:SetFocused(t)t=t==nil and true
-or t local u,v=self.Collapsed,self.WindowState if t then aa:SetFocusedWindow(
-self)end local w=u and'Collapsed'or t and'Focused'or'UnFocused'if w==v then
-return end self.Focused=t self.WindowState=w self:SetFocusedColors(w)end
-function s:GetThemeKey(t)return aa:GetThemeKey(self.Theme,t)end function s:
-SetCollapsible(t)self.Collapsible=t return self end function s:ToggleCollapsed(t
-)local u,v=self.Collapsed,self.Collapsible if not t and not v then return self
-end self:SetCollapsed(not u)return self end function s:SetCollapsed(t,u)local v,
-w,x,y,A,B,C,D,E=self.WindowFrame,self.Body,self.Toggle,self.ResizeGrab,self.Size
+q:Close()local r=self.CloseCallback if r then local s=r(self)if s==false then
+return end end self:Remove()end function q:SetVisible(r)local s,t=self.
+WindowFrame,self.NoFocusOnAppearing self.Visible=r s.Visible=r if r and not t
+then aa:SetFocusedWindow(self)end return self end function q:ToggleVisibility(r)
+local s=self.Visible self:SetVisible(not s)end function q:GetWindowSize()return
+self.WindowFrame.AbsoluteSize end function q:GetTitleBarSizeY()local r=self.
+TitleBar return r.Visible and r.AbsoluteSize.Y or 0 end function q:SetTitle(r)
+self.TitleLabel.Text=tostring(r)return self end function q:SetPosition(r)self.
+WindowFrame.Position=r return self end function q:SetSize(r,s)local t=self.
+WindowFrame if typeof(r)=='Vector2'then r=UDim2.fromOffset(r.X,r.Y)end t.Size=r
+self.Size=r return self end function q:SetCanvasInteractable(r)local s=self.Body
+s.Interactable=r end function q:Center()local r=self:GetWindowSize()/2 local s=
+UDim2.new(0.5,-r.X,0.5,-r.Y)self:SetPosition(s)return self end function q:
+LoadStylesIntoElement(r)local s,t,u=r.Flags,r.Object,r.Canvas local v={
+FrameRounding=function()if s.CornerRadius then return end if not u then return
+end local v=t:FindFirstChild('FrameRounding',true)if not v then return end u:
+TagElements{[v]='FrameRounding'}end}for w,y in v do local z=self:GetThemeKey(w)
+if z==nil then continue end task.spawn(y,z)end end function q:SetTheme(r)local s
+,t,u=aa.ThemeConfigs,self.TagsList,self.WindowState r=r or self.Theme assert(s[r
+],`{r} is not a valid theme!`)self.Theme=r aa:MultiUpdateColors{Animate=false,
+Theme=r,Objects=t}self:SetFocusedColors(u)return self end function q:
+SetFocusedColors(r)local s,t,u,v,w=self.WindowFrame,self.TitleBar,self.Theme,
+self.TitleLabel,self:GetThemeKey'AnimationTweenInfo'local y=s:
+FindFirstChildOfClass'UIStroke'local z={Focused={[y]='BorderActive',[t]=
+'TitleBarBgActive',[v]={TextColor3='TitleActive'}},UnFocused={[y]='Border',[t]=
+'TitleBarBg',[v]={TextColor3='Title'}},Collapsed={[y]='Border',[t]=
+'TitleBarBgCollapsed',[v]={TextColor3='Title'}}}aa:MultiUpdateColors{Tweeninfo=w
+,Animate=true,Objects=z[r],Theme=u}end function q:SetFocused(r)r=r==nil and true
+or r local s,t=self.Collapsed,self.WindowState if r then aa:SetFocusedWindow(
+self)end local u=s and'Collapsed'or r and'Focused'or'UnFocused'if u==t then
+return end self.Focused=r self.WindowState=u self:SetFocusedColors(u)end
+function q:GetThemeKey(r)return aa:GetThemeKey(self.Theme,r)end function q:
+SetCollapsible(r)self.Collapsible=r return self end function q:ToggleCollapsed(r
+)local s,t=self.Collapsed,self.Collapsible if not r and not t then return self
+end self:SetCollapsed(not s)return self end function q:SetCollapsed(r,s)local t,
+u,v,w,y,z,A,B,C=self.WindowFrame,self.Body,self.Toggle,self.ResizeGrab,self.Size
 ,self.AutoSize,self:GetThemeKey'AnimationTweenInfo',self:GetWindowSize(),self:
-GetTitleBarSizeY()local F,G=x.Icon,UDim2.fromOffset(D.X,E)self.Collapsed=t self:
-SetCollapsible(false)self:SetFocused(not t)ae:HeaderCollapse{Tweeninfo=C,
-NoAnimation=u,Collapsed=t,Toggle=F,Resize=v,NoAutomaticSize=not B,Hide=w,
-ClosedSize=G,OpenSize=A,Completed=function()self:SetCollapsible(true)end}self:
-Tween{Object=y,NoAnimation=u,EndProperties={TextTransparency=t and 1 or 0.6,
-Interactable=not t}}return self end function s:UpdateConfig(t)local u={
-NoTitleBar=function(u)local v=self.TitleBar v.Visible=not u end,NoClose=function
-(u)local v=self.CloseButton v.Visible=not u end,NoCollapse=function(u)local v=
-self.Toggle v.Visible=not u end,NoTabsBar=function(u)local v=self.
-WindowTabSelector if not v then return end local w=v.TabsBar w.Visible=not u end
-,NoScrollBar=function(u)local v,w,x,y=u and 0 or 9,self.NoScroll,self.
-WindowTabSelector,self.ContentCanvas if x then x.Body.ScrollBarThickness=v end
-if not w then y.ScrollBarThickness=v end end,NoScrolling=function(u)local v,w,x=
-self.NoScroll,self.WindowTabSelector,self.ContentCanvas if w then w.Body.
-ScrollingEnabled=not u end if not v then x.ScrollingEnabled=not u end end,NoMove
-=function(u)local v=self.DragConnection v:SetEnabled(not u)end,NoResize=function
-(u)local v=self.ResizeConnection v:SetEnabled(not u)end,NoBackground=function(u)
-local v,w=self:GetThemeKey'WindowBgTransparency',self.CanvasFrame w.
-BackgroundTransparency=u and 1 or v end}Merge(self,t)for v,w in t do local x=u[v
-]if x then x(w)end end return self end function s:Remove()local t,u,v=self.
-WindowFrame,self.WindowClass,aa.Windows local w=table.find(v,u)if w then table.
-remove(v,w)end t:Destroy()end function s:MenuBar(t,...)local u,v=self.
-ContentCanvas,self.ContentFrame t=t or{}Merge(t,{Parent=v,Layout=-1})return u:
-MenuBar(t,...)end aa:DefineElement('Window',{Export=true,Base={Theme='DarkTheme'
+GetTitleBarSizeY()local D,E=v.Icon,UDim2.fromOffset(B.X,C)self.Collapsed=r self:
+SetCollapsible(false)self:SetFocused(not r)ae:HeaderCollapse{Tweeninfo=A,
+NoAnimation=s,Collapsed=r,Toggle=D,Resize=t,NoAutomaticSize=not z,Hide=u,
+ClosedSize=E,OpenSize=y,Completed=function()self:SetCollapsible(true)end}self:
+Tween{Object=w,NoAnimation=s,EndProperties={TextTransparency=r and 1 or 0.6,
+Interactable=not r}}return self end function q:UpdateConfig(r)local s={
+NoTitleBar=function(s)local t=self.TitleBar t.Visible=not s end,NoClose=function
+(s)local t=self.CloseButton t.Visible=not s end,NoCollapse=function(s)local t=
+self.Toggle t.Visible=not s end,NoTabsBar=function(s)local t=self.
+WindowTabSelector if not t then return end local u=t.TabsBar u.Visible=not s end
+,NoScrollBar=function(s)local t,u,v,w=s and 0 or 9,self.NoScroll,self.
+WindowTabSelector,self.ContentCanvas if v then v.Body.ScrollBarThickness=t end
+if not u then w.ScrollBarThickness=t end end,NoScrolling=function(s)local t,u,v=
+self.NoScroll,self.WindowTabSelector,self.ContentCanvas if u then u.Body.
+ScrollingEnabled=not s end if not t then v.ScrollingEnabled=not s end end,NoMove
+=function(s)local t=self.DragConnection t:SetEnabled(not s)end,NoResize=function
+(s)local t=self.ResizeConnection t:SetEnabled(not s)end,NoBackground=function(s)
+local t,u=self:GetThemeKey'WindowBgTransparency',self.CanvasFrame u.
+BackgroundTransparency=s and 1 or t end}Merge(self,r)for t,u in r do local v=s[t
+]if v then v(u)end end return self end function q:Remove()local r,s,t=self.
+WindowFrame,self.WindowClass,aa.Windows local u=table.find(t,s)if u then table.
+remove(t,u)end r:Destroy()end function q:MenuBar(r,...)local s,t=self.
+ContentCanvas,self.ContentFrame r=r or{}Merge(r,{Parent=t,Layout=-1})return s:
+MenuBar(r,...)end aa:DefineElement('Window',{Export=true,Base={Theme='DarkTheme'
 ,NoSelect=false,NoTabs=true,NoScroll=false,Collapsed=false,Visible=true,AutoSize
 =false,MinimumSize=Vector2.new(160,90),OpenOnDoubleClick=true,NoAutoTheme=true,
 NoWindowRegistor=false,NoBringToFrontOnFocus=false,IsDragging=false},Create=
-function(t,u)aa:CheckImportState()local v,w=aa.Windows,aa.Container.Windows aa:
-CheckConfig(u,{Parent=w,Title=aa.DefaultTitle})local x,y,A,B,C,D,E,F,G,H,I=u.
-NoDefaultTitleBarButtons,u.Collapsed,u.MinimumSize,u.Title,u.NoTabs,u.NoScroll,u
-.Theme,u.AutomaticSize,u.NoWindowRegistor,u.AutoSelectNewTabs,u.Parent~=w local
-J={Scroll=not D,Fill=not F and true or nil,UiPadding=UDim.new(0,C and 8 or 0),
-AutoSelectNewTabs=H}if F then Merge(J,{AutomaticSize=F,Size=UDim2.new(1,0)})end
-local K=aa:InsertPrefab('Window',u)local L=K.Content local M,N=L.TitleBar,ad:
-NewClass(s)local O,P,Q,R=(aa:MakeCanvas{Element=L,WindowClass=N,Class=N})local S
-,T=O:Canvas(Copy(J,{Parent=L,CornerRadius=UDim.new(0,0)}))local U=aa:
-MakeResizable{MinimumSize=A,Resize=K,OnUpdate=function(U)N:SetSize(U,true)end}
-Merge(N,u)Merge(N,{WindowFrame=K,ContentFrame=L,CanvasFrame=T,ResizeGrab=U.Grab,
-TitleBar=M,Elements=j,TagsList={},_SelectDisabled=I,ResizeConnection=U,
-HoverConnection=aa:DetectHover(L),DragConnection=aa:MakeDraggable{Grab=L,Move=K,
-SetPosition=function(V,W)local X=P:GetThemeKey'AnimationTweenInfo'ae:Tween{
-Tweeninfo=X,Object=V.Move,EndProperties={Position=W}}end,OnDragStateChange=
-function(V)N.IsDragging=V T.Interactable=not V if V then aa:SetFocusedWindow(R)
-end aa:SetWindowFocusesEnabled(not V)end}})if C then P,Q=S,T else P,Q=S:
-TabSelector(J)N.WindowTabSelector=P end R=aa:MergeMetatables(N,P)Merge(N,{
-ContentCanvas=P,WindowClass=R,Body=Q})aa:ConnectMouseEvent(L,{DoubleClick=true,
-OnlyMouseHovering=M,Callback=function(...)if not N.OpenOnDoubleClick then return
-end if N.NoCollapse then return end N:ToggleCollapsed()end})if not x then N:
-AddDefaultTitleButtons()end N:SetTitle(B)N:SetCollapsed(y,true)N:SetTheme(E)N:
-UpdateConfig(u)N:SetFocused()if not G then table.insert(v,R)end local V=U.Grab
-aa:SetAnimation(V,'TextButtons')aa:SetFocusedWindow(R)R:TagElements{[V]=
-'ResizeGrab',[M]='TitleBar',[T]='Window'}return R,K end})aa:DefineElement(
+function(r,s)aa:CheckImportState()local t,u=aa.Windows,aa.Container.Windows aa:
+CheckConfig(s,{Parent=u,Title=aa.DefaultTitle})local v,w,y,z,A,B,C,D,E,F,G=s.
+NoDefaultTitleBarButtons,s.Collapsed,s.MinimumSize,s.Title,s.NoTabs,s.NoScroll,s
+.Theme,s.AutomaticSize,s.NoWindowRegistor,s.AutoSelectNewTabs,s.Parent~=u local
+H={Scroll=not B,Fill=not D and true or nil,UiPadding=UDim.new(0,A and 8 or 0),
+AutoSelectNewTabs=F}if D then Merge(H,{AutomaticSize=D,Size=UDim2.new(1,0)})end
+local I=aa:InsertPrefab('Window',s)local J=I.Content local K,L=J.TitleBar,ad:
+NewClass(q)local M,N,O,P=(aa:MakeCanvas{Element=J,WindowClass=L,Class=L})local Q
+,R=M:Canvas(Copy(H,{Parent=J,CornerRadius=UDim.new(0,0)}))local S=aa:
+MakeResizable{MinimumSize=y,Resize=I,OnUpdate=function(S)L:SetSize(S,true)end}
+Merge(L,s)Merge(L,{WindowFrame=I,ContentFrame=J,CanvasFrame=R,ResizeGrab=S.Grab,
+TitleBar=K,Elements=h,TagsList={},_SelectDisabled=G,ResizeConnection=S,
+HoverConnection=aa:DetectHover(J),DragConnection=aa:MakeDraggable{Grab=J,Move=I,
+SetPosition=function(T,U)local V=N:GetThemeKey'AnimationTweenInfo'ae:Tween{
+Tweeninfo=V,Object=T.Move,EndProperties={Position=U}}end,OnDragStateChange=
+function(T)L.IsDragging=T R.Interactable=not T if T then aa:SetFocusedWindow(P)
+end aa:SetWindowFocusesEnabled(not T)end}})if A then N,O=Q,R else N,O=Q:
+TabSelector(H)L.WindowTabSelector=N end P=aa:MergeMetatables(L,N)Merge(L,{
+ContentCanvas=N,WindowClass=P,Body=O})aa:ConnectMouseEvent(J,{DoubleClick=true,
+OnlyMouseHovering=K,Callback=function(...)if not L.OpenOnDoubleClick then return
+end if L.NoCollapse then return end L:ToggleCollapsed()end})if not v then L:
+AddDefaultTitleButtons()end L:SetTitle(z)L:SetCollapsed(w,true)L:SetTheme(C)L:
+UpdateConfig(s)L:SetFocused()if not E then table.insert(t,P)end local T=S.Grab
+aa:SetAnimation(T,'TextButtons')aa:SetFocusedWindow(P)P:TagElements{[T]=
+'ResizeGrab',[K]='TitleBar',[R]='Window'}return P,I end})aa:DefineElement(
 'TabsWindow',{Export=true,Base={NoTabs=false,AutoSelectNewTabs=true},Create=
-function(t,u)return t:Window(u)end})aa:DefineElement('PopupCanvas',{Base={
+function(r,s)return r:Window(s)end})aa:DefineElement('PopupCanvas',{Base={
 AutoClose=false,Scroll=false,Visible=true,Spacing=UDim.new(0,1),AutomaticSize=
-Enum.AutomaticSize.XY,MaxSizeY=150,MinSizeX=100,MaxSizeX=math.huge,OnClosed=i},
-Create=function(t,u)local v,w,x,y,A,B,C=u.RelativeTo,u.MaxSizeY,u.MinSizeX,u.
-MaxSizeX,u.Visible,u.AutoClose,u.NoAnimation u.Parent=aa.Container.Overlays
-local D,E=t:OverlayScroll(u)local F=E.UIStroke local G,H,I,J,K,L,M=F.Thickness,E
-.Parent.AbsolutePosition,(aa:DetectHover(E,{MouseOnly=true,OnInput=function(G,H)
-if G then return end if not E.Visible then return end u:OnFocusLost()end}))
-function u:FetchScales()local N=D:GetCanvasSize()J=v.AbsolutePosition K=v.
-AbsoluteSize L=math.clamp(N.Y,K.Y,w)M=math.clamp(K.X,x,y)end function u:
-UpdatePosition()E.Position=UDim2.fromOffset(J.X-H.X+G,J.Y-H.Y+K.Y)end function u
-:GetScale(N)local O,P=UDim2.fromOffset(M,L),UDim2.fromOffset(M,0)return N and O
-or P end function u:IsMouseHovering()return I.Hovering end function u:
-OnFocusLost()local N=self.OnClosed self:SetPopupVisible(false)N(self)if B then
-self:ClosePopup()end end function u:ClosePopup(N)self:SetPopupVisible(false,C,N)
-I:Disconnect()E:Remove()end function u:SetPopupVisible(N,O)if E.Visible==N then
-return end v.Interactable=not N self:UpdateScales(N,C,O)self.Visible=N end
-function u:UpdateScales(N,O,P)local Q=D:GetThemeKey'AnimationTweenInfo'N=N==nil
-and E.Visible or N u:FetchScales()u:UpdatePosition()local R=ae:Tween{Tweeninfo=Q
-,Object=E,NoAnimation=O,EndProperties={Size=u:GetScale(N),Visible=N}}if R and P
-then R.Completed:Wait()end end u:UpdateScales(false,true)u:SetPopupVisible(A)D.
-OnChildChange:Connect(u.UpdateScales)return D,E end})aa:DefineElement(
+Enum.AutomaticSize.XY,MaxSizeY=150,MinSizeX=100,MaxSizeX=math.huge,OnClosed=g},
+Create=function(r,s)local t,u,v,w,y,z,A=s.RelativeTo,s.MaxSizeY,s.MinSizeX,s.
+MaxSizeX,s.Visible,s.AutoClose,s.NoAnimation s.Parent=aa.Container.Overlays
+local B,C=r:OverlayScroll(s)local D=C.UIStroke local E,F,G,H,I,J,K=D.Thickness,C
+.Parent.AbsolutePosition,(aa:DetectHover(C,{MouseOnly=true,OnInput=function(E,F)
+if E then return end if not C.Visible then return end s:OnFocusLost()end}))
+function s:FetchScales()local L=B:GetCanvasSize()H=t.AbsolutePosition I=t.
+AbsoluteSize J=math.clamp(L.Y,I.Y,u)K=math.clamp(I.X,v,w)end function s:
+UpdatePosition()C.Position=UDim2.fromOffset(H.X-F.X+E,H.Y-F.Y+I.Y)end function s
+:GetScale(L)local M,N=UDim2.fromOffset(K,J),UDim2.fromOffset(K,0)return L and M
+or N end function s:IsMouseHovering()return G.Hovering end function s:
+OnFocusLost()local L=self.OnClosed self:SetPopupVisible(false)L(self)if z then
+self:ClosePopup()end end function s:ClosePopup(L)self:SetPopupVisible(false,A,L)
+G:Disconnect()C:Remove()end function s:SetPopupVisible(L,M)if C.Visible==L then
+return end t.Interactable=not L self:UpdateScales(L,A,M)self.Visible=L end
+function s:UpdateScales(L,M,N)local O=B:GetThemeKey'AnimationTweenInfo'L=L==nil
+and C.Visible or L s:FetchScales()s:UpdatePosition()local P=ae:Tween{Tweeninfo=O
+,Object=C,NoAnimation=M,EndProperties={Size=s:GetScale(L),Visible=L}}if P and N
+then P.Completed:Wait()end end s:UpdateScales(false,true)s:SetPopupVisible(y)B.
+OnChildChange:Connect(s.UpdateScales)return B,C end})aa:DefineElement(
 'PopupModal',{Export=true,Base={NoAnimation=false,NoCollapse=true,NoClose=true,
 NoResize=true,NoSelect=true,NoAutoFlags=true,NoWindowRegistor=true,NoScroll=true
-},Create=function(t,u)local v,w,x=t.WindowClass,(u.NoAnimation)u.Parent=aa.
-Container.Overlays if v then x=v:GetThemeKey'ModalWindowDimTweenInfo'u.Theme=v.
-Theme end local y=aa:InsertPrefab('ModalEffect',u)local A=t:Window(Copy(u,{
-NoAutoFlags=false,Parent=y,AnchorPoint=Vector2.new(0.5,0.5),Position=UDim2.
+},Create=function(r,s)local t,u,v=r.WindowClass,(s.NoAnimation)s.Parent=aa.
+Container.Overlays if t then v=t:GetThemeKey'ModalWindowDimTweenInfo's.Theme=t.
+Theme end local w=aa:InsertPrefab('ModalEffect',s)local y=r:Window(Copy(s,{
+NoAutoFlags=false,Parent=w,AnchorPoint=Vector2.new(0.5,0.5),Position=UDim2.
 fromScale(0.5,0.5),Size=UDim2.fromOffset(372,38),AutomaticSize=Enum.
-AutomaticSize.Y}))function u:ClosePopup()ae:Tween{Object=y,Tweeninfo=x,
-NoAnimation=w,EndProperties={BackgroundTransparency=1},Completed=function()y:
-Destroy()end}A:Close()end ae:Tween{Object=y,Tweeninfo=x,NoAnimation=w,
+AutomaticSize.Y}))function s:ClosePopup()ae:Tween{Object=w,Tweeninfo=v,
+NoAnimation=u,EndProperties={BackgroundTransparency=1},Completed=function()w:
+Destroy()end}y:Close()end ae:Tween{Object=w,Tweeninfo=v,NoAnimation=u,
 StartProperties={BackgroundTransparency=1},EndProperties={BackgroundTransparency
-=0.8}}t:TagElements{[y]='ModalWindowDim'}local B=aa:MergeMetatables(u,A)return B
-,y end})p('InputInt2','InputInt',2,{NoButtons=true})p('InputInt3','InputInt',3,{
-NoButtons=true})p('InputInt4','InputInt',4,{NoButtons=true})p('SliderInt2',
-'SliderInt',2)p('SliderInt3','SliderInt',3)p('SliderInt4','SliderInt',4)p(
-'SliderFloat2','SliderFloat',2)p('SliderFloat3','SliderFloat',3)p('SliderFloat4'
-,'SliderFloat',4)p('DragInt2','DragInt',2)p('DragInt3','DragInt',3)p('DragInt4',
-'DragInt',4)p('DragFloat2','DragFloat',2)p('DragFloat3','DragFloat',3)p(
-'DragFloat4','DragFloat',4)q('InputColor3','InputInt3')q('SliderColor3',
-'SliderInt3')q('DragColor3','DragInt3')r('InputCFrame','InputInt3')r(
-'SliderCFrame','SliderInt3')r('DragCFrame','DragInt3')return aa
+=0.8}}r:TagElements{[w]='ModalWindowDim'}local z=aa:MergeMetatables(s,y)return z
+,w end})n('InputInt2','InputInt',2,{NoButtons=true})n('InputInt3','InputInt',3,{
+NoButtons=true})n('InputInt4','InputInt',4,{NoButtons=true})n('SliderInt2',
+'SliderInt',2)n('SliderInt3','SliderInt',3)n('SliderInt4','SliderInt',4)n(
+'SliderFloat2','SliderFloat',2)n('SliderFloat3','SliderFloat',3)n('SliderFloat4'
+,'SliderFloat',4)n('DragInt2','DragInt',2)n('DragInt3','DragInt',3)n('DragInt4',
+'DragInt',4)n('DragFloat2','DragFloat',2)n('DragFloat3','DragFloat',3)n(
+'DragFloat4','DragFloat',4)o('InputColor3','InputInt3')o('SliderColor3',
+'SliderInt3')o('DragColor3','DragInt3')p('InputCFrame','InputInt3')p(
+'SliderCFrame','SliderInt3')p('DragCFrame','DragInt3')return aa

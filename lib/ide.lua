@@ -44,6 +44,17 @@ local Services = setmetatable({}, {
 	end,
 })
 
+local UserInputTypes = {
+	StartAndEnd = {
+		Enum.UserInputType.MouseButton1,
+		Enum.UserInputType.Touch
+	},
+	Movement = {
+		Enum.UserInputType.MouseMovement,
+		Enum.UserInputType.Touch
+	}
+}
+
 local cursor = Instance.new("Frame")
 
 --// Services
@@ -60,6 +71,11 @@ local function Merge(Base, New)
 		Base[Key] = Value
 	end
 	return Base
+end
+
+local function InputTypeAllowed(Key, Type: string)
+	local InputType = Key.UserInputType
+	return table.find(UserInputTypes[Type], InputType)
 end
 
 local Lib = {}
@@ -296,8 +312,8 @@ Lib.ScrollBar = (function()
 		local thumbFramePress = false
 
 		button1.InputBegan:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseMovement and not buttonPress and self:CanScrollUp() then button1.BackgroundTransparency = 0.8 end
-			if input.UserInputType ~= Enum.UserInputType.MouseButton1 or not self:CanScrollUp() then return end
+			if InputTypeAllowed(input, "Movement") and not buttonPress and self:CanScrollUp() then button1.BackgroundTransparency = 0.8 end
+			if not InputTypeAllowed(input, "StartAndEnd") or not self:CanScrollUp() then return end
 			buttonPress = true
 			button1.BackgroundTransparency = 0.5
 			if self:CanScrollUp() then 
@@ -307,7 +323,7 @@ Lib.ScrollBar = (function()
 			local buttonTick = tick()
 			local releaseEvent
 			releaseEvent = UserInputService.InputEnded:Connect(function(input)
-				if input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
+				if not InputTypeAllowed(input, "StartAndEnd") then return end
 				releaseEvent:Disconnect()
 				if checkMouseInGui(button1) and self:CanScrollUp() then button1.BackgroundTransparency = 0.8 else button1.BackgroundTransparency = 1 end
 				buttonPress = false
@@ -321,11 +337,11 @@ Lib.ScrollBar = (function()
 			end
 		end)
 		button1.InputEnded:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseMovement and not buttonPress then button1.BackgroundTransparency = 1 end
+			if InputTypeAllowed(input, "Movement") and not buttonPress then button1.BackgroundTransparency = 1 end
 		end)
 		button2.InputBegan:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseMovement and not buttonPress and self:CanScrollDown() then button2.BackgroundTransparency = 0.8 end
-			if input.UserInputType ~= Enum.UserInputType.MouseButton1 or not self:CanScrollDown() then return end
+			if InputTypeAllowed(input, "Movement") and not buttonPress and self:CanScrollDown() then button2.BackgroundTransparency = 0.8 end
+			if not InputTypeAllowed(input, "StartAndEnd") or not self:CanScrollDown() then return end
 			buttonPress = true
 			button2.BackgroundTransparency = 0.5
 			if self:CanScrollDown() then 
@@ -335,7 +351,7 @@ Lib.ScrollBar = (function()
 			local buttonTick = tick()
 			local releaseEvent
 			releaseEvent = UserInputService.InputEnded:Connect(function(input)
-				if input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
+				if not InputTypeAllowed(input, "StartAndEnd") then return end
 				releaseEvent:Disconnect()
 				if checkMouseInGui(button2) and self:CanScrollDown() then button2.BackgroundTransparency = 0.8 else button2.BackgroundTransparency = 1 end
 				buttonPress = false
@@ -349,15 +365,15 @@ Lib.ScrollBar = (function()
 			end
 		end)
 		button2.InputEnded:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseMovement and not buttonPress then button2.BackgroundTransparency = 1 end
+			if InputTypeAllowed(input, "Movement") and not buttonPress then button2.BackgroundTransparency = 1 end
 		end)
 
 		scrollThumb.InputBegan:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseMovement and not thumbPress then 
+			if InputTypeAllowed(input, "Movement") and not thumbPress then 
 				scrollThumb.BackgroundTransparency = 0.2 
 				scrollThumb.BackgroundColor3 = self.ThumbSelectColor 
 			end
-			if input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
+			if not InputTypeAllowed(input, "StartAndEnd") then return end
 
 			local dir = self.Horizontal and "X" or "Y"
 			local lastThumbPos = nil
@@ -370,7 +386,7 @@ Lib.ScrollBar = (function()
 			local releaseEvent
 			local mouseEvent
 			releaseEvent = UserInputService.InputEnded:Connect(function(input)
-				if input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
+				if not InputTypeAllowed(input, "StartAndEnd") then return end
 				releaseEvent:Disconnect()
 				if mouseEvent then mouseEvent:Disconnect() end
 				if checkMouseInGui(scrollThumb) then 
@@ -384,7 +400,7 @@ Lib.ScrollBar = (function()
 			self:Update()
 
 			mouseEvent = UserInputService.InputChanged:Connect(function(input)
-				if input.UserInputType == Enum.UserInputType.MouseMovement and thumbPress and releaseEvent.Connected then
+				if InputTypeAllowed(input, "Movement") and thumbPress and releaseEvent.Connected then
 					local thumbFrameSize = scrollThumbFrame.AbsoluteSize[dir]-scrollThumb.AbsoluteSize[dir]
 					local pos = Mouse[dir] - scrollThumbFrame.AbsolutePosition[dir] - mouseOffset
 					if pos > thumbFrameSize then
@@ -401,13 +417,13 @@ Lib.ScrollBar = (function()
 			end)
 		end)
 		scrollThumb.InputEnded:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseMovement and not thumbPress then 
+			if InputTypeAllowed(input, "Movement") and not thumbPress then 
 				scrollThumb.BackgroundTransparency = 0 
 				scrollThumb.BackgroundColor3 = self.ThumbColor 
 			end
 		end)
 		scrollThumbFrame.InputBegan:Connect(function(input)
-			if input.UserInputType ~= Enum.UserInputType.MouseButton1 or checkMouseInGui(scrollThumb) then return end
+			if not InputTypeAllowed(input, "StartAndEnd") or checkMouseInGui(scrollThumb) then return end
 
 			local dir = self.Horizontal and "X" or "Y"
 			local scrollDir = 0
@@ -430,7 +446,7 @@ Lib.ScrollBar = (function()
 			local thumbFrameTick = tick()
 			local releaseEvent
 			releaseEvent = UserInputService.InputEnded:Connect(function(input)
-				if input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
+				if not InputTypeAllowed(input, "StartAndEnd") then return end
 				releaseEvent:Disconnect()
 				thumbFramePress = false
 			end)
@@ -911,13 +927,14 @@ Lib.CodeFrame = (function()
 		local lines = obj.Lines
 
 		codeFrame.InputBegan:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			if InputTypeAllowed(input, "StartAndEnd") then
 				local fontSizeX,fontSizeY = math.ceil(obj.FontSize/2),obj.FontSize
 
 				local relX = Mouse.X - codeFrame.AbsolutePosition.X
 				local relY = Mouse.Y - codeFrame.AbsolutePosition.Y
 				local selX = math.round(relX / fontSizeX) + obj.ViewX
 				local selY = math.floor(relY / fontSizeY) + obj.ViewY
+
 				local releaseEvent,mouseEvent,scrollEvent
 				local scrollPowerV,scrollPowerH = 0,0
 				selY = math.min(#lines-1,selY)
@@ -925,7 +942,7 @@ Lib.CodeFrame = (function()
 				selX = math.min(#relativeLine, selX + obj:TabAdjust(selX,selY))
 
 				obj.SelectionRange = {{-1,-1},{-1,-1}}
-				obj:MoveCursor(selX,selY)
+				obj:MoveCursor(selX, selY)
 				obj.FloatCursorX = selX
 
 				local function updateSelection()
@@ -950,7 +967,7 @@ Lib.CodeFrame = (function()
 				end
 
 				releaseEvent = UserInputService.InputEnded:Connect(function(input)
-					if input.UserInputType == Enum.UserInputType.MouseButton1 then
+					if InputTypeAllowed(input, "StartAndEnd") then
 						releaseEvent:Disconnect()
 						mouseEvent:Disconnect()
 						scrollEvent:Disconnect()
@@ -960,7 +977,7 @@ Lib.CodeFrame = (function()
 				end)
 
 				mouseEvent = UserInputService.InputChanged:Connect(function(input)
-					if input.UserInputType == Enum.UserInputType.MouseMovement then
+					if InputTypeAllowed(input, "Movement") then
 						local upDelta = Mouse.Y - codeFrame.AbsolutePosition.Y
 						local downDelta = Mouse.Y - codeFrame.AbsolutePosition.Y - codeFrame.AbsoluteSize.Y
 						local leftDelta = Mouse.X - codeFrame.AbsolutePosition.X
@@ -1047,7 +1064,7 @@ Lib.CodeFrame = (function()
 		elems.ScrollCorner.Parent = frame
 		
 		linesFrame.InputBegan:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			if InputTypeAllowed(input, "StartAndEnd") then
 				self:SetEditing(true,input)
 			end
 		end)
