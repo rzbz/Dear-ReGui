@@ -282,7 +282,7 @@ function ReGui:Init(Overwrites: table?)
 	end
 
 	--// Bind events
-	RunService:BindToRenderStep("ReGui_InputUpdate", Enum.RenderPriority.Input.Value, InputUpdate)
+	RunService.RenderStepped:Connect(InputUpdate)
 end
 
 function ReGui:CheckImportState()

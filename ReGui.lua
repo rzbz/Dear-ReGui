@@ -700,9 +700,9 @@ Text=`Hello {C},{A}`}end end local A=v:TreeNode{Title='With headers'}local B,C=A
 local G=q:Column()G:Label{Text=F}continue end local G=q:NextColumn()G:Label{Text
 =`Hello {E},{D}`}end end end end function a.f()return{Dot=
 'rbxasset://textures/whiteCircle.png',Arrow=
-[[rbxasset://textures/DeveloperFramework/button_arrow_right.png]],Close=
-'rbxasset://textures/AnimationEditor/icon_close.png',Checkmark=
-'rbxasset://textures/AnimationEditor/icon_checkmark.png',Cat=
+'rbxasset://textures/ui/AvatarContextMenu_Arrow.png',Close=
+'rbxasset://textures/loading/cancelButton.png',Checkmark=
+'rbxasset://textures/ui/Lobby/Buttons/nine_slice_button.png',Cat=
 'rbxassetid://16211812161',Script='rbxassetid://11570895459',Settings=
 'rbxassetid://9743465390',Info='rbxassetid://18754976792',Move=
 'rbxassetid://6710235139',Roblox='rbxassetid://7414445494',Warning=
@@ -922,15 +922,14 @@ InputBegan:Connect(function(q)if not self:IsMouseEvent(q,true)then return end
 local r=tick()local s=r-p local t=self:IsDoubleClick(s)p=t and 0 or r self:
 UpdateWindowFocuses()end)local q=function()local q,r=self.TooltipsContainer,#n>0
 q.Visible=r if not r then return end local s,t=aa:GetMouseLocation()local u=o.
-AbsolutePosition q.Position=UDim2.fromOffset(s-u.X+j,t-u.Y+j)end d:
-BindToRenderStep('ReGui_InputUpdate',Enum.RenderPriority.Input.Value,q)end
-function aa:CheckImportState()if self.Initialised then return end local h=self.
-PrefabsId local i=ad:CheckAssetUrl(h)local j,n=pcall(function()return e:
-LoadLocalAsset(i)end)self:Init{Prefabs=j and n or nil}end function aa:GetVersion
-()return self.Version end function aa:IsMobileDevice()return c.TouchEnabled end
-function aa:IsConsoleDevice()return c.GamepadEnabled end function aa:
-GetScreenSize()return workspace.CurrentCamera.ViewportSize end function aa:
-LoadPrefabs()local h,i=self.PlayerGui,'ReGui-Prefabs'local j=script:
+AbsolutePosition q.Position=UDim2.fromOffset(s-u.X+j,t-u.Y+j)end d.RenderStepped
+:Connect(q)end function aa:CheckImportState()if self.Initialised then return end
+local h=self.PrefabsId local i=ad:CheckAssetUrl(h)local j,n=pcall(function()
+return e:LoadLocalAsset(i)end)self:Init{Prefabs=j and n or nil}end function aa:
+GetVersion()return self.Version end function aa:IsMobileDevice()return c.
+TouchEnabled end function aa:IsConsoleDevice()return c.GamepadEnabled end
+function aa:GetScreenSize()return workspace.CurrentCamera.ViewportSize end
+function aa:LoadPrefabs()local h,i=self.PlayerGui,'ReGui-Prefabs'local j=script:
 WaitForChild(i,2)if j then return j end local n=h:WaitForChild(i,2)if n then
 return n end return nil end function aa:CheckConfig(h,i,j,n)return ad:
 CheckConfig(h,i,j,n)end function aa:CreateInstance(h,i,j)local n=Instance.new(h,

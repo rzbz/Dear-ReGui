@@ -1,8 +1,8 @@
 return {
 	Dot = "rbxasset://textures/whiteCircle.png",
-	Arrow = "rbxasset://textures/DeveloperFramework/button_arrow_right.png",
-	Close = "rbxasset://textures/AnimationEditor/icon_close.png",
-	Checkmark = "rbxasset://textures/AnimationEditor/icon_checkmark.png",
+	Arrow = "rbxasset://textures/ui/AvatarContextMenu_Arrow.png", -- textures\ui\Backpack\ScrollDownArrow.png"
+	Close = "rbxasset://textures/loading/cancelButton.png", -- \textures\ui\ScreenshotHud\Close@3x.png" \textures\loading\cancelButton.png"
+	Checkmark = "rbxasset://textures/ui/Lobby/Buttons/nine_slice_button.png",
 	Cat = "rbxassetid://16211812161",
 	Script = "rbxassetid://11570895459",
 	Settings = "rbxassetid://9743465390",
