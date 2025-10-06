@@ -52,65 +52,67 @@ end function b:Connect(d)local e=self:GetConnections()table.insert(e,d)end
 function b:DisconnectConnections()local d=self:GetConnections()table.clear(d)end
 function b:NewSignal()return c:NewClass(b,{Connections={}})end return b end
 function a.c()local c=a.cache.c if not c then c={c=b()}a.cache.c=c end return c.
-c end end do local b=function()return{Dot='rbxasset://textures/whiteCircle.png',
-Arrow='rbxasset://textures/ui/AvatarContextMenu_Arrow.png',Close=
+c end end do local b=function()return{VerifiedBadge=
+'rbxasset://textures/ui/VerifiedBadgeNameIcon.png',Dot=
+'rbxasset://textures/whiteCircle.png',Arrow=
+'rbxasset://textures/ui/AvatarContextMenu_Arrow.png',Close=
 'rbxasset://textures/loading/cancelButton.png',Checkmark=
-'rbxasset://textures/ui/Lobby/Buttons/nine_slice_button.png',Cat=
-'rbxassetid://16211812161',Script='rbxassetid://11570895459',Settings=
-'rbxassetid://9743465390',Info='rbxassetid://18754976792',Move=
-'rbxassetid://6710235139',Roblox='rbxassetid://7414445494',Warning=
-'rbxassetid://11745872910',Audio='rbxassetid://302250236',Shop=
-'rbxassetid://6473525198',CharacterDance='rbxassetid://11932783331',Pants=
-'rbxassetid://10098755331',Home='rbxassetid://4034483344',Robux=
-'rbxassetid://5986143282',Badge='rbxassetid://16170504068',SpawnLocation=
-'rbxassetid://6400507398',Sword='rbxassetid://7485051715',Clover=
-'rbxassetid://11999300014',Star='rbxassetid://3057073083',Code=
-'rbxassetid://11348555035',Paw='rbxassetid://13001190533',Shield=
-'rbxassetid://7461510428',Shield2='rbxassetid://7169354142',File=
-'rbxassetid://7276823330',Book='rbxassetid://16061686835',Location=
-'rbxassetid://13549782519',Puzzle='rbxassetid://8898417863',Discord=
-'rbxassetid://84828491431270',Premium='rbxassetid://6487178625',Friend=
-'rbxassetid://10885655986',User='rbxassetid://18854794412',Duplicate=
-'rbxassetid://11833749507',ChatBox='rbxassetid://15839118471',ChatBox2=
-'rbxassetid://15839116089',Devices='rbxassetid://4458812712',Weight=
-'rbxassetid://9855685269',Image='rbxassetid://123311808092347',Profile=
-'rbxassetid://13585614795',Admin='rbxassetid://11656483170',PaintBrush=
-'rbxassetid://12111879608',Speed='rbxassetid://12641434961',NoConnection=
-'rbxassetid://9795340967',Connection='rbxassetid://119759670842477',Globe=
-'rbxassetid://18870359747',Box='rbxassetid://140217940575618',Crown=
-'rbxassetid://18826490498',Control='rbxassetid://18979524646',Send=
-'rbxassetid://18940312887',FastForward='rbxassetid://112963221295680',Pause=
-'rbxassetid://109949100737970',Reload='rbxassetid://11570018242',Joystick=
-'rbxassetid://18749336354',Controller='rbxassetid://11894535915',Lock=
-'rbxassetid://17783082088',Calculator='rbxassetid://85861816563977',Sun=
-'rbxassetid://13492317832',Moon='rbxassetid://8498174594',Prohibited=
-'rbxassetid://5248916036',Flag='rbxassetid://251346532',Website=
-'rbxassetid://98455290625865',Telegram='rbxassetid://115860270107061',MusicNote=
-'rbxassetid://18187351229',Music='rbxassetid://253830398',Headphones=
-'rbxassetid://1311321471',Phone='rbxassetid://8411963035',Smartphone=
-'rbxassetid://14040313879',Desktop='rbxassetid://3120635703',Desktop2=
-'rbxassetid://4728059490',Laptop='rbxassetid://4728059725',Server=
-'rbxassetid://9692125126',Wedge='rbxassetid://9086583059',Drill=
-'rbxassetid://11959189471',Character='rbxassetid://13285102351'}end function a.d
-()local c=a.cache.d if not c then c={c=b()}a.cache.d=c end return c.c end end do
-local b=function()return{Light=Color3.fromRGB(167,86,242),Dark=Color3.fromRGB(71
-,30,115),ExtraDark=Color3.fromRGB(28,39,53),White=Color3.fromRGB(240,240,240),
-Gray=Color3.fromRGB(172,171,175),Black=Color3.fromRGB(15,19,24),Yellow=Color3.
-fromRGB(230,180,0),Orange=Color3.fromRGB(230,150,0),Green=Color3.fromRGB(130,188
-,91),Red=Color3.fromRGB(255,69,69)}end function a.e()local c=a.cache.e if not c
-then c={c=b()}a.cache.e=c end return c.c end end do local b=function()local b,c=
-a.e(),{}c.DarkTheme={Values={AnimationTweenInfo=TweenInfo.new(0.08),TextFont=
-Font.fromEnum(Enum.Font.RobotoMono),TextSize=14,Text=b.White,TextDisabled=b.Gray
-,ErrorText=b.Red,FrameBg=b.Dark,FrameBgTransparency=0.4,FrameBgActive=b.Light,
-FrameBgTransparencyActive=0.4,FrameRounding=UDim.new(0,0),SliderGrab=b.Light,
-ButtonsBg=b.Light,CollapsingHeaderBg=b.Light,CollapsingHeaderText=b.White,
-CheckMark=b.Light,ResizeGrab=b.Light,HeaderBg=b.Gray,HeaderBgTransparency=0.7,
-HistogramBar=b.Yellow,ProgressBar=b.Yellow,RegionBg=b.Dark,RegionBgTransparency=
-0.1,Separator=b.Gray,SeparatorTransparency=0.5,ConsoleLineNumbers=b.White,
-LabelPaddingTop=UDim.new(0,0),LabelPaddingBottom=UDim.new(0,0),MenuBar=b.
-ExtraDark,MenuBarTransparency=0.1,PopupCanvas=b.Black,TabTextPaddingTop=UDim.
-new(0,3),TabTextPaddingBottom=UDim.new(0,8),TabText=b.Gray,TabBg=b.Dark,
-TabTextActive=b.White,TabBgActive=b.Light,TabsBarBg=Color3.fromRGB(36,36,36),
+'rbxassetid://6031094667',Cat='rbxassetid://16211812161',Script=
+'rbxassetid://11570895459',Settings='rbxassetid://9743465390',Info=
+'rbxassetid://18754976792',Move='rbxassetid://6710235139',Roblox=
+'rbxassetid://7414445494',Warning='rbxassetid://11745872910',Audio=
+'rbxassetid://302250236',Shop='rbxassetid://6473525198',CharacterDance=
+'rbxassetid://11932783331',Pants='rbxassetid://10098755331',Home=
+'rbxassetid://4034483344',Robux='rbxassetid://5986143282',Badge=
+'rbxassetid://16170504068',SpawnLocation='rbxassetid://6400507398',Sword=
+'rbxassetid://7485051715',Clover='rbxassetid://11999300014',Star=
+'rbxassetid://3057073083',Code='rbxassetid://11348555035',Paw=
+'rbxassetid://13001190533',Shield='rbxassetid://7461510428',Shield2=
+'rbxassetid://7169354142',File='rbxassetid://7276823330',Book=
+'rbxassetid://16061686835',Location='rbxassetid://13549782519',Puzzle=
+'rbxassetid://8898417863',Discord='rbxassetid://84828491431270',Premium=
+'rbxassetid://6487178625',Friend='rbxassetid://10885655986',User=
+'rbxassetid://18854794412',Duplicate='rbxassetid://11833749507',ChatBox=
+'rbxassetid://15839118471',ChatBox2='rbxassetid://15839116089',Devices=
+'rbxassetid://4458812712',Weight='rbxassetid://9855685269',Image=
+'rbxassetid://123311808092347',Profile='rbxassetid://13585614795',Admin=
+'rbxassetid://11656483170',PaintBrush='rbxassetid://12111879608',Speed=
+'rbxassetid://12641434961',NoConnection='rbxassetid://9795340967',Connection=
+'rbxassetid://119759670842477',Globe='rbxassetid://18870359747',Box=
+'rbxassetid://140217940575618',Crown='rbxassetid://18826490498',Control=
+'rbxassetid://18979524646',Send='rbxassetid://18940312887',FastForward=
+'rbxassetid://112963221295680',Pause='rbxassetid://109949100737970',Reload=
+'rbxassetid://11570018242',Joystick='rbxassetid://18749336354',Controller=
+'rbxassetid://11894535915',Lock='rbxassetid://17783082088',Calculator=
+'rbxassetid://85861816563977',Sun='rbxassetid://13492317832',Moon=
+'rbxassetid://8498174594',Prohibited='rbxassetid://5248916036',Flag=
+'rbxassetid://251346532',Website='rbxassetid://98455290625865',Telegram=
+'rbxassetid://115860270107061',MusicNote='rbxassetid://18187351229',Music=
+'rbxassetid://253830398',Headphones='rbxassetid://1311321471',Phone=
+'rbxassetid://8411963035',Smartphone='rbxassetid://14040313879',Desktop=
+'rbxassetid://3120635703',Desktop2='rbxassetid://4728059490',Laptop=
+'rbxassetid://4728059725',Server='rbxassetid://9692125126',Wedge=
+'rbxassetid://9086583059',Drill='rbxassetid://11959189471',Character=
+'rbxassetid://13285102351'}end function a.d()local c=a.cache.d if not c then c={
+c=b()}a.cache.d=c end return c.c end end do local b=function()return{Light=
+Color3.fromRGB(167,86,242),Dark=Color3.fromRGB(71,30,115),ExtraDark=Color3.
+fromRGB(28,39,53),White=Color3.fromRGB(240,240,240),Gray=Color3.fromRGB(172,171,
+175),Black=Color3.fromRGB(15,19,24),Yellow=Color3.fromRGB(230,180,0),Orange=
+Color3.fromRGB(230,150,0),Green=Color3.fromRGB(130,188,91),Red=Color3.fromRGB(
+255,69,69)}end function a.e()local c=a.cache.e if not c then c={c=b()}a.cache.e=
+c end return c.c end end do local b=function()local b,c=a.e(),{}c.DarkTheme={
+Values={AnimationTweenInfo=TweenInfo.new(0.08),TextFont=Font.fromEnum(Enum.Font.
+RobotoMono),TextSize=14,Text=b.White,TextDisabled=b.Gray,ErrorText=b.Red,FrameBg
+=b.Dark,FrameBgTransparency=0.4,FrameBgActive=b.Light,FrameBgTransparencyActive=
+0.4,FrameRounding=UDim.new(0,0),SliderGrab=b.Light,ButtonsBg=b.Light,
+CollapsingHeaderBg=b.Light,CollapsingHeaderText=b.White,CheckMark=b.Light,
+ResizeGrab=b.Light,HeaderBg=b.Gray,HeaderBgTransparency=0.7,HistogramBar=b.
+Yellow,ProgressBar=b.Yellow,RegionBg=b.Dark,RegionBgTransparency=0.1,Separator=b
+.Gray,SeparatorTransparency=0.5,ConsoleLineNumbers=b.White,LabelPaddingTop=UDim.
+new(0,0),LabelPaddingBottom=UDim.new(0,0),MenuBar=b.ExtraDark,
+MenuBarTransparency=0.1,PopupCanvas=b.Black,TabTextPaddingTop=UDim.new(0,3),
+TabTextPaddingBottom=UDim.new(0,8),TabText=b.Gray,TabBg=b.Dark,TabTextActive=b.
+White,TabBgActive=b.Light,TabsBarBg=Color3.fromRGB(36,36,36),
 TabsBarBgTransparency=1,TabPagePadding=UDim.new(0,8),ModalWindowDimBg=Color3.
 fromRGB(230,230,230),ModalWindowDimTweenInfo=TweenInfo.new(0.2),WindowBg=b.Black
 ,WindowBgTransparency=0.05,Border=b.Gray,BorderTransparency=0.8,
