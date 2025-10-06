@@ -264,7 +264,8 @@ Text=`Hello {M},{K}`}end end local K=F:TreeNode{Title='With headers'}local L,M=K
 local Q=A:Column()Q:Label{Text=P}continue end local Q=A:NextColumn()Q:Label{Text
 =`Hello {O},{N}`}end end end end function a.d()local c=a.cache.d if not c then c
 ={c=b()}a.cache.d=c end return c.c end end do local b=function()return{Dot=
-'rbxasset://textures/whiteCircle.png',Arrow='rbxasset://6034818365',Close=
+'rbxasset://textures/whiteCircle.png',Arrow=
+'rbxasset://textures/ui/AvatarContextMenu_Arrow.png',Close=
 'rbxasset://textures/loading/cancelButton.png',Checkmark=
 'rbxasset://textures/ui/Lobby/Buttons/nine_slice_button.png',Cat=
 'rbxassetid://16211812161',Script='rbxassetid://11570895459',Settings=
@@ -308,22 +309,20 @@ local b=function()return{Light=Color3.fromRGB(242,86,86),Dark=Color3.fromRGB(115
 ,30,30),ExtraDark=Color3.fromRGB(28,39,53),White=Color3.fromRGB(240,240,240),
 Gray=Color3.fromRGB(172,171,175),Black=Color3.fromRGB(15,19,24),Yellow=Color3.
 fromRGB(230,180,0),Orange=Color3.fromRGB(230,150,0),Green=Color3.fromRGB(130,188
-,91),Red=Color3.fromRGB(255,69,69),ImGui={Light=Color3.fromRGB(66,150,250),Dark=
-Color3.fromRGB(41,74,122),Black=Color3.fromRGB(15,15,15),Gray=Color3.fromRGB(36,
-36,36)}}end function a.f()local c=a.cache.f if not c then c={c=b()}a.cache.f=c
-end return c.c end end do local b=function()local b,c=a.f(),{}c.DarkTheme={
-Values={AnimationTweenInfo=TweenInfo.new(0.08),TextFont=Font.fromEnum(Enum.Font.
-RobotoMono),TextSize=14,Text=b.White,TextDisabled=b.Gray,ErrorText=b.Red,FrameBg
-=b.Dark,FrameBgTransparency=0.4,FrameBgActive=b.Light,FrameBgTransparencyActive=
-0.4,FrameRounding=UDim.new(0,0),SliderGrab=b.Light,ButtonsBg=b.Light,
-CollapsingHeaderBg=b.Light,CollapsingHeaderText=b.White,CheckMark=b.Light,
-ResizeGrab=b.Light,HeaderBg=b.Gray,HeaderBgTransparency=0.7,HistogramBar=b.
-Yellow,ProgressBar=b.Yellow,RegionBg=b.Dark,RegionBgTransparency=0.1,Separator=b
-.Gray,SeparatorTransparency=0.5,ConsoleLineNumbers=b.White,LabelPaddingTop=UDim.
-new(0,0),LabelPaddingBottom=UDim.new(0,0),MenuBar=b.ExtraDark,
-MenuBarTransparency=0.1,PopupCanvas=b.Black,TabTextPaddingTop=UDim.new(0,3),
-TabTextPaddingBottom=UDim.new(0,8),TabText=b.Gray,TabBg=b.Dark,TabTextActive=b.
-White,TabBgActive=b.Light,TabsBarBg=Color3.fromRGB(36,36,36),
+,91),Red=Color3.fromRGB(255,69,69)}end function a.f()local c=a.cache.f if not c
+then c={c=b()}a.cache.f=c end return c.c end end do local b=function()local b,c=
+a.f(),{}c.DarkTheme={Values={AnimationTweenInfo=TweenInfo.new(0.08),TextFont=
+Font.fromEnum(Enum.Font.RobotoMono),TextSize=14,Text=b.White,TextDisabled=b.Gray
+,ErrorText=b.Red,FrameBg=b.Dark,FrameBgTransparency=0.4,FrameBgActive=b.Light,
+FrameBgTransparencyActive=0.4,FrameRounding=UDim.new(0,0),SliderGrab=b.Light,
+ButtonsBg=b.Light,CollapsingHeaderBg=b.Light,CollapsingHeaderText=b.White,
+CheckMark=b.Light,ResizeGrab=b.Light,HeaderBg=b.Gray,HeaderBgTransparency=0.7,
+HistogramBar=b.Yellow,ProgressBar=b.Yellow,RegionBg=b.Dark,RegionBgTransparency=
+0.1,Separator=b.Gray,SeparatorTransparency=0.5,ConsoleLineNumbers=b.White,
+LabelPaddingTop=UDim.new(0,0),LabelPaddingBottom=UDim.new(0,0),MenuBar=b.
+ExtraDark,MenuBarTransparency=0.1,PopupCanvas=b.Black,TabTextPaddingTop=UDim.
+new(0,3),TabTextPaddingBottom=UDim.new(0,8),TabText=b.Gray,TabBg=b.Dark,
+TabTextActive=b.White,TabBgActive=b.Light,TabsBarBg=Color3.fromRGB(36,36,36),
 TabsBarBgTransparency=1,TabPagePadding=UDim.new(0,8),ModalWindowDimBg=Color3.
 fromRGB(230,230,230),ModalWindowDimTweenInfo=TweenInfo.new(0.2),WindowBg=b.Black
 ,WindowBgTransparency=0.05,Border=b.Gray,BorderTransparency=0.8,
@@ -338,19 +337,9 @@ Black,ConsoleLineNumbers=b.Yellow,MenuBar=Color3.fromRGB(219,219,219),
 PopupCanvas=b.White,TabText=b.Black,TabTextActive=b.Black,WindowBg=b.White,
 Border=b.Gray,ResizeGrab=b.Gray,Title=b.Black,TitleAlign=Enum.TextXAlignment.
 Center,TitleBarBg=b.Gray,TitleActive=b.Black,TitleBarBgActive=Color3.fromRGB(186
-,186,186),TitleBarBgCollapsed=b.Gray}}c.ImGui={BaseTheme=c.DarkTheme,Values={
-AnimationTweenInfo=TweenInfo.new(0),Text=Color3.fromRGB(255,255,255),FrameBg=b.
-ImGui.Dark,FrameBgTransparency=0.4,FrameBgActive=b.ImGui.Light,
-FrameBgTransparencyActive=0.5,FrameRounding=UDim.new(0,0),ButtonsBg=b.ImGui.
-Light,CollapsingHeaderBg=b.ImGui.Light,CollapsingHeaderText=b.White,CheckMark=b.
-ImGui.Light,ResizeGrab=b.ImGui.Light,MenuBar=b.ImGui.Gray,MenuBarTransparency=0,
-PopupCanvas=b.ImGui.Black,TabText=b.Gray,TabBg=b.ImGui.Dark,TabTextActive=b.
-White,TabBgActive=b.ImGui.Light,WindowBg=b.ImGui.Black,WindowBgTransparency=0.05
-,Border=b.Gray,BorderTransparency=0.7,BorderTransparencyActive=0.4,Title=b.White
-,TitleBarBg=b.ImGui.Black,TitleBarTransparency=0,TitleBarBgActive=b.ImGui.Dark,
-TitleBarTransparencyActive=0}}return c end function a.g()local c=a.cache.g if
-not c then c={c=b()}a.cache.g=c end return c.c end end do local b=function()
-local b,c=(a.a())b:AddOnInit(function(e)c=e end)return{{Properties={'Center'},
+,186,186),TitleBarBgCollapsed=b.Gray}}return c end function a.g()local c=a.cache
+.g if not c then c={c=b()}a.cache.g=c end return c.c end end do local b=function
+()local b,c=(a.a())b:AddOnInit(function(e)c=e end)return{{Properties={'Center'},
 Callback=function(e,f,g)local h=f.Position b:SetProperties(f,{Position=UDim2.
 new(g:find'X'and 0.5 or h.X.Scale,h.X.Offset,g:find'Y'and 0.5 or h.Y.Scale,h.Y.
 Offset),AnchorPoint=Vector2.new(g:find'X'and 0.5 or 0,g:find'Y'and 0.5 or 0)})
