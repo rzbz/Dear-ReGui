@@ -7700,3 +7700,5 @@ ReGui:DefineElement("PopupModal", {
 	end,
 })
 
+
+return ReGui
