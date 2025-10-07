@@ -127,7 +127,7 @@ Black,ConsoleLineNumbers=b.Yellow,MenuBar=Color3.fromRGB(219,219,219),
 PopupCanvas=b.White,TabText=b.Black,TabTextActive=b.Black,WindowBg=b.White,
 Border=b.Gray,ResizeGrab=b.Gray,Title=b.Black,TitleAlign=Enum.TextXAlignment.
 Left,TitleBarBg=b.Gray,TitleActive=b.Black,TitleBarBgActive=Color3.fromRGB(186,
-186,186),TitleBarBgCollapsed=b.Gray,TitleBarTransparencyActive=0.2,
+186,186),TitleBarBgCollapsed=b.Gray,TitleBarTransparencyActive=0.4,
 TitleBarTransparencyCollapsed=0.6}}return c end function a.f()local c=a.cache.f
 if not c then c={c=b()}a.cache.f=c end return c.c end end do local b=function()
 local b,c=(a.a())b:AddOnInit(function(d)c=d end)return{{Properties={'Center'},
