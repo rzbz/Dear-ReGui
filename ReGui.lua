@@ -54,8 +54,7 @@ function b:NewSignal()return c:NewClass(b,{Connections={}})end return b end
 function a.c()local c=a.cache.c if not c then c={c=b()}a.cache.c=c end return c.
 c end end do local b=function()return{VerifiedBadge=
 'rbxasset://textures/ui/VerifiedBadgeNameIcon.png',Dot=
-'rbxasset://textures/whiteCircle.png',Arrow=
-'rbxasset://textures/ui/AvatarContextMenu_Arrow.png',Close=
+'rbxasset://textures/whiteCircle.png',Arrow='rbxassetid://6034818365',Close=
 'rbxasset://textures/loading/cancelButton.png',Checkmark=
 'rbxassetid://6031094667',Cat='rbxassetid://16211812161',Script=
 'rbxassetid://11570895459',Settings='rbxassetid://9743465390',Info=
@@ -126,10 +125,10 @@ SliderGrab=b.Light,ButtonsBg=b.Light,CollapsingHeaderText=b.Black,Separator=b.
 Black,ConsoleLineNumbers=b.Yellow,MenuBar=Color3.fromRGB(219,219,219),
 PopupCanvas=b.White,TabText=b.Black,TabTextActive=b.Black,WindowBg=b.White,
 Border=b.Gray,ResizeGrab=b.Gray,Title=b.Black,TitleAlign=Enum.TextXAlignment.
-Center,TitleBarBg=b.Gray,TitleActive=b.Black,TitleBarBgActive=Color3.fromRGB(186
-,186,186),TitleBarBgCollapsed=b.Gray}}return c end function a.f()local c=a.cache
-.f if not c then c={c=b()}a.cache.f=c end return c.c end end do local b=function
-()local b,c=(a.a())b:AddOnInit(function(d)c=d end)return{{Properties={'Center'},
+Left,TitleBarBg=b.Gray,TitleActive=b.Black,TitleBarBgActive=Color3.fromRGB(186,
+186,186),TitleBarBgCollapsed=b.Gray}}return c end function a.f()local c=a.cache.
+f if not c then c={c=b()}a.cache.f=c end return c.c end end do local b=function(
+)local b,c=(a.a())b:AddOnInit(function(d)c=d end)return{{Properties={'Center'},
 Callback=function(d,e,f)local g=e.Position b:SetProperties(e,{Position=UDim2.
 new(f:find'X'and 0.5 or g.X.Scale,g.X.Offset,f:find'Y'and 0.5 or g.Y.Scale,g.Y.
 Offset),AnchorPoint=Vector2.new(f:find'X'and 0.5 or 0,f:find'Y'and 0.5 or 0)})
