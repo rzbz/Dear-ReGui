@@ -54,7 +54,8 @@ function b:NewSignal()return c:NewClass(b,{Connections={}})end return b end
 function a.c()local c=a.cache.c if not c then c={c=b()}a.cache.c=c end return c.
 c end end do local b=function()return{VerifiedBadge=
 'rbxasset://textures/ui/VerifiedBadgeNameIcon.png',Dot=
-'rbxasset://textures/whiteCircle.png',Arrow='rbxassetid://6034818365',Close=
+'rbxasset://textures/whiteCircle.png',Arrow=
+'rbxasset://textures/ui/AvatarContextMenu_Arrow.png',Close=
 'rbxasset://textures/loading/cancelButton.png',Checkmark=
 'rbxassetid://6031094667',Cat='rbxassetid://16211812161',Script=
 'rbxassetid://11570895459',Settings='rbxassetid://9743465390',Info=
@@ -964,17 +965,17 @@ CheckConfig(self,{Toggle=y:RadioButton{Icon=w.Image,IconPadding=w.IconPadding,
 LayoutOrder=1,Ratio=1,Size=UDim2.new(0,0),Callback=function()self:
 ToggleCollapsed()end},CloseButton=y:RadioButton{Icon=x.Image,IconPadding=x.
 IconPadding,LayoutOrder=3,Ratio=1,Size=UDim2.new(0,0),Callback=function()self:
-SetVisible(false)end},TitleLabel=y:Label{ColorTag='Title',LayoutOrder=2,Size=
-UDim2.new(1,0),Active=false,Fill=true,ClipsDescendants=true,AutomaticSize=Enum.
-AutomaticSize.XY}})self:TagElements{[self.TitleLabel]='WindowTitle'}end function
-u:Close()local v=self.CloseCallback if v then local w=v(self)if w==false then
-return end end self:Remove()end function u:SetVisible(v)local w,x=self.
-WindowFrame,self.NoFocusOnAppearing self.Visible=v w.Visible=v if v and not x
-then b:SetFocusedWindow(self)end return self end function u:ToggleVisibility(v)
-local w=self.Visible self:SetVisible(not w)end function u:GetWindowSize()return
-self.WindowFrame.AbsoluteSize end function u:GetTitleBarSizeY()local v=self.
-TitleBar return v.Visible and v.AbsoluteSize.Y or 0 end function u:SetTitle(v)
-self.TitleLabel.Text=tostring(v)return self end function u:SetPosition(v)self.
+Close()end},TitleLabel=y:Label{ColorTag='Title',LayoutOrder=2,Size=UDim2.new(1,0
+),Active=false,Fill=true,ClipsDescendants=true,AutomaticSize=Enum.AutomaticSize.
+XY}})self:TagElements{[self.TitleLabel]='WindowTitle'}end function u:Close()
+local v=self.CloseCallback if v then local w=v(self)if w==false then return end
+end self:Remove()end function u:SetVisible(v)local w,x=self.WindowFrame,self.
+NoFocusOnAppearing self.Visible=v w.Visible=v if v and not x then b:
+SetFocusedWindow(self)end return self end function u:ToggleVisibility(v)local w=
+self.Visible self:SetVisible(not w)end function u:GetWindowSize()return self.
+WindowFrame.AbsoluteSize end function u:GetTitleBarSizeY()local v=self.TitleBar
+return v.Visible and v.AbsoluteSize.Y or 0 end function u:SetTitle(v)self.
+TitleLabel.Text=tostring(v)return self end function u:SetPosition(v)self.
 WindowFrame.Position=v return self end function u:SetSize(v,w)local x=self.
 WindowFrame if typeof(v)=='Vector2'then v=UDim2.fromOffset(v.X,v.Y)end x.Size=v
 self.Size=v return self end function u:SetCanvasInteractable(v)local w=self.Body
