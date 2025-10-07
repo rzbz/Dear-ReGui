@@ -127,9 +127,10 @@ Black,ConsoleLineNumbers=b.Yellow,MenuBar=Color3.fromRGB(219,219,219),
 PopupCanvas=b.White,TabText=b.Black,TabTextActive=b.Black,WindowBg=b.White,
 Border=b.Gray,ResizeGrab=b.Gray,Title=b.Black,TitleAlign=Enum.TextXAlignment.
 Left,TitleBarBg=b.Gray,TitleActive=b.Black,TitleBarBgActive=Color3.fromRGB(186,
-186,186),TitleBarBgCollapsed=b.Gray}}return c end function a.f()local c=a.cache.
-f if not c then c={c=b()}a.cache.f=c end return c.c end end do local b=function(
-)local b,c=(a.a())b:AddOnInit(function(d)c=d end)return{{Properties={'Center'},
+186,186),TitleBarBgCollapsed=b.Gray,TitleBarTransparencyActive=0.2,
+TitleBarTransparencyCollapsed=0.6}}return c end function a.f()local c=a.cache.f
+if not c then c={c=b()}a.cache.f=c end return c.c end end do local b=function()
+local b,c=(a.a())b:AddOnInit(function(d)c=d end)return{{Properties={'Center'},
 Callback=function(d,e,f)local g=e.Position b:SetProperties(e,{Position=UDim2.
 new(f:find'X'and 0.5 or g.X.Scale,g.X.Offset,f:find'Y'and 0.5 or g.Y.Scale,g.Y.
 Offset),AnchorPoint=Vector2.new(f:find'X'and 0.5 or 0,f:find'Y'and 0.5 or 0)})
@@ -231,15 +232,15 @@ Deselected={Transparency=0.7,Thickness=1}},Init='Selected'}}return b end
 function a.h()local c=a.cache.h if not c then c={c=b()}a.cache.h=c end return c.
 c end end end local b,c,d,e={Version='1.4.6',Author='Depso',License='MIT',
 Repository='https://github.com/depthso/Dear-ReGui/',Debug=false,PrefabsId=
-71968920594655,DefaultTitle='ReGui',ContainerName='ReGui',DoubleClickThreshold=
-0.3,TooltipOffset=15,IniToSave={'Value'},ClassIgnored={'Visible','Text'},
-Container=nil,Prefabs=nil,FocusedWindow=nil,HasTouchScreen=false,Services=nil,
-Elements={},_FlagCache={},_ErrorCache={},Windows={},ActiveTooltips={},
-IniSettings={},AnimationConnections={}},a.a(),a.b(),a.c()b.Services=c.Services b
-.Animation=d b.Icons=a.d()b.Accent=a.e()b.ThemeConfigs=a.f()b.ElementFlags=a.g()
-local f=a.h()b.ElementColors=f.Coloring b.Animations=f.Animations b.Styles=f.
-Styles c:CallOnInitConnections(b)b.DynamicImages={[b.Icons.Arrow]=
-'ImageFollowsText',[b.Icons.Close]='ImageFollowsText',[b.Icons.Dot]=
+71968920594655,DefaultTitle='ReGui x SIXE',ContainerName='ReGui x SIXE',
+DoubleClickThreshold=0.3,TooltipOffset=15,IniToSave={'Value'},ClassIgnored={
+'Visible','Text'},Container=nil,Prefabs=nil,FocusedWindow=nil,HasTouchScreen=
+false,Services=nil,Elements={},_FlagCache={},_ErrorCache={},Windows={},
+ActiveTooltips={},IniSettings={},AnimationConnections={}},a.a(),a.b(),a.c()b.
+Services=c.Services b.Animation=d b.Icons=a.d()b.Accent=a.e()b.ThemeConfigs=a.f(
+)b.ElementFlags=a.g()local f=a.h()b.ElementColors=f.Coloring b.Animations=f.
+Animations b.Styles=f.Styles c:CallOnInitConnections(b)b.DynamicImages={[b.Icons
+.Arrow]='ImageFollowsText',[b.Icons.Close]='ImageFollowsText',[b.Icons.Dot]=
 'ImageFollowsText'}local g=b.Services local h,i,j,k,l=g.HttpService,g.Players,g.
 UserInputService,g.RunService,g.InsertService local m=i.LocalPlayer b.PlayerGui=
 m.PlayerGui b.Mouse=m:GetMouse()local n=function()end function GetAndRemove(o,p)
